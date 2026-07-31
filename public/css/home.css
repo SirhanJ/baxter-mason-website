@@ -233,8 +233,9 @@
 .hm-statement p {
   font-size: clamp(16px, 1.4vw, 18px);
   max-width: 640px;
-  margin: 0 auto 34px;
+  margin: 0 auto 18px;
 }
+.hm-statement .hm-cta-row { margin-top: 28px; }
 
 /* ============================================================
    MEET
@@ -534,6 +535,27 @@
   margin: 0;
 }
 
+/* Mobile: dark band becomes light for readability */
+@media (max-width: 720px) {
+  .hm-diff {
+    background: #f7f4ef;
+    color: var(--hm-ink-soft);
+    background-image: none;
+  }
+  .hm-diff h2,
+  .hm-diff-item h3 { color: var(--hm-ink); }
+  .hm-diff .hm-diff-head p,
+  .hm-diff-item p { color: var(--hm-ink-soft); }
+  .hm-diff-item {
+    border-top-color: rgba(87, 87, 86, 0.18);
+  }
+  .hm-diff-ico {
+    border-color: rgba(228, 64, 19, 0.45);
+    background: rgba(228, 64, 19, 0.08);
+  }
+  .hm-diff-grid { grid-template-columns: 1fr; gap: 22px; }
+}
+
 /* ============================================================
    CLIENT LOVE
    ============================================================ */
@@ -773,6 +795,24 @@
 }
 .hm-final-contacts a:hover { color: #fff; }
 
+@media (max-width: 720px) {
+  .hm-final::before { opacity: 0.18; }
+  .hm-final::after {
+    background: linear-gradient(180deg, rgba(18, 16, 14, 0.92) 0%, rgba(18, 16, 14, 0.88) 100%);
+  }
+  .hm-final p,
+  .hm-final-contacts a,
+  .hm-final-contacts span {
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .hm-hero-sub {
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+  }
+  .hm-hero h1 {
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+  }
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -862,6 +902,14 @@ body.hm header.nav.stuck .logo .logo-img { height: 50px; }
 
 body.hm header.nav .burger span { background: #fff; }
 body.hm header.nav .burger.x span { background: var(--ink); }
+body.hm.nav-open header.nav .burger span { background: var(--ink); }
+body.hm.nav-open header.nav {
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+body.hm.nav-open header.nav .logo .logo-img--color { display: block; }
+body.hm.nav-open header.nav .logo .logo-img--light { display: none; }
 
 @media (min-width: 981px) {
   body.hm header.nav .l,

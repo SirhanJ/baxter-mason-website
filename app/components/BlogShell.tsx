@@ -67,11 +67,11 @@ export function SiteHeader() {
             Contact
           </a>
           <a className="btn nav-mobile-cta" href="/contact.html">
-            Book a call <span className="ar">→</span>
+            Book a discovery call <span className="ar">→</span>
           </a>
         </nav>
         <a className="btn nav-desktop-cta" href="/contact.html">
-          Book a call <span className="ar">→</span>
+          Book a discovery call <span className="ar">→</span>
         </a>
         <button className="burger" id="burger" aria-label="Menu" aria-expanded="false">
           <span />
@@ -102,7 +102,7 @@ export function SiteFooter() {
               </div>
               <div className="cta-row">
                 <a className="btn lg" href="/contact.html">
-                  Book a free discovery call <span className="ar">→</span>
+                  Book a discovery call <span className="ar">→</span>
                 </a>
                 <a className="btn glass lg" href="mailto:mail@baxtermason.com.au">
                   Email the Team
@@ -200,7 +200,7 @@ export function SiteFooter() {
                 <li>QLD Licence 4684962</li>
                 <li>Sunshine Coast, Australia</li>
                 <li>
-                  <a href="/contact.html">Book a call</a>
+                  <a href="/contact.html">Book a discovery call</a>
                 </li>
                 <li>
                   <a href="/privacy.html">Privacy policy</a>
