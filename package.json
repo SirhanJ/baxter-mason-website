@@ -2,12 +2,20 @@
   "name": "baxter-mason-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Baxter & Mason — Sunshine Coast buyers agent marketing site (static HTML/CSS/JS).",
   "scripts": {
-    "dev": "serve -l 5173 .",
-    "start": "serve -l 5173 ."
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000"
+  },
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "serve": "^14.2.4"
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
   }
 }

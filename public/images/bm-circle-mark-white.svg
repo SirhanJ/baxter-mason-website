@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Baxter and Mason">
+  <circle cx="100" cy="100" r="92" fill="none" stroke="#ffffff" stroke-width="1.75"/>
+  <text x="100" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="300" fill="#ffffff">
+    <tspan font-size="68">B</tspan><tspan font-size="30" baseline-shift="10">&amp;</tspan><tspan font-size="68">M</tspan>
+  </text>
+</svg>
