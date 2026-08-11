@@ -20,7 +20,7 @@ export function SiteHeader() {
         <a className="logo" href="/index.html">
           <img
             className="logo-img logo-img--color"
-            src="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo-nav.png"
+            src="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo.png"
             alt="Baxter & Mason Property Buyers Agent"
           />
           <img
@@ -136,7 +136,7 @@ export function SiteFooter() {
             <div className="brand-col">
               <img
                 className="ft-logo"
-                src="/images/logos%20and%20sally%20stuff/B%26M-circle.png"
+                src="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo.png"
                 alt="Baxter & Mason"
               />
               <p className="blurb">

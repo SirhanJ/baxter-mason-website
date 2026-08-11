@@ -560,4 +560,16 @@
       warm();
     }
   })();
+
+  /* LeadConnector chat widget (same as live baxtermason.com.au) */
+  (function loadChatWidget() {
+    if (document.getElementById('bm-leadconnector-chat')) return;
+    var s = document.createElement('script');
+    s.id = 'bm-leadconnector-chat';
+    s.src = 'https://widgets.leadconnectorhq.com/loader.js';
+    s.async = true;
+    s.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js');
+    s.setAttribute('data-widget-id', '683f17f2abf3b88581697286');
+    document.body.appendChild(s);
+  })();
 })();

@@ -6766,8 +6766,7 @@ section.blk.prose-page {
 }
 
 .invest-list li {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
+  display: flex;
   gap: 12px;
   align-items: center;
   padding: 13px 14px;
@@ -6778,6 +6777,10 @@ section.blk.prose-page {
   line-height: 1.45;
   color: var(--prose-ink-soft, #3D4A5C);
   transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.invest-list li > .invest-check {
+  flex: 0 0 28px;
 }
 
 .invest-list li:hover {
@@ -9711,6 +9714,9 @@ body footer.ft {
 
 body footer.ft .ft-logo {
   filter: none;
+  height: 56px;
+  width: auto;
+  background: transparent;
 }
 
 /* ============================================================

@@ -888,11 +888,14 @@ body.hm header.nav {
     -webkit-backdrop-filter 0.45s var(--ease), backdrop-filter 0.45s var(--ease);
 }
 
-/* light wordmark over dark hero; colour wordmark once the bar frosts */
-body.hm header.nav .logo .logo-img--color { display: none; }
-body.hm header.nav .logo .logo-img--light { display: block; }
+/* Colour wordmark over dark hero (orange Baxter & Mason + grey & + tagline) */
+body.hm header.nav .logo .logo-img--color { display: block; }
+body.hm header.nav .logo .logo-img--light { display: none; }
 body.hm header.nav.stuck .logo .logo-img--color { display: block; }
 body.hm header.nav.stuck .logo .logo-img--light { display: none; }
+body.hm header.nav:not(.stuck) .logo .logo-img--color {
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
+}
 
 /* roomier bar over the hero so the light wordmark can breathe */
 body.hm header.nav .wrap { height: 104px; }
