@@ -1898,8 +1898,13 @@ section.blk.services-page,
   transform: scale(1.05);
 }
 
+.svc-card#coaching .svc-card-img {
+  aspect-ratio: 4 / 3;
+  max-height: 280px;
+}
+
 .svc-card#coaching .svc-card-img img {
-  object-position: center top;
+  object-position: center 22%;
 }
 
 .svc-card-body {

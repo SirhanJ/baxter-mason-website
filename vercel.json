@@ -3,5 +3,8 @@
   "framework": "nextjs",
   "buildCommand": "next build",
   "installCommand": "npm install",
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/blog", "destination": "/blog.html" }
+  ]
 }

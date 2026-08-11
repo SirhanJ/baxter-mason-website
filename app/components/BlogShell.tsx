@@ -60,7 +60,7 @@ export function SiteHeader() {
             <div className="drop-menu">
               <a href="/free-guides.html">Free Guides</a>
               <a href="/faq.html">FAQ</a>
-              <a href="/blog">Blog</a>
+              <a href="/blog.html">Blog</a>
             </div>
           </div>
           <a className="l" href="/contact.html">
@@ -136,7 +136,7 @@ export function SiteFooter() {
             <div className="brand-col">
               <img
                 className="ft-logo"
-                src="/images/logos%20and%20sally%20stuff/BM-circle-transparent.png"
+                src="/images/logos%20and%20sally%20stuff/BM-circle-transparent.png?v=4"
                 alt="Baxter & Mason"
               />
               <p className="blurb">
@@ -268,7 +268,7 @@ export function BlogShell({
               </p>
             </div>
           ) : null}
-          <div className="vx-blog-embed rv d1">{children}</div>
+          <div className="vx-blog-embed">{children}</div>
         </div>
       </section>
 
