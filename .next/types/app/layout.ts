@@ -1,4 +1,4 @@
-// File: c:\Users\lixjw\Desktop\baxton'\baxter-mason-website\app\layout.tsx
+// File: C:\Users\lixjw\Desktop\baxton'\baxter-mason-website\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
