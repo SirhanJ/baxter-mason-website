@@ -580,10 +580,16 @@ body.nav-open {
 
 .logo img,
 .logo .logo-img {
-  height: 50px;
+  height: 56px;
   width: auto;
+  max-width: min(240px, 48vw);
   display: block;
-  background: transparent;
+  background: transparent !important;
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: left center;
 }
 
 /* Colour wordmark by default (light/solid nav). Light wordmark for dark heroes. */
@@ -3511,6 +3517,69 @@ section.page-hero.img-hero {
 section.page-hero.img-hero.hero-family {
   min-height: clamp(500px, 58vw, 640px);
   background-position: 78% bottom;
+}
+
+/* Bio pages: clean dark gradient banner (no photo crop issues) */
+section.page-hero.people-bio-hero {
+  min-height: clamp(240px, 28vw, 340px);
+  padding: clamp(48px, 7vw, 72px) 0 clamp(40px, 5vw, 56px);
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+  background:
+    radial-gradient(ellipse 90% 80% at 12% 0%, rgba(228, 64, 19, 0.28), transparent 55%),
+    radial-gradient(ellipse 70% 70% at 92% 100%, rgba(228, 64, 19, 0.16), transparent 50%),
+    linear-gradient(145deg, #1a1918 0%, #252321 48%, #171615 100%);
+}
+
+section.page-hero.people-bio-hero::before {
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 20%, rgba(255, 255, 255, 0.04), transparent 60%);
+  opacity: 1;
+}
+
+section.page-hero.people-bio-hero::after {
+  opacity: 0.35;
+}
+
+section.page-hero.people-bio-hero .grain {
+  opacity: 0.18;
+}
+
+section.page-hero.people-bio-hero > .wrap {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+}
+
+section.page-hero.people-bio-hero .page-hero-copy {
+  max-width: 36rem;
+}
+
+section.page-hero.people-bio-hero h1,
+section.page-hero.people-bio-hero h1 .fi,
+section.page-hero.people-bio-hero h1 .forest-i {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+section.page-hero.people-bio-hero h1 .gi,
+section.page-hero.people-bio-hero h1 .gold-i {
+  color: #ff7a4d;
+  -webkit-text-fill-color: #ff7a4d;
+  font-style: italic;
+}
+
+section.page-hero.people-bio-hero .sub {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+section.page-hero.people-bio-hero .eyebrow {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.people-page .prose-intro-visual img[src*="kelly-hero"] {
+  object-position: center 12%;
 }
 
 section.page-hero.img-hero::before {
@@ -6768,7 +6837,7 @@ section.blk.prose-page {
 .invest-list li {
   display: flex;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
   padding: 13px 14px;
   border: 1px solid rgba(30, 41, 59, 0.12);
   border-radius: 10px;
@@ -6781,6 +6850,14 @@ section.blk.prose-page {
 
 .invest-list li > .invest-check {
   flex: 0 0 28px;
+  margin-top: 1px;
+}
+
+/* Suburb pages use plain text items (no check icon) — never trap copy in a 32px grid track */
+.suburb-page .invest-list li {
+  display: block;
+  width: 100%;
+  max-width: none;
 }
 
 .invest-list li:hover {
@@ -7498,6 +7575,7 @@ footer.ft::before {
   width: auto;
   display: block;
   margin-bottom: 6px;
+  background: transparent;
 }
 
 .ft .word {
@@ -9071,6 +9149,7 @@ section.final.final-rich .final-chip {
 .ft-logo {
   height: 72px;
   width: auto;
+  background: transparent;
 }
 
 @media (max-width: 900px) {
@@ -9714,9 +9793,10 @@ body footer.ft {
 
 body footer.ft .ft-logo {
   filter: none;
-  height: 56px;
+  height: 72px;
   width: auto;
   background: transparent;
+  border-radius: 50%;
 }
 
 /* ============================================================
@@ -9756,6 +9836,76 @@ body .drop-menu a:hover {
   font-size: 14px;
   font-weight: 600;
   color: var(--orange);
+}
+
+/* Numbered pagination for Vexur archive (scripts do not run via React HTML inject) */
+.blog-archive {
+  width: 100%;
+}
+
+.blog-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 40px 0 8px;
+}
+
+.blog-pagination-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-pagination-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blog-pagination-btn {
+  appearance: none;
+  border: 1px solid rgba(30, 41, 59, 0.18);
+  background: #fff;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.blog-pagination-btn:hover:not(:disabled) {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.blog-pagination-btn.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+.blog-pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.blog-pagination-ellipsis {
+  color: rgba(30, 41, 59, 0.45);
+  font-weight: 600;
+  padding: 0 2px;
 }
 
 /* ============================================================

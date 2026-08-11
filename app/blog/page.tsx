@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { BlogShell } from '../components/BlogShell';
 import { BlogLinkFixup } from '../components/BlogLinkFixup';
+import { BlogArchive } from '../components/BlogArchive';
 import { rewriteBlogLinks, siteOriginFromHeaders } from '../lib/rewriteBlogLinks';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Blog | Baxter & Mason',
@@ -31,7 +34,7 @@ export default async function BlogPage() {
       {error ? (
         <p>Unable to load the blog right now.</p>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <BlogArchive html={html} />
       )}
     </BlogShell>
   );

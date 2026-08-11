@@ -237,6 +237,76 @@
 }
 .hm-statement .hm-cta-row { margin-top: 28px; }
 
+/* Original-site style: Sally photo left, copy right */
+.hm-statement--split {
+  text-align: left;
+  background: #fff;
+  padding: clamp(64px, 8vw, 108px) 0;
+}
+.hm-statement--split .wrap {
+  max-width: 1200px;
+}
+.hm-statement-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.hm-statement-photo {
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--hm-cream-2);
+}
+.hm-statement-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  display: block;
+}
+.hm-statement--split h2 {
+  font-family: var(--body);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(28px, 3.4vw, 42px);
+  margin: 0 0 18px;
+  color: var(--hm-ink);
+}
+.hm-statement-lead {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: clamp(17px, 1.5vw, 19px);
+  color: var(--hm-ink);
+  margin: 0 0 18px !important;
+  max-width: 46ch !important;
+}
+.hm-statement--split p {
+  text-align: left;
+  margin: 0 0 16px;
+  max-width: 52ch;
+  margin-left: 0;
+  margin-right: 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.hm-statement--split .hm-cta-row {
+  margin-top: 28px;
+  justify-content: flex-start;
+}
+@media (max-width: 900px) {
+  .hm-statement-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .hm-statement-photo {
+    max-width: 420px;
+    aspect-ratio: 4 / 5;
+  }
+}
+
 /* ============================================================
    MEET
    ============================================================ */
@@ -888,12 +958,12 @@ body.hm header.nav {
     -webkit-backdrop-filter 0.45s var(--ease), backdrop-filter 0.45s var(--ease);
 }
 
-/* Colour wordmark over dark hero (orange Baxter & Mason + grey & + tagline) */
-body.hm header.nav .logo .logo-img--color { display: block; }
-body.hm header.nav .logo .logo-img--light { display: none; }
+/* Dark hero: transparent orange lockup (& + tagline). Stuck bar: on-light lockup. */
+body.hm header.nav:not(.stuck) .logo .logo-img--color { display: none; }
+body.hm header.nav:not(.stuck) .logo .logo-img--light { display: block; }
 body.hm header.nav.stuck .logo .logo-img--color { display: block; }
 body.hm header.nav.stuck .logo .logo-img--light { display: none; }
-body.hm header.nav:not(.stuck) .logo .logo-img--color {
+body.hm header.nav:not(.stuck) .logo .logo-img--light {
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
 }
 
