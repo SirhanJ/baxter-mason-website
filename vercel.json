@@ -5,6 +5,7 @@
   "installCommand": "npm install",
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/blog", "destination": "/blog.html" }
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/blog/", "destination": "/blog.html" }
   ]
 }
