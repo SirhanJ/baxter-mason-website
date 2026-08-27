@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="image/png"
           href="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-favicon-orange.png"
         />
-        <link rel="stylesheet" href="/css/styles.css?v=53" />
+        <link rel="stylesheet" href="/css/styles.css?v=55" />
       </head>
       <body>{children}</body>
     </html>

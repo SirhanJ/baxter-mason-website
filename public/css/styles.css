@@ -394,14 +394,19 @@ img {
   to { opacity: 0; visibility: hidden; }
 }
 
-/* one-shot nav entrance after loader */
+/* one-shot nav entrance after loader.
+   Opacity only: a transform on #nav traps the mobile drawer. */
 html.is-ready #nav {
   animation: navDrop 0.75s var(--ease) both;
 }
 
 @keyframes navDrop {
-  from { opacity: 0; transform: translateY(-16px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+body.nav-open #nav {
+  animation: none;
 }
 
 /* ---------- top strip ---------- */
@@ -458,10 +463,20 @@ header.nav {
   top: 0;
   z-index: 50;
   background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
+}
+
+/* Blur on a pseudo, not the header. Filter/backdrop-filter on #nav
+   makes position:fixed descendants size to the bar instead of the phone. */
+header.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 header.nav::after {
@@ -493,6 +508,7 @@ header.nav.stuck::after {
   justify-content: space-between;
   height: 78px;
   position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 981px) {
@@ -798,10 +814,14 @@ body.nav-open {
     position: fixed;
     top: 0;
     right: 0;
-    bottom: 0;
+    bottom: auto;
     left: auto;
     width: min(88vw, 360px);
     max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
     background: #ffffff;
     flex-direction: column;
     justify-content: flex-start;
@@ -5087,6 +5107,18 @@ body .drop-menu a.is-active {
 body .drop-menu {
   background: rgba(255, 255, 255, 0.98);
   border-color: var(--gborder);
+}
+
+@media (max-width: 980px) {
+  body .drop-menu,
+  body header.nav .drop-menu {
+    background: transparent;
+    border: 0;
+    border-left: 2px solid rgba(228, 64, 19, 0.35);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 body .drop-menu a {

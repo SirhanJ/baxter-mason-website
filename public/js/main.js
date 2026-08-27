@@ -148,6 +148,8 @@
   var m = document.getElementById('menu');
   var dropItems = document.querySelectorAll('.nav-item.has-drop');
   var navBackdrop = null;
+  var menuHome = m ? m.parentNode : null;
+  var menuNext = m ? m.nextSibling : null;
 
   function ensureNavBackdrop() {
     if (navBackdrop) return navBackdrop;
@@ -159,14 +161,33 @@
     return navBackdrop;
   }
 
+  function parkMobileMenu(open) {
+    if (!m || !menuHome) return;
+    try {
+      if (open && window.innerWidth <= 980) {
+        if (m.parentNode !== document.body) document.body.appendChild(m);
+        return;
+      }
+      if (m.parentNode !== menuHome) {
+        menuHome.insertBefore(m, menuNext);
+      }
+    } catch (err) {
+      console.error('Could not reposition the mobile menu', err);
+    }
+  }
+
   function setMenuOpen(open) {
     if (!m || !b) return;
+    if (open) parkMobileMenu(true);
     m.classList.toggle('open', open);
     b.classList.toggle('x', open);
     b.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.classList.toggle('nav-open', open);
     ensureNavBackdrop().classList.toggle('is-open', open);
-    if (!open) closeDropdowns();
+    if (!open) {
+      closeDropdowns();
+      parkMobileMenu(false);
+    }
   }
 
   function closeMobileMenu() {
