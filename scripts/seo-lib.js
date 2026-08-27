@@ -161,6 +161,19 @@ function rewriteInlineBackgrounds(html) {
   });
 }
 
+/**
+ * /reviews is an App Router page, so it has no footer entry in the static
+ * markup. Without one it would be reachable only from the sitemap and a single
+ * redirect — add it to the Explore column so every page links to it.
+ */
+function ensureReviewsLink(html) {
+  if (html.indexOf('href="/reviews"') !== -1) return html;
+  return html.replace(
+    /(<li><a href="\/success-stories">Success Stories<\/a><\/li>)/i,
+    '$1\n<li><a href="/reviews">Client Reviews</a></li>',
+  );
+}
+
 /* ----------------------------------------------------------------- head */
 
 function setHead(html, url) {
@@ -183,14 +196,30 @@ function setHead(html, url) {
 
 /* --------------------------------------------------------------- images */
 
+/** Site furniture — logos and the loading mark. Never the LCP element. */
+const CHROME_CLASS = /\b(site-loader-logo|logo-img|ft-logo)\b/;
+
+/**
+ * Sizing, format and loading priority.
+ *
+ * Priority is the part worth being careful about: `fetchpriority="high"` is a
+ * budget, and spending it on the nav logo is worse than not setting it at all,
+ * because it competes with whatever the LCP element actually is. So chrome
+ * loads eagerly but at normal priority, the first real content image gets the
+ * high-priority hint, and everything after it defers.
+ */
 function fixImages(html) {
-  let seen = 0;
+  let contentSeen = 0;
   return html.replace(/<img\b[^>]*>/gi, (tag) => {
-    seen += 1;
     let out = tag;
     const srcMatch = out.match(/\bsrc="([^"]+)"/i);
     if (!srcMatch) return out;
     let src = srcMatch[1];
+
+    const className = (out.match(/\bclass="([^"]*)"/i) || [, ''])[1];
+    const isChrome = CHROME_CLASS.test(className);
+    if (!isChrome) contentSeen += 1;
+    const isLeadContent = !isChrome && contentSeen === 1;
 
     if (!/^https?:/i.test(src)) {
       const webp = webpSibling(src);
@@ -208,16 +237,44 @@ function fixImages(html) {
       }
     }
 
-    // The first two images on a page are treated as above the fold.
-    if (!/\bloading="/i.test(out)) {
-      out = out.replace(
-        /<img\b/i,
-        seen <= 2 ? '<img loading="eager" fetchpriority="high"' : '<img loading="lazy"',
-      );
-    }
-    if (!/\bdecoding="/i.test(out)) out = out.replace(/<img\b/i, '<img decoding="async"');
-    return out;
+    // Recompute every run so a change to these rules actually takes effect.
+    out = out
+      .replace(/\sloading="[^"]*"/i, '')
+      .replace(/\sfetchpriority="[^"]*"/i, '')
+      .replace(/\sdecoding="[^"]*"/i, '');
+
+    // The footer mark and the light-nav variant are both off-screen or hidden
+    // at first paint, so they defer even though they count as chrome.
+    const deferredChrome = /\b(ft-logo|logo-img--light)\b/.test(className);
+    const lazy = deferredChrome || (!isChrome && !isLeadContent);
+
+    let attrs = ' loading="' + (lazy ? 'lazy' : 'eager') + '"';
+    if (isLeadContent) attrs += ' fetchpriority="high"';
+    attrs += ' decoding="async"';
+
+    return out.replace(/<img\b/i, '<img' + attrs);
   });
+}
+
+/**
+ * Most pages put their hero in an inline background-image, which no <img>
+ * priority hint can reach. Preloading it is the only way to tell the browser
+ * that the biggest thing on the page is worth fetching first.
+ */
+function preloadHero(html) {
+  const cleaned = html.replace(
+    /\n?<link rel="preload" as="image"[^>]*><!-- seo:hero -->/g,
+    '',
+  );
+  const body = cleaned.slice(cleaned.indexOf('<body'));
+  const match = body.match(/url\(['"]?(\/images\/[^'")]+)['"]?\)/i);
+  if (!match) return cleaned;
+
+  const tag =
+    '\n<link rel="preload" as="image" href="' +
+    match[1] +
+    '" fetchpriority="high"><!-- seo:hero -->';
+  return cleaned.replace(/(<link rel="stylesheet"[^>]*>)/i, '$1' + tag);
 }
 
 module.exports = {
@@ -242,4 +299,6 @@ module.exports = {
   rewriteInlineBackgrounds,
   setHead,
   fixImages,
+  preloadHero,
+  ensureReviewsLink,
 };

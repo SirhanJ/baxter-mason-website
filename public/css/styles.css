@@ -10180,3 +10180,89 @@ body.vx-book-open {
     transform: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   /reviews — the Google reviews, as page content rather than an iframe.
+   -------------------------------------------------------------------------- */
+
+.review-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.25rem;
+  padding: 1.25rem 0 1.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.review-summary-score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.review-summary-value {
+  font-size: 2.6rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.review-summary-note {
+  margin: 0;
+  opacity: 0.72;
+  font-size: 0.95rem;
+  max-width: 46ch;
+}
+
+.review-stars {
+  letter-spacing: 0.12em;
+  color: #e8a33d;
+  white-space: nowrap;
+}
+
+.review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.75rem;
+}
+
+.review {
+  padding: 1.4rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+}
+
+.review-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.review-author {
+  font-weight: 600;
+}
+
+.review-date {
+  opacity: 0.6;
+  font-size: 0.88rem;
+}
+
+.review-body {
+  margin: 0 0 0.7rem;
+  line-height: 1.65;
+}
+
+.review-body:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .review-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

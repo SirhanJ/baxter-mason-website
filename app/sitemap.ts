@@ -52,10 +52,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [
-    { url: `${SITE}/blog`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.8 },
-    ...staticPages,
-    ...blogPosts,
-    ...preserved,
-  ];
+  // App Router pages that have no file in public/ and so are not picked up above.
+  // /thank-you is deliberately absent: it is noindex.
+  const appPages = [
+    { url: `${SITE}/blog`, changeFrequency: 'weekly' as const, priority: 0.8 },
+    { url: `${SITE}/reviews`, changeFrequency: 'monthly' as const, priority: 0.7 },
+    { url: `${SITE}/link-in-bio`, changeFrequency: 'monthly' as const, priority: 0.4 },
+  ].map((page) => ({ ...page, lastModified: now }));
+
+  return [...appPages, ...staticPages, ...blogPosts, ...preserved];
 }

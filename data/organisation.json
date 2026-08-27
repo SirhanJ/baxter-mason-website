@@ -182,5 +182,12 @@
     "https://www.instagram.com/baxter_and_mason_property_ba/",
     "https://www.youtube.com/@BaxterMasonPropertyBuyersAgent",
     "https://www.tiktok.com/@baxterandmason"
-  ]
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 5,
+    "reviewCount": 42,
+    "bestRating": 5,
+    "worstRating": 1
+  }
 }

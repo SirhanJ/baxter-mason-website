@@ -300,6 +300,8 @@ for (const page of pages) {
   html = lib.rewriteInlineBackgrounds(html);
   html = lib.setHead(html, page.url);
   html = lib.fixImages(html);
+  html = lib.preloadHero(html);
+  html = lib.ensureReviewsLink(html);
   html = dropLegacyOrgBlock(html);
   const beforeLink = html;
   html = linkSuburbs(html, page);

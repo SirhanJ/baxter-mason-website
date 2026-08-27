@@ -14,9 +14,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const [, , ARCHIVE_DIR, ARCHIVE_HTML] = process.argv;
+const [, , ARCHIVE_DIR, ARCHIVE_HTML, CMS_JSON] = process.argv;
 if (!ARCHIVE_DIR || !ARCHIVE_HTML) {
-  console.error('usage: node scripts/extract-legacy-posts.js <archive-dir> <archive.html>');
+  console.error(
+    'usage: node scripts/extract-legacy-posts.js <archive-dir> <archive.html> [cms-list.json]',
+  );
   process.exit(1);
 }
 
@@ -115,21 +117,49 @@ function publishedDate(html) {
 
 /* ---------------------------------------------------------------- gather */
 
+/**
+ * The CMS list endpoint is the authority for metadata — it carries the real
+ * description, cover alt text and publish date for every post, including ones
+ * the sitemap and the internal links both missed. Bodies still come from the
+ * archived pages, because the list endpoint does not return content.
+ */
+const cms = new Map();
+if (CMS_JSON) {
+  const payload = JSON.parse(fs.readFileSync(CMS_JSON, 'utf8'));
+  for (const post of payload.blogPosts || []) {
+    if (post.urlSlug) cms.set(post.urlSlug, post);
+  }
+}
+
 const her = {};
 for (const file of fs.readdirSync(ARCHIVE_DIR).filter((f) => f.endsWith('.html'))) {
   const html = fs.readFileSync(path.join(ARCHIVE_DIR, file), 'utf8');
   const slug = file.replace(/\.html$/, '');
+  const record = cms.get(slug);
+
   const title =
+    (record && record.title && record.title.trim()) ||
     meta(html, /<meta property="og:title" content="([^"]*)"/i) ||
     meta(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
+
+  const published =
+    (record && record.publishedAt && record.publishedAt.slice(0, 10)) ||
+    meta(html, /<meta property="article:published_time" content="([^"]*)"/i).slice(0, 10) ||
+    publishedDate(html);
+
   her[slug] = {
     slug,
     title,
     norm: norm(title),
-    description: meta(html, /<meta[^>]+name=["']description["'][^>]+content=["']([\s\S]*?)["']/i),
-    image: meta(html, /<meta property="og:image" content="([^"]*)"/i),
-    published:
-      meta(html, /<meta property="article:published_time" content="([^"]*)"/i) || publishedDate(html),
+    description:
+      (record && record.description && record.description.trim()) ||
+      meta(html, /<meta[^>]+name=["']description["'][^>]+content=["']([\s\S]*?)["']/i),
+    image: (record && record.imageUrl) || meta(html, /<meta property="og:image" content="([^"]*)"/i),
+    // Real alt text written for each cover image, straight out of the CMS.
+    imageAlt: (record && record.imageAltText && record.imageAltText.trim()) || '',
+    published,
+    tags: (record && Array.isArray(record.tags) ? record.tags : []).slice(0, 8),
+    fromCms: Boolean(record),
     body: sanitise(articleBody(html)),
   };
 }
@@ -167,7 +197,9 @@ for (const slug of Object.keys(her).sort()) {
     title: post.title,
     description: post.description,
     image: post.image,
+    imageAlt: post.imageAlt || post.title,
     published: post.published,
+    tags: post.tags,
     words,
     body: post.body,
   });

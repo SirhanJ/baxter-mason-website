@@ -176,6 +176,9 @@ export function SiteFooter() {
                 <li>
                   <a href="/success-stories">Success Stories</a>
                 </li>
+                <li>
+                  <a href="/reviews">Client Reviews</a>
+                </li>
               </ul>
             </div>
             <div className="ft-col">
