@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start",
+    "seo": "node scripts/seo-rewrite.js",
+    "seo:images": "node scripts/optimise-images.js",
+    "prebuild": "node scripts/seo-rewrite.js"
   },
   "dependencies": {
     "next": "^15.1.0",

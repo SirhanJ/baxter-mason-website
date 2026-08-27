@@ -1,0 +1,31 @@
+{
+  "_comment": "Old baxtermason.com.au URLs -> their home on this build. Post URLs live in post-redirects.json; the 30 suburb slugs already match one-for-one and need no entry here.",
+
+  "/home": "/",
+  "/baxter-and-mason-property-buyers-agent-sunshine-coast": "/",
+
+  "/what-we-do-buyers-agent-sunshine-coast": "/what-we-do",
+  "/sunshine-coast-buyers-agent": "/services",
+  "/property-coaching-sunshine-coast-buyers-agent": "/coaching",
+  "/investment-expertise-sunshine-coast": "/investment",
+  "/commercial-property-acquisition-sunshine-coast-buyers-agent": "/commercial",
+  "/empowering-women-through-property-sunshine-coast": "/empowering-women",
+
+  "/our-people-buyers-agent-sunshine-coast": "/our-people",
+  "/sally-blyth-director-buyers-agent-sunshine-coast-8025": "/sally-blyth",
+  "/kelly-galletly-buyers-agent-sunshine-coast": "/kelly-galletly",
+
+  "/FAQ-Buyers-Agent-Sunshine-Coast": "/faq",
+  "/free-guides-and-downloads": "/free-guides",
+  "/book-a-free-discovery-call": "/contact",
+  "/google-reviews-buyers-agent-sunshine-coast": "/why-work-with-us",
+
+  "/success-stories-buyers-agent-sunshine-coast": "/success-stories",
+  "/home-blog-3580": "/success-stories",
+
+  "/blogs-buyers-agent-sunshine-coast": "/blog",
+  "/blog-baxter-and-mason-property-buyers-agent-sunshine-coast": "/blog",
+
+  "/privacy-statement-buyers-agent-sunshine-coast": "/privacy",
+  "/terms--conditions": "/terms"
+}

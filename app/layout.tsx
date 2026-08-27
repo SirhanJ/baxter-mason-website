@@ -1,8 +1,14 @@
 import type { Metadata } from 'next';
+import { SITE } from './lib/seo';
 
 export const metadata: Metadata = {
+  // Lets every page declare relative og:image paths and still emit absolute URLs.
+  metadataBase: new URL(SITE),
   title: 'Baxter & Mason',
   description: 'Sunshine Coast buyers agent',
+  alternates: { canonical: '/' },
+  openGraph: { siteName: 'Baxter & Mason', locale: 'en_AU', type: 'website' },
+  twitter: { card: 'summary_large_image' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

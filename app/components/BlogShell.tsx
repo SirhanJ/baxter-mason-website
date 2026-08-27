@@ -17,7 +17,7 @@ export function SiteHeader() {
   return (
     <header className="nav" id="nav">
       <div className="wrap">
-        <a className="logo" href="/index.html">
+        <a className="logo" href="/">
           <img
             className="logo-img logo-img--color"
             src="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo-color-clear.png?v=3"
@@ -36,21 +36,21 @@ export function SiteHeader() {
               About <span className="drop-chevron" />
             </button>
             <div className="drop-menu">
-              <a href="/what-we-do.html">What We Do</a>
-              <a href="/why-work-with-us.html">Why Work With Us</a>
-              <a href="/coaching.html">Coaching</a>
-              <a href="/investment.html">Investment</a>
-              <a href="/commercial.html">Commercial</a>
-              <a href="/empowering-women.html">Empowering Women</a>
-              <a href="/our-people.html">Our People</a>
-              <a href="/privacy.html">Privacy Policy</a>
-              <a href="/terms.html">Terms &amp; Conditions</a>
+              <a href="/what-we-do">What We Do</a>
+              <a href="/why-work-with-us">Why Work With Us</a>
+              <a href="/coaching">Coaching</a>
+              <a href="/investment">Investment</a>
+              <a href="/commercial">Commercial</a>
+              <a href="/empowering-women">Empowering Women</a>
+              <a href="/our-people">Our People</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/terms">Terms &amp; Conditions</a>
             </div>
           </div>
-          <a className="l" href="/services.html">
+          <a className="l" href="/services">
             Services
           </a>
-          <a className="l" href="/success-stories.html">
+          <a className="l" href="/success-stories">
             Success Stories
           </a>
           <div className="nav-item has-drop">
@@ -58,19 +58,19 @@ export function SiteHeader() {
               Resources <span className="drop-chevron" />
             </button>
             <div className="drop-menu">
-              <a href="/free-guides.html">Free Guides</a>
-              <a href="/faq.html">FAQ</a>
-              <a href="/blog.html">Blog</a>
+              <a href="/free-guides">Free Guides</a>
+              <a href="/faq">FAQ</a>
+              <a href="/blog">Blog</a>
             </div>
           </div>
-          <a className="l" href="/contact.html">
+          <a className="l" href="/contact">
             Contact
           </a>
-          <a className="btn nav-mobile-cta" href="/contact.html">
+          <a className="btn nav-mobile-cta" href="/contact">
             Book a discovery call <span className="ar">→</span>
           </a>
         </nav>
-        <a className="btn nav-desktop-cta" href="/contact.html">
+        <a className="btn nav-desktop-cta" href="/contact">
           Book a discovery call <span className="ar">→</span>
         </a>
         <button className="burger" id="burger" aria-label="Menu" aria-expanded="false">
@@ -101,7 +101,7 @@ export function SiteFooter() {
                 <span className="final-chip">Sunshine Coast</span>
               </div>
               <div className="cta-row">
-                <a className="btn lg" href="/contact.html">
+                <a className="btn lg" href="/contact">
                   Book a discovery call <span className="ar">→</span>
                 </a>
                 <a className="btn glass lg" href="mailto:mail@baxtermason.com.au">
@@ -165,16 +165,16 @@ export function SiteFooter() {
               <h4>Explore</h4>
               <ul>
                 <li>
-                  <a href="/what-we-do.html">What We Do</a>
+                  <a href="/what-we-do">What We Do</a>
                 </li>
                 <li>
-                  <a href="/our-people.html">Our People</a>
+                  <a href="/our-people">Our People</a>
                 </li>
                 <li>
-                  <a href="/services.html">Services</a>
+                  <a href="/services">Services</a>
                 </li>
                 <li>
-                  <a href="/success-stories.html">Success Stories</a>
+                  <a href="/success-stories">Success Stories</a>
                 </li>
               </ul>
             </div>
@@ -200,13 +200,13 @@ export function SiteFooter() {
                 <li>QLD Licence 4684962</li>
                 <li>Sunshine Coast, Australia</li>
                 <li>
-                  <a href="/contact.html">Book a discovery call</a>
+                  <a href="/contact">Book a discovery call</a>
                 </li>
                 <li>
-                  <a href="/privacy.html">Privacy policy</a>
+                  <a href="/privacy">Privacy policy</a>
                 </li>
                 <li>
-                  <a href="/terms.html">Terms &amp; Conditions</a>
+                  <a href="/terms">Terms &amp; Conditions</a>
                 </li>
               </ul>
             </div>
