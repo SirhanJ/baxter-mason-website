@@ -222,6 +222,86 @@ function injectGraph(html, page) {
   return html.replace(/<\/head>/i, block + '\n</head>');
 }
 
+/* --------------------------------------------- suburb cluster linking */
+
+const NEIGHBOURS = require('../data/suburb-neighbours.json');
+const NEARBY_MARK = '<!-- seo:nearby -->';
+const AREAS_MARK = '<!-- seo:areas -->';
+
+/**
+ * Every suburb page was a leaf: reachable from two list blocks, linking on to
+ * nothing. A short "nearby" block gives the 30 pages lateral crawl paths and
+ * ties them together as one topical cluster. Adjacency is geography, so nothing
+ * here asserts anything about the market.
+ */
+function addNearbyBlock(html, page) {
+  if (page.type !== 'suburb') return html;
+  const neighbours = (NEIGHBOURS[page.slug] || []).filter((slug) => bySlug.has(slug));
+  if (!neighbours.length) return html;
+
+  const name = page.h1.replace(/\s*Buyers Agent$/i, '').trim();
+  const links = neighbours
+    .map((slug) => {
+      const near = bySlug.get(slug);
+      const label = near.h1.replace(/\s*Buyers Agent$/i, '').trim();
+      return '<li><a href="' + near.url + '">' + label + ' buyers agent</a></li>';
+    })
+    .join('\n');
+
+  const block =
+    NEARBY_MARK +
+    '\n<div class="prose-block rv nearby-block">\n' +
+    '<h2>Nearby suburbs we also buy in</h2>\n' +
+    '<p>We search across the whole Sunshine Coast, so if ' +
+    name +
+    ' turns out not to be the right fit, these are the closest areas we cover.</p>\n' +
+    '<ul class="legal-list nearby-list">\n' +
+    links +
+    '\n</ul>\n</div>\n' +
+    NEARBY_MARK;
+
+  const start = html.indexOf(NEARBY_MARK);
+  if (start !== -1) {
+    const end = html.indexOf(NEARBY_MARK, start + NEARBY_MARK.length) + NEARBY_MARK.length;
+    return html.slice(0, start) + block + html.slice(end);
+  }
+  // Sits after the last prose block, before the closing note.
+  return html.replace(/(<p class="prose-note rv">)/i, block + '\n$1');
+}
+
+/**
+ * /services is the breadcrumb parent of all 30 suburb pages but linked to none
+ * of them, so the hierarchy the markup claimed did not exist in the HTML.
+ */
+function addAreasHub(html, page) {
+  if (page.slug !== 'services') return html;
+
+  const links = pages
+    .filter((p) => p.type === 'suburb')
+    .map((p) => ({ url: p.url, label: p.h1.replace(/\s*Buyers Agent$/i, '').trim() }))
+    .sort((a, b) => a.label.localeCompare(b.label))
+    .map((s) => '<li><a href="' + s.url + '">' + s.label + '</a></li>')
+    .join('\n');
+
+  const block =
+    AREAS_MARK +
+    '\n<section class="blk areas-hub" id="areas"><div class="wrap">\n' +
+    '<div class="head">\n<span class="eyebrow rv">Where we buy</span>\n' +
+    '<h2 class="rv d1">Thirty suburbs, from Caloundra to Noosa.</h2>\n' +
+    '<p class="intro rv d2">Coast, hinterland and everything between. Each one has its own page covering how we search there.</p>\n' +
+    '</div>\n<ul class="areas-list rv d3">\n' +
+    links +
+    '\n</ul>\n</div></section>\n' +
+    AREAS_MARK;
+
+  const start = html.indexOf(AREAS_MARK);
+  if (start !== -1) {
+    const end = html.indexOf(AREAS_MARK, start + AREAS_MARK.length) + AREAS_MARK.length;
+    return html.slice(0, start) + block + html.slice(end);
+  }
+  return html.replace(/(<section class="final final-rich)/i, block + '\n$1');
+}
+
 /* ------------------------------------------------- suburb interlinking */
 
 const SKIP_LINKING = new Set(['index', 'privacy', 'terms', 'contact', 'faq']);
@@ -302,6 +382,8 @@ for (const page of pages) {
   html = lib.fixImages(html);
   html = lib.preloadHero(html);
   html = lib.ensureReviewsLink(html);
+  html = addNearbyBlock(html, page);
+  html = addAreasHub(html, page);
   html = dropLegacyOrgBlock(html);
   const beforeLink = html;
   html = linkSuburbs(html, page);

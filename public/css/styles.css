@@ -10266,3 +10266,30 @@ body.vx-book-open {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Suburb cluster links: the "nearby" block and the areas hub on /services. */
+.nearby-list,
+.areas-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.areas-hub .areas-list {
+  margin-top: 1.75rem;
+}
+
+.nearby-list a,
+.areas-list a {
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  padding-bottom: 1px;
+}
+
+.nearby-list a:hover,
+.areas-list a:hover {
+  border-bottom-color: currentColor;
+}
