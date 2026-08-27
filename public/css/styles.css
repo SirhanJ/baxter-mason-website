@@ -10293,3 +10293,47 @@ body.vx-book-open {
 .areas-list a:hover {
   border-bottom-color: currentColor;
 }
+
+/* Homepage reviews: real content where a third-party iframe used to sit. */
+.hm-reviews-score {
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+}
+
+.hm-review {
+  margin: 0 0 1.1rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.hm-review blockquote {
+  margin: 0 0 0.7rem;
+}
+
+.hm-review blockquote p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.hm-review figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.hm-review-stars {
+  color: #e8a33d;
+  letter-spacing: 0.1em;
+}
+
+.hm-review-name {
+  font-weight: 600;
+}
+
+.hm-reviews-more a {
+  font-weight: 600;
+  text-decoration: none;
+}

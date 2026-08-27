@@ -222,6 +222,78 @@ function injectGraph(html, page) {
   return html.replace(/<\/head>/i, block + '\n</head>');
 }
 
+/* ------------------------------------------------------- home reviews */
+
+const REVIEWS = require('../data/reviews.json');
+const REVIEWS_MARK = '<!-- seo:home-reviews -->';
+
+const escapeHtml = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+/**
+ * The homepage used to render its reviews inside a GoHighLevel iframe, with a
+ * third-party script alongside it. Both stop working the day that account
+ * closes, and neither ever put a word of review text into the HTML. These are
+ * the same reviews, as page content, with no runtime dependency at all.
+ */
+function replaceHomeReviews(html, page) {
+  if (page.slug !== 'index') return html;
+
+  const picks = REVIEWS.reviews
+    .filter((r) => r.body.length > 180 && r.body.length < 520)
+    .slice(0, 3);
+  if (!picks.length) return html;
+
+  const cards = picks
+    .map(
+      (r) =>
+        '<figure class="hm-review">\n' +
+        '<blockquote><p>' +
+        escapeHtml(r.body.split('\n')[0]) +
+        '</p></blockquote>\n' +
+        '<figcaption><span class="hm-review-stars" aria-label="' +
+        r.rating +
+        ' out of 5 stars"><span aria-hidden="true">' +
+        '★'.repeat(r.rating) +
+        '</span></span> <span class="hm-review-name">' +
+        escapeHtml(r.author) +
+        '</span></figcaption>\n</figure>',
+    )
+    .join('\n');
+
+  const block =
+    REVIEWS_MARK +
+    '\n<div class="hm-reviews-widget rv d1">\n' +
+    '<p class="hm-reviews-score">' +
+    REVIEWS.aggregate.ratingValue.toFixed(1) +
+    ' from ' +
+    REVIEWS.aggregate.reviewCount +
+    ' Google reviews</p>\n' +
+    cards +
+    '\n<p class="hm-reviews-more"><a href="/reviews">Read all ' +
+    REVIEWS.reviews.length +
+    ' reviews <span class="ar">&rarr;</span></a></p>\n</div>\n' +
+    REVIEWS_MARK;
+
+  const start = html.indexOf(REVIEWS_MARK);
+  if (start !== -1) {
+    const end = html.indexOf(REVIEWS_MARK, start + REVIEWS_MARK.length) + REVIEWS_MARK.length;
+    return html.slice(0, start) + block + html.slice(end);
+  }
+
+  let out = html.replace(
+    /<div class="hm-reviews-widget[^"]*">[\s\S]*?<\/div>/i,
+    block,
+  );
+  // The widget's loader script goes with it.
+  out = out.replace(/\s*<script src="https:\/\/apisystem\.tech\/js\/reviews_widget\.js"><\/script>/i, '');
+  return out;
+}
+
 /* --------------------------------------------- suburb cluster linking */
 
 const NEIGHBOURS = require('../data/suburb-neighbours.json');
@@ -384,6 +456,7 @@ for (const page of pages) {
   html = lib.ensureReviewsLink(html);
   html = addNearbyBlock(html, page);
   html = addAreasHub(html, page);
+  html = replaceHomeReviews(html, page);
   html = dropLegacyOrgBlock(html);
   const beforeLink = html;
   html = linkSuburbs(html, page);
