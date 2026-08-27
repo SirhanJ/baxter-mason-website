@@ -479,7 +479,14 @@ for (const page of pages) {
   html = lib.fixImages(html);
   html = lib.preloadHero(html);
   html = lib.ensureReviewsLink(html);
+  html = lib.ensureReviewsNav(html);
   html = addNearbyBlock(html, page);
+  if (page.type === "suburb") {
+    html = lib.addSuburbProof(
+      html,
+      page.h1.replace(/\s*Buyers Agent$/i, "").trim(),
+    );
+  }
   html = addAreasHub(html, page);
   html = replaceHomeReviews(html, page);
   html = dropLegacyOrgBlock(html);

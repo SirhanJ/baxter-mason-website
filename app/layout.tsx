@@ -35,7 +35,7 @@ export default function RootLayout({
           href="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-favicon-orange.png"
         />
         <link rel="preconnect" href="https://app.vexur.com.au" />
-        <link rel="stylesheet" href="/css/styles.css?v=56" />
+        <link rel="stylesheet" href="/css/styles.css?v=57" />
       </head>
       <body>{children}</body>
     </html>

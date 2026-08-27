@@ -742,7 +742,14 @@
   margin: 0 auto 56px;
 }
 .hm-love-head p {
-  margin: 0 auto;
+  margin: 18px auto 0;
+  max-width: 520px;
+  font-size: 16px;
+}
+
+.hm-love-head a {
+  color: var(--hm-orange);
+  font-weight: 600;
 }
 .hm-quotes {
   display: grid;

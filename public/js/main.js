@@ -378,9 +378,7 @@
             });
         })
         .then(function () {
-          if (success) success.hidden = false;
-          contactForm.reset();
-          if (submitBtn) submitBtn.disabled = false;
+          window.location.assign("/thank-you");
         })
         .catch(function () {
           if (errorEl) errorEl.hidden = false;

@@ -18,7 +18,7 @@ type ReviewsFile = {
 const DATA = reviewsData as ReviewsFile;
 const URL = `${SITE}/reviews`;
 const TITLE = "Client Reviews | Baxter & Mason";
-const DESCRIPTION = `What Sunshine Coast buyers say about working with Baxter & Mason — ${DATA.googleTotals.reviewCount} Google reviews.`;
+const DESCRIPTION = `Google reviews from Sunshine Coast buyers represented by Baxter & Mason. ${DATA.googleTotals.ratingValue.toFixed(1)} from ${DATA.googleTotals.reviewCount} ${DATA.source} reviews.`;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -52,6 +52,7 @@ export default function ReviewsPage() {
 
   return (
     <BlogShell
+      heroEyebrow="Reviews"
       heroTitle={
         <>
           What clients <span className="gi">actually say</span>.
@@ -61,6 +62,30 @@ export default function ReviewsPage() {
       showInsightsHead={false}
     >
       <JsonLd data={schema} />
+      <div className="vx-reviews-intro">
+        <p>
+          Baxter &amp; Mason is a Sunshine Coast buyers agency. The cards below
+          are live Google reviews from people we have represented, not quotes we
+          wrote ourselves.
+        </p>
+        <p>
+          Relocating families, first-home buyers and investors go through the
+          same process: in-person inspections, overlay and flood checks, and
+          negotiation that stays inside the brief. The longer purchase stories
+          sit on <a href="/success-stories">success stories</a>.{" "}
+          <a href="/what-we-do">What we do</a> covers the process.{" "}
+          <a href="/services">Services</a> lists where we buy.
+        </p>
+        <div className="cta-row">
+          <a className="btn" href="/contact">
+            Book a discovery call <span className="ar">→</span>
+          </a>
+          <a className="btn glass" href="/success-stories">
+            Read success stories
+          </a>
+        </div>
+      </div>
+      <h2 className="vx-reviews-heading">Latest Google reviews</h2>
       <VexurReviewsFrame />
     </BlogShell>
   );

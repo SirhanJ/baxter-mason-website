@@ -69,6 +69,7 @@ export function SiteHeader() {
               <a href="/free-guides">Free Guides</a>
               <a href="/faq">FAQ</a>
               <a href="/blog">Blog</a>
+              <a href="/reviews">Client Reviews</a>
             </div>
           </div>
           <a className="l" href="/contact">
@@ -273,7 +274,7 @@ export function SiteFooter() {
           </div>
         </div>
       </footer>
-      <Script src="/js/main.js?v=22" strategy="afterInteractive" />
+      <Script src="/js/main.js?v=23" strategy="afterInteractive" />
     </>
   );
 }
@@ -282,6 +283,7 @@ type BlogShellProps = {
   children: React.ReactNode;
   heroTitle?: React.ReactNode;
   heroSub?: string;
+  heroEyebrow?: string;
   showInsightsHead?: boolean;
 };
 
@@ -293,6 +295,7 @@ export function BlogShell({
     </>
   ),
   heroSub = "Smarter property decisions for Sunshine Coast buyers.",
+  heroEyebrow = "Blog",
   showInsightsHead = true,
 }: BlogShellProps) {
   return (
@@ -305,7 +308,7 @@ export function BlogShell({
         <div className="grain" />
         <div className="wrap">
           <div className="page-hero-copy">
-            <span className="eyebrow rv">Blog</span>
+            <span className="eyebrow rv">{heroEyebrow}</span>
             <h1 className="display rv d1">{heroTitle}</h1>
             {heroSub ? <p className="sub rv d2">{heroSub}</p> : null}
           </div>

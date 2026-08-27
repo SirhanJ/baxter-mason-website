@@ -11460,6 +11460,34 @@ body.vx-book-open {
   text-decoration: none;
 }
 
+.vx-reviews-intro {
+  max-width: 720px;
+  margin: 0 0 2.75rem;
+}
+
+.vx-reviews-intro p {
+  margin: 0 0 1.1rem;
+  line-height: 1.75;
+  color: #575756;
+}
+
+.vx-reviews-intro a {
+  color: #e44013;
+  font-weight: 600;
+}
+
+.vx-reviews-intro .cta-row {
+  margin-top: 1.5rem;
+}
+
+.vx-reviews-heading {
+  margin: 0 0 1.25rem;
+  font-family: var(--disp);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
 .vx-reviews-page {
   max-width: 1100px;
   margin: 0 auto;

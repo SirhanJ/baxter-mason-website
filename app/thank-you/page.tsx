@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
-import { BlogShell } from '../components/BlogShell';
+import type { Metadata } from "next";
+import { BlogShell } from "../components/BlogShell";
 
 /**
  * The form confirmation page. Conversion tracking on the old site is keyed to
@@ -10,17 +10,19 @@ import { BlogShell } from '../components/BlogShell';
  * converted, not a search result.
  */
 export const metadata: Metadata = {
-  title: 'Thank you | Baxter & Mason',
-  description: 'Your enquiry is with us. We will be in touch within one business day.',
+  title: "Thank you | Baxter & Mason",
+  description:
+    "Your enquiry is with us. We will be in touch within one business day.",
   robots: { index: false, follow: true },
 };
 
 export default function ThankYouPage() {
   return (
     <BlogShell
+      heroEyebrow="Contact"
       heroTitle={
         <>
-          Thank you — <span className="gi">it is with us</span>.
+          Thank you. <span className="gi">It is with us</span>.
         </>
       }
       heroSub="We will be in touch within one business day."
@@ -28,17 +30,28 @@ export default function ThankYouPage() {
     >
       <div className="thankyou">
         <p>
-          Someone from the team reads every enquiry personally. If it is urgent, call{' '}
-          <a href="tel:+61490744453">+61 490 744 453</a> or email{' '}
+          Someone from the team reads every enquiry personally. If it is urgent,
+          call <a href="tel:+61490744453">+61 490 744 453</a> or email{" "}
           <a href="mailto:mail@baxtermason.com.au">mail@baxtermason.com.au</a>.
         </p>
 
         <h2>While you wait</h2>
         <ul className="notfound-links">
-          <li><a href="/success-stories">Read a few client outcomes</a></li>
-          <li><a href="/what-we-do">See exactly how we work</a></li>
-          <li><a href="/free-guides">Download the buyer guides</a></li>
-          <li><a href="/blog">Read the blog</a></li>
+          <li>
+            <a href="/reviews">Read client reviews</a>
+          </li>
+          <li>
+            <a href="/success-stories">Read a few client outcomes</a>
+          </li>
+          <li>
+            <a href="/what-we-do">See exactly how we work</a>
+          </li>
+          <li>
+            <a href="/free-guides">Download the buyer guides</a>
+          </li>
+          <li>
+            <a href="/blog">Read the blog</a>
+          </li>
         </ul>
       </div>
     </BlogShell>
