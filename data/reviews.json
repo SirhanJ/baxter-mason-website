@@ -1,5 +1,5 @@
 {
-  "_comment": "Captured Google reviews used for /reviews JSON-LD only. The visible widget is the live Vexur embed. aggregate describes exactly the reviews in this file; googleTotals holds the full profile figures for display only.",
+  "_comment": "Captured Google reviews kept as a local archive. The visible widget is the live Vexur embed. /reviews must not mark these up as Review or AggregateRating because the page does not render them. googleTotals is prose only.",
   "source": "Google",
   "aggregate": {
     "ratingValue": 5,

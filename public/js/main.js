@@ -700,6 +700,44 @@
         }
       }
     });
+
+    function measureFrame(iframe) {
+      try {
+        var doc = iframe.contentDocument;
+        if (!doc || !doc.body) return;
+        var height = Math.ceil(
+          Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight),
+        );
+        applyHeight(iframe, height);
+      } catch (err) {
+        /* Cross-origin frames still resize via postMessage. */
+      }
+    }
+
+    document
+      .querySelectorAll("iframe[data-vx-reviews]")
+      .forEach(function (iframe) {
+        function bind() {
+          measureFrame(iframe);
+          try {
+            var doc = iframe.contentDocument;
+            if (!doc || !window.ResizeObserver) return;
+            var observer = new ResizeObserver(function () {
+              measureFrame(iframe);
+            });
+            observer.observe(doc.documentElement);
+          } catch (err) {
+            /* Same as measureFrame: ignore cross-origin. */
+          }
+        }
+        iframe.addEventListener("load", bind);
+        if (
+          iframe.contentDocument &&
+          iframe.contentDocument.readyState === "complete"
+        ) {
+          bind();
+        }
+      });
   })();
 
   /* ---------- Google reviews: carousel + More/Less ----------

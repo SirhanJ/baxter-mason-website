@@ -2,31 +2,17 @@ import type { Metadata } from "next";
 import { BlogShell } from "../components/BlogShell";
 import { JsonLd } from "../components/JsonLd";
 import { VexurReviewsFrame } from "../components/VexurReviewsFrame";
-import { SITE, ORG_ID, breadcrumb, graph } from "../lib/seo";
+import { SITE, breadcrumb, graph } from "../lib/seo";
 import reviewsData from "../../data/reviews.json";
 
 /**
- * Live reviews come from the Vexur Google Reviews widget. Schema still
- * describes the captured set in reviews.json so search engines see real
- * Review / AggregateRating markup for the same business.
+ * Visible reviews come from the Vexur widget, so this page must not declare
+ * Review or AggregateRating nodes. Those would describe text that is not in
+ * the HTML. googleTotals is prose only, for the hero line.
  */
-type Review = {
-  id: string;
-  author: string;
-  rating: number;
-  date: string;
-  body: string;
-};
 type ReviewsFile = {
   source: string;
-  aggregate: {
-    ratingValue: number;
-    reviewCount: number;
-    bestRating: number;
-    worstRating: number;
-  };
   googleTotals: { ratingValue: number; reviewCount: number };
-  reviews: Review[];
 };
 
 const DATA = reviewsData as ReviewsFile;
@@ -50,33 +36,7 @@ export const metadata: Metadata = {
 };
 
 export default function ReviewsPage() {
-  const { aggregate, reviews } = DATA;
-
   const schema = graph([
-    {
-      "@type": "AggregateRating",
-      "@id": `${URL}#aggregaterating`,
-      itemReviewed: { "@id": ORG_ID },
-      ratingValue: aggregate.ratingValue,
-      reviewCount: aggregate.reviewCount,
-      bestRating: aggregate.bestRating,
-      worstRating: aggregate.worstRating,
-    },
-    ...reviews.map((review) => ({
-      "@type": "Review",
-      "@id": `${URL}#review-${review.id}`,
-      itemReviewed: { "@id": ORG_ID },
-      author: { "@type": "Person", name: review.author },
-      datePublished: review.date,
-      reviewBody: review.body,
-      publisher: { "@type": "Organization", name: DATA.source },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: review.rating,
-        bestRating: aggregate.bestRating,
-        worstRating: aggregate.worstRating,
-      },
-    })),
     {
       "@type": "WebPage",
       "@id": `${URL}#webpage`,
