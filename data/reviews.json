@@ -1,9 +1,9 @@
 {
-  "_comment": "Google reviews as displayed on baxtermason.com.au, captured 2026-08-27 from the review widget. aggregate mirrors the Google Business Profile totals. Only these reviews are marked up, because only these are shown.",
+  "_comment": "Captured Google reviews used for /reviews JSON-LD only. The visible widget is the live Vexur embed. aggregate describes exactly the reviews in this file; googleTotals holds the full profile figures for display only.",
   "source": "Google",
   "aggregate": {
     "ratingValue": 5,
-    "reviewCount": 42,
+    "reviewCount": 30,
     "bestRating": 5,
     "worstRating": 1
   },
@@ -218,5 +218,10 @@
       "date": "2025-01-22",
       "body": "Relocating from Brisbane to the Sunshine Coast, I started looking at properties for sale. It was a tedious process, living and working at one end, and trying to organise viewings with agents hard to get hold of at the other end a great distance away. My search was also hampered by my rather slim budget, and the low number of properties being offered at that end of the market. I missed out on a number of potential properties in this fashion.That‘s when I decided to hire Sally from Baxter & Mason Property Buyers Agent, who came highly recommended. She turned things around very quickly for me. Her local expertise, combined with her agency contacts resulted in a list of opportunities, some of which had not yet been put on the market. She conducted the initial viewings, took photos and videos, so I did not have to travel to and fro, and had an easy task of shortlisting them for later inspection by myself.Sally negotiated on price as well. And once I had decided on the one property, she also bargained for favourable settlement conditions, to tie in with the sale of my old property, working with my sales agent. She had all angles covered, leaving nothing open to chance. Thanks very much, Sally, for a job well done."
     }
-  ]
+  ],
+  "googleTotals": {
+    "ratingValue": 5,
+    "reviewCount": 42,
+    "_note": "Full Google Business Profile totals. Displayed as prose only, never marked up, because the page does not render all of them."
+  }
 }
