@@ -13,7 +13,7 @@ const HOME_PARAMS = {
   "agent-id": AGENT_ID,
   theme: "light",
   primaryColor: PRIMARY,
-  maxReviews: "12",
+  maxReviews: "20",
   minRating: "4",
   reviewSort: "newest",
   layout: "horizontal",
@@ -21,7 +21,8 @@ const HOME_PARAMS = {
   animationSpeed: "standard",
   showBranding: "true",
   showCarouselArrows: "true",
-  carouselAutoplay: "true",
+  carouselAutoplay: "false",
+  presentation: "compact",
 };
 
 const PAGE_PARAMS = {
@@ -77,8 +78,8 @@ function homeReviewsBlock() {
   return (
     REVIEWS_MARK +
     '\n<div class="hm-reviews-widget rv d1">\n' +
-    iframeMarkup(homeReviewsEmbedUrl(), 360) +
-    '\n<p class="rv-all"><a href="/google-reviews-buyers-agent-sunshine-coast">Read all reviews <span class="ar">&rarr;</span></a></p>\n' +
+    iframeMarkup(homeReviewsEmbedUrl(), 460) +
+    "\n" +
     "</div>\n" +
     REVIEWS_MARK
   );

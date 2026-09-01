@@ -754,13 +754,32 @@
    CLIENT LOVE
    ============================================================ */
 .hm-love {
-  background: var(--hm-cream);
-  padding: clamp(40px, 5vw, 56px) 0;
+  background: var(--hm-orange);
+  padding: clamp(30px, 3.5vw, 42px) 0;
+}
+.hm-love > .wrap {
+  max-width: 1280px;
 }
 .hm-love-head {
   text-align: center;
-  max-width: 640px;
-  margin: 0 auto 24px;
+  max-width: 760px;
+  margin: 0 auto 20px;
+}
+.hm-love-head .hm-eyebrow {
+  color: rgba(255, 255, 255, 0.84);
+  margin-bottom: 10px;
+}
+.hm-love-head .hm-eyebrow::before {
+  background: rgba(255, 255, 255, 0.68);
+}
+.hm-love-head h2 {
+  color: #fff;
+  font-family: var(--body);
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin: 0;
 }
 .hm-love-head p {
   margin: 18px auto 0;
@@ -812,8 +831,12 @@
 }
 .hm-reviews-widget {
   max-width: 1200px;
-  margin: 0 auto 44px;
+  margin: 0 auto;
   min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 18px 46px -30px rgba(32, 24, 20, 0.48);
 }
 .hm-reviews-widget iframe,
 .hm-reviews-widget .vx-reviews-frame {
@@ -822,9 +845,45 @@
   display: block;
   background: transparent;
 }
-.hm-reviews-widget .rv-all {
-  margin: 18px 0 0;
-  text-align: center;
+.hm-love-media {
+  padding: clamp(44px, 6vw, 72px) 0;
+  background: var(--hm-cream);
+}
+.hm-love-video {
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  background: #111;
+  box-shadow: 0 30px 70px -34px rgba(27, 26, 25, 0.55);
+}
+.hm-love-video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 620px) {
+  .hm-love {
+    padding: 30px 0;
+  }
+  .hm-love-head {
+    margin-bottom: 18px;
+  }
+  .hm-love-head h2 {
+    font-size: clamp(30px, 9vw, 38px);
+  }
+  .hm-reviews-widget {
+    border-radius: 12px;
+  }
+  .hm-love-media {
+    padding: 36px 0;
+  }
+  .hm-love-video {
+    border-radius: 6px;
+  }
 }
 
 /* ============================================================

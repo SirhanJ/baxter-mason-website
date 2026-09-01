@@ -17,7 +17,7 @@ function embedUrl(params: Record<string, string>): string {
 
 export function homeReviewsEmbedUrl(): string {
   return embedUrl({
-    maxReviews: "12",
+    maxReviews: "20",
     minRating: "4",
     reviewSort: "newest",
     layout: "horizontal",
@@ -25,7 +25,8 @@ export function homeReviewsEmbedUrl(): string {
     animationSpeed: "standard",
     showBranding: "true",
     showCarouselArrows: "true",
-    carouselAutoplay: "true",
+    carouselAutoplay: "false",
+    presentation: "compact",
   });
 }
 
