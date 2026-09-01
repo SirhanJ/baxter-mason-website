@@ -4,6 +4,7 @@ import { BlogArchive } from '../components/BlogArchive';
 import { JsonLd } from '../components/JsonLd';
 import { SITE, breadcrumb, graph } from '../lib/seo';
 import { fetchArchive, fetchPostCards } from '../lib/blogSource';
+import { canonicalPostPathForCurrent } from '../lib/blogCanonical';
 
 /**
  * The archive used to be fetched in the browser, which meant no crawler ever
@@ -49,7 +50,7 @@ export default async function BlogIndexPage() {
       blogPost: cards.map((card) => ({
         '@type': 'BlogPosting',
         headline: card.title,
-        url: `${SITE}/blog/${card.slug}`,
+        url: `${SITE}${canonicalPostPathForCurrent(card.slug)}`,
         description: card.excerpt || undefined,
       })),
     },
@@ -85,7 +86,7 @@ export default async function BlogIndexPage() {
           <ul className="blog-fallback-list">
             {cards.map((card) => (
               <li key={card.slug}>
-                <a href={`/blog/${card.slug}`}>{card.title}</a>
+                <a href={canonicalPostPathForCurrent(card.slug)}>{card.title}</a>
               </li>
             ))}
           </ul>

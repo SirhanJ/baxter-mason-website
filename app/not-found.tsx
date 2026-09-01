@@ -30,7 +30,7 @@ export default function NotFound() {
       <div className="notfound">
         <p>
           If you followed a link here, try one of these — or{' '}
-          <a href="/contact">book a discovery call</a> and we will point you the right way.
+          <a href="/book-a-free-discovery-call">book a discovery call</a> and we will point you the right way.
         </p>
 
         <h2>The main pages</h2>

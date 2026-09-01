@@ -1,6 +1,12 @@
+import {
+  BLOG_INDEX_PATH,
+  canonicalPostPathForCurrent,
+} from './blogCanonical';
+
 /**
- * Rewrite Vexur/Supabase (and cross-host) blog URLs to same-origin /blog routes.
- * Relative /blog paths work on localhost, Vercel preview, and baxtermason.com.au.
+ * Rewrite Vexur/Supabase (and cross-host) blog URLs to their canonical local
+ * routes. Posts that existed on the old site keep /post/<old-slug>; only posts
+ * with no historical URL use /blog/<current-slug>.
  * Never navigate to blog-render URLs — they return text/plain.
  */
 export function rewriteBlogLinks(html: string, siteOrigin?: string): string {
@@ -9,55 +15,61 @@ export function rewriteBlogLinks(html: string, siteOrigin?: string): string {
   let out = html;
   const origin = (siteOrigin || '').replace(/\/$/, '');
 
-  // Absolute supabase post URLs → /blog/{slug}
+  // Absolute Supabase post URLs → the preserved old path where one exists.
   out = out.replace(
     /https?:\/\/iipazmwbtctblpyszspb\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/([a-z0-9][a-z0-9-]*)\/?(?=["'?\s&#])/gi,
-    '/blog/$1',
+    (_match, slug: string) => canonicalPostPathForCurrent(slug),
   );
 
-  // Absolute supabase archive URL → /blog
+  // Absolute Supabase archive URL → the canonical historical blog index.
   out = out.replace(
     /https?:\/\/iipazmwbtctblpyszspb\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/?(?=["'?\s&#])/gi,
-    '/blog',
+    BLOG_INDEX_PATH,
   );
 
-  // Any absolute blog links from known hosts → relative /blog (works on every deploy)
+  // Absolute /blog links from known hosts → the same canonical local route.
+  const rewriteKnownHost = (_match: string, slug?: string) =>
+    slug ? canonicalPostPathForCurrent(slug) : BLOG_INDEX_PATH;
+  const knownHosts = [
+    /https?:\/\/(?:www\.)?baxtermason\.com\.au\/blog(?:\/([a-z0-9][a-z0-9-]*))?\/?(?=["'?\s&#])/gi,
+    /https?:\/\/baxter-mason-website\.vercel\.app\/blog(?:\/([a-z0-9][a-z0-9-]*))?\/?(?=["'?\s&#])/gi,
+    /https?:\/\/localhost(?::\d+)?\/blog(?:\/([a-z0-9][a-z0-9-]*))?\/?(?=["'?\s&#])/gi,
+    /https?:\/\/127\.0\.0\.1(?::\d+)?\/blog(?:\/([a-z0-9][a-z0-9-]*))?\/?(?=["'?\s&#])/gi,
+  ];
+  for (const pattern of knownHosts) out = out.replace(pattern, rewriteKnownHost);
+
+  // The embedded archive normally emits relative /blog links. Canonicalise
+  // those too so crawlers and users never prefer the replacement URL.
   out = out.replace(
-    /https?:\/\/(?:www\.)?baxtermason\.com\.au\/blog(\/[a-z0-9][a-z0-9-]*)?\/?(?=["'?\s&#])/gi,
-    '/blog$1',
+    /(\bhref=["'])\/blog\/([a-z0-9][a-z0-9-]*)\/?(?=[?#"'])/gi,
+    (_match, prefix: string, slug: string) =>
+      `${prefix}${canonicalPostPathForCurrent(slug)}`,
   );
   out = out.replace(
-    /https?:\/\/baxter-mason-website\.vercel\.app\/blog(\/[a-z0-9][a-z0-9-]*)?\/?(?=["'?\s&#])/gi,
-    '/blog$1',
-  );
-  out = out.replace(
-    /https?:\/\/localhost(?::\d+)?\/blog(\/[a-z0-9][a-z0-9-]*)?\/?(?=["'?\s&#])/gi,
-    '/blog$1',
-  );
-  out = out.replace(
-    /https?:\/\/127\.0\.0\.1(?::\d+)?\/blog(\/[a-z0-9][a-z0-9-]*)?\/?(?=["'?\s&#])/gi,
-    '/blog$1',
+    /(\bhref=["'])\/blog\/?(?=[?#"'])/gi,
+    `$1${BLOG_INDEX_PATH}`,
   );
 
   // URL-encoded supabase forms inside share-button query strings
   if (origin) {
-    const encOrigin = encodeURIComponent(origin);
     out = out.replace(
       /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
-      `${encOrigin}%2Fblog%2F$1`,
+      (_match, slug: string) =>
+        encodeURIComponent(`${origin}${canonicalPostPathForCurrent(slug)}`),
     );
     out = out.replace(
       /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
-      `${encOrigin}%2Fblog`,
+      encodeURIComponent(`${origin}${BLOG_INDEX_PATH}`),
     );
   } else {
     out = out.replace(
       /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
-      '%2Fblog%2F$1',
+      (_match, slug: string) =>
+        encodeURIComponent(canonicalPostPathForCurrent(slug)),
     );
     out = out.replace(
       /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
-      '%2Fblog',
+      encodeURIComponent(BLOG_INDEX_PATH),
     );
   }
 

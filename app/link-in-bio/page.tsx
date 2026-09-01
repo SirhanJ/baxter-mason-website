@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 const LINKS: { href: string; label: string; note: string }[] = [
   {
-    href: '/contact',
+    href: '/book-a-free-discovery-call',
     label: 'Book a free discovery call',
     note: '15 minutes, no obligation. The fastest way to work out whether we can help.',
   },

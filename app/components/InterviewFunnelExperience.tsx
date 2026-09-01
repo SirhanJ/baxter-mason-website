@@ -165,7 +165,7 @@ export function InterviewVideo({ compact = false }: { compact?: boolean }) {
         </div>
         <div className="if-video-bottom">
           <h1>{compact ? "If this is you and you want to do something about it, join me on a free strategy call." : "🏡 Feel like the perfect home is always just out of reach? I’ll help you see what’s holding you back—and how to beat the market."}</h1>
-          <a className="if-book-cta js-book-call" href="/contact#book-call">{compact ? "YES! I’d love to have a strategy call →" : "YES! Sally, I Want To Find Out More →"}</a>
+          <a className="if-book-cta js-book-call" href="/book-a-free-discovery-call">{compact ? "YES! I’d love to have a strategy call →" : "YES! Sally, I Want To Find Out More →"}</a>
         </div>
       </div>
     </main>

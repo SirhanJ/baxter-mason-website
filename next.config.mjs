@@ -16,10 +16,26 @@ const pageSlugs = fs
   .filter((slug) => slug !== 'index');
 
 const legacyRedirects = read('./data/legacy-redirects.json');
+const postRedirects = read('./data/post-redirects.json');
 const canonicalRoutes = read('./data/canonical-routes.json');
 const canonicalPaths = new Set(Object.values(canonicalRoutes));
+const canonicalBlogPath = canonicalRoutes['/blog'];
+const canonicalSuccessStoriesPath = canonicalRoutes['/success-stories'];
+
+const postTargets = Object.values(postRedirects);
+if (new Set(postTargets).size !== postTargets.length) {
+  throw new Error('data/post-redirects.json must map one old post URL to one current blog slug');
+}
 
 const permanent = (source, destination) => ({ source, destination, permanent: true });
+const canonicalDestination = (source) => {
+  const redirected = legacyRedirects[source];
+  return (
+    canonicalRoutes[source] ||
+    (redirected ? canonicalRoutes[redirected] || redirected : undefined) ||
+    source
+  );
+};
 
 /**
  * Serve every static page at its extensionless address.
@@ -42,9 +58,10 @@ const cleanUrlRewrites = [
 
 const cleanUrlRedirects = [
   permanent('/index.html', '/'),
-  ...pageSlugs.map((slug) =>
-    permanent(`/${slug}.html`, canonicalRoutes[`/${slug}`] || `/${slug}`),
-  ),
+  ...pageSlugs.map((slug) => {
+    const internal = `/${slug}`;
+    return permanent(`${internal}.html`, canonicalDestination(internal));
+  }),
   ...Object.entries(canonicalRoutes).map(([internal, canonical]) =>
     permanent(internal, canonical),
   ),
@@ -54,17 +71,37 @@ const cleanUrlRedirects = [
 const migrationRedirects = [
   ...Object.entries(legacyRedirects)
     .filter(([source]) => source.startsWith('/') && !canonicalPaths.has(source))
-    .map(([source, destination]) => permanent(source, destination)),
+    .map(([source, destination]) =>
+      permanent(source, canonicalRoutes[destination] || destination),
+    ),
+
+  // The GoHighLevel /post URLs are the indexed addresses. The replacement
+  // /blog slugs are implementation details and must consolidate back to them.
+  ...Object.entries(postRedirects).map(([oldSlug, currentSlug]) =>
+    permanent(`/blog/${currentSlug}`, `/post/${oldSlug}`),
+  ),
 
   // The two alternate post paths the old CMS also served.
   permanent('/blogs-buyers-agent-sunshine-coast/b/:slug', '/post/:slug'),
   permanent('/success-stories-buyers-agent-sunshine-coast/b/:slug', '/post/:slug'),
+  permanent('/buyers-agent-real-results/b/:slug', '/post/:slug'),
   permanent('/:prefix(blogs?-[^/]+)/b/:slug', '/post/:slug'),
 
-  // 364 tag, category and author routes: crawl noise, all of it the blog index.
-  permanent('/:prefix(blogs?-[^/]+)/tag/:tag*', '/blog'),
-  permanent('/:prefix(blogs?-[^/]+)/category/:category*', '/blog'),
-  permanent('/:prefix(blogs?-[^/]+)/author/:author*', '/blog'),
+  // The old success-story CMS had two collection namespaces. Their post
+  // addresses survive; collection and archive variants consolidate directly.
+  permanent('/buyers-agent-real-results', canonicalSuccessStoriesPath),
+  ...['buyers-agent-real-results', 'success-stories-buyers-agent-sunshine-coast']
+    .flatMap((prefix) => ['c', 'category', 'tag', 'author'].map((segment) =>
+      permanent(`/${prefix}/${segment}/:path*`, canonicalSuccessStoriesPath),
+    )),
+
+  // Tag, category and author archives duplicate the canonical blog index.
+  // GoHighLevel also exposed the category collection under the short /c form.
+  // Redirect there directly instead of creating a second hop through /blog.
+  permanent('/:prefix(blogs?-[^/]+)/c/:category*', canonicalBlogPath),
+  permanent('/:prefix(blogs?-[^/]+)/tag/:tag*', canonicalBlogPath),
+  permanent('/:prefix(blogs?-[^/]+)/category/:category*', canonicalBlogPath),
+  permanent('/:prefix(blogs?-[^/]+)/author/:author*', canonicalBlogPath),
 
   // A template bug on the old site emitted links with the hostname in the path.
   permanent('/www.baxtermason.com.au/:path*', '/:path*'),

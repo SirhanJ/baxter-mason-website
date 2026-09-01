@@ -6694,6 +6694,7 @@ section.blk.stories-page,
 }
 
 .guide-card {
+  position: relative;
   border: 1px solid var(--gborder);
   border-radius: 16px;
   overflow: hidden;
@@ -6817,6 +6818,23 @@ section.blk.stories-page,
   line-height: 1.15;
   margin: 0;
   color: var(--tx);
+}
+
+.guide-card-story-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.guide-card-story-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.guide-card a[data-suburb-link] {
+  position: relative;
+  z-index: 2;
 }
 
 .guide-card p {

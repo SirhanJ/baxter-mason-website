@@ -158,7 +158,7 @@ export default async function LegacyPostPage({ params }: Props) {
         <BlogLinkFixup />
         <p className="blog-back-row">
           <a className="blog-back" href="/blogs-buyers-agent-sunshine-coast">
-            <span className="ar">â†</span> Back to blog
+            <span className="ar">←</span> Back to blog
           </a>
         </p>
         <div dangerouslySetInnerHTML={{ __html: linkSuburbs(currentPost.html) }} />

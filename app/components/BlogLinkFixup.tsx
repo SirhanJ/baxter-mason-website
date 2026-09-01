@@ -1,10 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import {
+  BLOG_INDEX_PATH,
+  canonicalPostPathForCurrent,
+} from '../lib/blogCanonical';
 
 /**
- * Catch remaining blog-render / wrong-host blog navigations and keep them on /blog/...
- * Works on localhost, Vercel, and baxtermason.com.au because links stay same-origin relative.
+ * Catch remaining blog-render / wrong-host blog navigations and keep them on
+ * this site's canonical legacy URLs.
  */
 export function BlogLinkFixup() {
   useEffect(() => {
@@ -21,7 +25,9 @@ export function BlogLinkFixup() {
         event.preventDefault();
         event.stopPropagation();
         const slug = supabase[1] ? decodeURIComponent(supabase[1]) : '';
-        window.location.assign(slug ? `/blog/${slug}` : '/blog');
+        window.location.assign(
+          slug ? canonicalPostPathForCurrent(slug) : BLOG_INDEX_PATH,
+        );
         return;
       }
 
@@ -30,8 +36,14 @@ export function BlogLinkFixup() {
         /^https?:\/\/(?:(?:www\.)?baxtermason\.com\.au|baxter-mason-website\.vercel\.app|localhost(?::\d+)?|127\.0\.0\.1(?::\d+)?)\/blog(\/[^?#]*)?/i,
       );
       if (crossHost && typeof window !== 'undefined') {
-        const path = `/blog${crossHost[1] || ''}`;
-        if (`${window.location.origin}${path}` !== abs.split('?')[0].replace(/\/$/, '') && !abs.startsWith(window.location.origin)) {
+        const currentSlug = crossHost[1]
+          ? decodeURIComponent(crossHost[1].replace(/^\//, '').replace(/\/$/, ''))
+          : '';
+        const path = currentSlug
+          ? canonicalPostPathForCurrent(currentSlug)
+          : BLOG_INDEX_PATH;
+        const requestedPath = new URL(abs).pathname.replace(/\/$/, '') || '/';
+        if (requestedPath !== path.replace(/\/$/, '')) {
           event.preventDefault();
           event.stopPropagation();
           window.location.assign(path);

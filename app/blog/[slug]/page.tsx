@@ -1,11 +1,15 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
 import { BlogLinkFixup } from '../../components/BlogLinkFixup';
 import { JsonLd } from '../../components/JsonLd';
 import { SITE, ORG_ID, breadcrumb, graph } from '../../lib/seo';
 import { linkSuburbs } from '../../lib/linkSuburbs';
 import { fetchPost, fetchPostCards } from '../../lib/blogSource';
+import {
+  canonicalPostPathForCurrent,
+  oldPostSlugForCurrent,
+} from '../../lib/blogCanonical';
 
 /**
  * Posts are pre-rendered at build time and revalidated hourly, rather than
@@ -18,7 +22,9 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const cards = await fetchPostCards();
-  return cards.map((card) => ({ slug: card.slug }));
+  return cards
+    .filter((card) => !oldPostSlugForCurrent(card.slug))
+    .map((card) => ({ slug: card.slug }));
 }
 
 type Props = { params: Promise<{ slug: string }> };
@@ -28,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await fetchPost(slug);
   if (!post) return { title: 'Post not found | Baxter & Mason' };
 
-  const url = `${SITE}/blog/${slug}`;
+  const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
   return {
     title: `${post.title} | Baxter & Mason`,
     description: post.description,
@@ -48,10 +54,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
+  const oldSlug = oldPostSlugForCurrent(slug);
+  if (oldSlug) permanentRedirect(`/post/${oldSlug}`);
+
   const post = await fetchPost(slug);
   if (!post) notFound();
 
-  const url = `${SITE}/blog/${slug}`;
+  const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
   const schema = graph([
     {
       '@type': 'BlogPosting',

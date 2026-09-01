@@ -58,7 +58,7 @@ export default function ReviewsPage() {
           What clients <span className="gi">actually say</span>.
         </>
       }
-      heroSub={`${DATA.googleTotals.ratingValue.toFixed(1)} from ${DATA.googleTotals.reviewCount} ${DATA.source} reviews.`}
+      heroSub={`${DATA.googleTotals.ratingValue.toFixed(1)} from ${DATA.googleTotals.reviewCount} ${DATA.source} reviews. The 20 latest reviews are shown below.`}
       showInsightsHead={false}
     >
       <JsonLd data={schema} />
@@ -77,7 +77,7 @@ export default function ReviewsPage() {
           <a href="/services">Services</a> lists where we buy.
         </p>
         <div className="cta-row">
-          <a className="btn" href="/contact">
+          <a className="btn" href="/book-a-free-discovery-call">
             Book a discovery call <span className="ar">→</span>
           </a>
           <a className="btn glass" href="/success-stories-buyers-agent-sunshine-coast">

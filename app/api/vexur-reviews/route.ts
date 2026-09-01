@@ -85,6 +85,10 @@ const COMPACT_HOME_STYLES = `
       border-radius: 12px !important;
       box-shadow: 0 7px 18px rgba(17, 24, 39, 0.09);
     }
+    .vx-reviews-horizontal .vx-review-card.is-expanded {
+      height: auto;
+      min-height: 200px;
+    }
     .vx-review-card[hidden] { display: none !important; }
     .baxter-review-top {
       display: flex;
@@ -116,15 +120,28 @@ const COMPACT_HOME_STYLES = `
       line-height: 1.65 !important;
       -webkit-line-clamp: 3 !important;
     }
+    .vx-review-card.is-expanded .vx-review-text {
+      display: block !important;
+      overflow: visible !important;
+      -webkit-line-clamp: unset !important;
+    }
     .baxter-review-more {
       align-self: flex-start;
-      margin-top: -1.65em;
-      margin-left: auto;
-      padding-left: 8px;
-      color: #2563eb;
-      background: #fff;
-      font-size: 12px;
-      text-decoration: none;
+      margin: 7px 0 0;
+      padding: 0;
+      color: #1d4ed8;
+      background: transparent;
+      border: 0;
+      border-radius: 2px;
+      font: 600 12px/1.4 var(--vx-font);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+    .baxter-review-more:hover { color: #153eaa; }
+    .baxter-review-more:focus-visible {
+      outline: 2px solid var(--vx-primary);
+      outline-offset: 3px;
     }
     .baxter-review-author {
       display: flex;
@@ -179,6 +196,10 @@ const COMPACT_HOME_STYLES = `
       color: #fff;
       background: var(--vx-primary);
     }
+    .baxter-review-pagination button:focus-visible {
+      outline: 2px solid var(--vx-primary);
+      outline-offset: 2px;
+    }
     .baxter-review-pagination button:disabled {
       cursor: default;
       opacity: 0.35;
@@ -228,52 +249,90 @@ const COMPACT_HOME_SCRIPT = `
     function init() {
       var track = document.querySelector('.vx-reviews-horizontal');
       if (!track || track.getAttribute('data-baxter-compact') === 'true') return;
+      var cleanTrack = track.cloneNode(true);
+      track.parentNode.replaceChild(cleanTrack, track);
+      track = cleanTrack;
       var cards = Array.prototype.slice.call(track.querySelectorAll('.vx-review-card'));
       if (!cards.length) return;
       track.setAttribute('data-baxter-compact', 'true');
+      track.setAttribute('aria-live', 'polite');
+      track.setAttribute('aria-label', cards.length + ' latest Google reviews');
 
-      cards.forEach(function (card) {
+      function postHeight() {
+        window.requestAnimationFrame(function () {
+          var shell = document.getElementById('root');
+          var root = document.documentElement;
+          var body = document.body;
+          var contentHeight = shell
+            ? Math.max(shell.scrollHeight, shell.getBoundingClientRect().height)
+            : Math.max(root.scrollHeight, body ? body.scrollHeight : 0);
+          window.parent.postMessage({
+            type: 'vexur:height',
+            height: Math.ceil(contentHeight)
+          }, '*');
+        });
+      }
+
+      cards.forEach(function (card, index) {
         var head = card.querySelector('.vx-review-head');
         var text = card.querySelector('.vx-review-text');
-        if (!head || !text) return;
-        var avatar = head.querySelector('.vx-avatar-shell');
-        var name = head.querySelector('.vx-review-name');
-        var stars = head.querySelector('.vx-stars');
-        var date = head.querySelector('.vx-review-date');
-        if (!avatar || !name || !stars || !date) return;
+        if (!text) return;
 
-        var top = document.createElement('div');
-        top.className = 'baxter-review-top';
-        var score = document.createElement('div');
-        score.className = 'baxter-review-score';
-        var value = document.createElement('span');
-        value.textContent = String(stars.querySelectorAll('.is-filled').length || 5);
-        score.appendChild(value);
-        score.appendChild(stars);
-        top.appendChild(score);
-        top.appendChild(date);
+        var author = null;
+        if (head) {
+          var avatar = head.querySelector('.vx-avatar-shell');
+          var name = head.querySelector('.vx-review-name');
+          var stars = head.querySelector('.vx-stars');
+          var date = head.querySelector('.vx-review-date');
+          var top = document.createElement('div');
+          top.className = 'baxter-review-top';
 
-        var author = document.createElement('div');
-        author.className = 'baxter-review-author';
-        author.appendChild(avatar);
-        author.appendChild(name);
-        var google = document.createElement('span');
-        google.className = 'baxter-google-mark';
-        google.setAttribute('aria-hidden', 'true');
-        google.textContent = 'G';
-        author.appendChild(google);
+          if (stars) {
+            var score = document.createElement('div');
+            score.className = 'baxter-review-score';
+            var value = document.createElement('span');
+            value.textContent = String(stars.querySelectorAll('.is-filled').length || 5);
+            score.appendChild(value);
+            score.appendChild(stars);
+            top.appendChild(score);
+          }
+          if (date) top.appendChild(date);
+          if (top.childNodes.length) card.insertBefore(top, head);
 
-        card.insertBefore(top, head);
-        head.remove();
+          if (avatar || name) {
+            author = document.createElement('div');
+            author.className = 'baxter-review-author';
+            if (avatar) author.appendChild(avatar);
+            if (name) author.appendChild(name);
+            var google = document.createElement('span');
+            google.className = 'baxter-google-mark';
+            google.setAttribute('aria-hidden', 'true');
+            google.textContent = 'G';
+            author.appendChild(google);
+          }
+          head.remove();
+        }
+
         if ((text.textContent || '').trim().length > 150) {
-          var more = document.createElement('a');
+          var more = document.createElement('button');
           more.className = 'baxter-review-more';
-          more.href = '/google-reviews-buyers-agent-sunshine-coast';
-          more.target = '_top';
+          more.type = 'button';
           more.textContent = 'More';
+          more.setAttribute('aria-expanded', 'false');
+          text.id = text.id || 'baxter-review-text-' + index;
+          more.setAttribute('aria-controls', text.id);
+          more.addEventListener('pointerdown', function (event) {
+            event.stopPropagation();
+          });
+          more.addEventListener('click', function () {
+            var expanded = card.classList.toggle('is-expanded');
+            more.textContent = expanded ? 'Less' : 'More';
+            more.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            postHeight();
+          });
           card.appendChild(more);
         }
-        card.appendChild(author);
+        if (author) card.appendChild(author);
       });
 
       var carousel = track.closest('.vx-reviews-carousel') || track.parentElement;
@@ -287,18 +346,10 @@ const COMPACT_HOME_SCRIPT = `
         return window.matchMedia('(min-width: 760px)').matches ? 3 : 1;
       }
       function pageItems(total, current) {
-        if (total <= 5) return Array.from({ length: total }, function (_, i) { return i + 1; });
-        if (current <= 3) return [1, 2, 3, 0, total];
-        if (current >= total - 2) return [1, 0, total - 2, total - 1, total];
-        return [1, 0, current, 0, total];
-      }
-      function postHeight() {
-        window.requestAnimationFrame(function () {
-          window.parent.postMessage({
-            type: 'vexur:height',
-            height: Math.ceil(document.documentElement.scrollHeight)
-          }, '*');
-        });
+        if (total <= 7) return Array.from({ length: total }, function (_, i) { return i + 1; });
+        if (current <= 4) return [1, 2, 3, 4, 5, 0, total];
+        if (current >= total - 3) return [1, 0, total - 4, total - 3, total - 2, total - 1, total];
+        return [1, 0, current - 1, current, current + 1, 0, total];
       }
       function show(nextPage) {
         var size = perPage();
@@ -312,7 +363,7 @@ const COMPACT_HOME_SCRIPT = `
         var previous = document.createElement('button');
         previous.type = 'button';
         previous.setAttribute('aria-label', 'Previous reviews');
-        previous.textContent = '‹';
+        previous.textContent = String.fromCharCode(8249);
         previous.disabled = page === 0;
         previous.addEventListener('click', function () { show(page - 1); });
         nav.appendChild(previous);
@@ -321,7 +372,7 @@ const COMPACT_HOME_SCRIPT = `
           if (item === 0) {
             var ellipsis = document.createElement('span');
             ellipsis.className = 'baxter-review-ellipsis';
-            ellipsis.textContent = '…';
+            ellipsis.textContent = String.fromCharCode(8230);
             nav.appendChild(ellipsis);
             return;
           }
@@ -337,7 +388,7 @@ const COMPACT_HOME_SCRIPT = `
         var next = document.createElement('button');
         next.type = 'button';
         next.setAttribute('aria-label', 'Next reviews');
-        next.textContent = '›';
+        next.textContent = String.fromCharCode(8250);
         next.disabled = page === total - 1;
         next.addEventListener('click', function () { show(page + 1); });
         nav.appendChild(next);
@@ -347,6 +398,7 @@ const COMPACT_HOME_SCRIPT = `
       var media = window.matchMedia('(min-width: 760px)');
       if (media.addEventListener) media.addEventListener('change', function () { show(0); });
       show(0);
+      window.setTimeout(postHeight, 250);
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
@@ -404,8 +456,8 @@ export async function GET(request: Request) {
     if (isCompactHome) {
       servedHtml = servedHtml
         .replace(
-          '<h1 class="vx-title">Google Reviews</h1>',
-          '<h1 class="vx-title">What our clients say about us</h1>',
+          /<h1([^>]*\bclass=["'][^"']*\bvx-title\b[^"']*["'][^>]*)>[\s\S]*?<\/h1>/i,
+          '<h1$1>What our clients say about us</h1>',
         )
         .replace(
           /<\/body>/i,

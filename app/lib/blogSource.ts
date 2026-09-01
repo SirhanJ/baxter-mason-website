@@ -1,4 +1,5 @@
 import { rewriteBlogLinks } from './rewriteBlogLinks';
+import { OLD_TO_CURRENT_POST_SLUG } from './blogCanonical';
 
 const BASE = 'https://iipazmwbtctblpyszspb.supabase.co/functions/v1/blog-render/baxter-mason';
 
@@ -49,10 +50,21 @@ export async function fetchPostCards(): Promise<PostCard[]> {
   const cards: PostCard[] = [];
   const seen = new Set<string>();
 
-  for (const chunk of html.split(/<a href="\/blog\//).slice(1)) {
-    const slug = chunk.slice(0, chunk.indexOf('"'));
+  const links = Array.from(
+    html.matchAll(/<a href="\/(blog|post)\/([^"?#]+)[^"#]*"/gi),
+  );
+  for (let index = 0; index < links.length; index += 1) {
+    const link = links[index];
+    const route = link[1].toLowerCase();
+    const routeSlug = link[2];
+    const slug =
+      route === 'post' ? OLD_TO_CURRENT_POST_SLUG[routeSlug] : routeSlug;
     if (!slug || seen.has(slug)) continue;
     seen.add(slug);
+
+    const start = link.index || 0;
+    const end = links[index + 1]?.index || html.length;
+    const chunk = html.slice(start, end);
 
     const title = chunk.match(/class="blog-card-title">([\s\S]*?)<\/h2>/);
     const excerpt = chunk.match(/class="blog-card-excerpt">([\s\S]*?)<\/p>/);

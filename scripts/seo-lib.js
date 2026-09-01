@@ -15,9 +15,15 @@ const GRAPH_CLOSE = "<!-- /seo:graph -->";
 const ROBOTS_MARK = "seo:robots";
 const LINKED_MARK = "data-suburb-link";
 const CANONICAL_ROUTES = require("../data/canonical-routes.json");
+const LEGACY_REDIRECTS = require("../data/legacy-redirects.json");
 
 function canonicalPath(url) {
-  return CANONICAL_ROUTES[url] || url;
+  const redirected = LEGACY_REDIRECTS[url];
+  return (
+    CANONICAL_ROUTES[url] ||
+    (redirected ? CANONICAL_ROUTES[redirected] || redirected : undefined) ||
+    url
+  );
 }
 
 const read = (f) => fs.readFileSync(f, "utf8");
@@ -306,8 +312,9 @@ function fixImages(html) {
 
     const className = (out.match(/\bclass="([^"]*)"/i) || [, ""])[1];
     const isChrome = CHROME_CLASS.test(className);
+    const forceLazy = /\bdata-seo-force-lazy\b/i.test(out);
     if (!isChrome) contentSeen += 1;
-    const isLeadContent = !isChrome && contentSeen === 1;
+    const isLeadContent = !forceLazy && !isChrome && contentSeen === 1;
 
     if (!/^https?:/i.test(src)) {
       const webp = webpSibling(src);
@@ -339,7 +346,7 @@ function fixImages(html) {
     // The footer mark and the light-nav variant are both off-screen or hidden
     // at first paint, so they defer even though they count as chrome.
     const deferredChrome = /\b(ft-logo|logo-img--light)\b/.test(className);
-    const lazy = deferredChrome || (!isChrome && !isLeadContent);
+    const lazy = forceLazy || deferredChrome || (!isChrome && !isLeadContent);
 
     let attrs = ' loading="' + (lazy ? "lazy" : "eager") + '"';
     if (isLeadContent) attrs += ' fetchpriority="high"';

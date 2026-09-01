@@ -608,8 +608,6 @@
       if (anchor.classList.contains("js-book-call")) return true;
 
       var href = (anchor.getAttribute("href") || "").trim().toLowerCase();
-      if (href.indexOf("book-a-free-discovery-call") !== -1) return true;
-
       var isContactHref =
         href.indexOf("contact.html") !== -1 ||
         href === "#book-call" ||
@@ -664,9 +662,6 @@
     function applyHeight(iframe, height) {
       var next = Math.round(Number(height));
       if (!isFinite(next) || next < 200) return;
-      if (iframe.closest && iframe.closest(".hm-reviews-widget")) {
-        next = Math.min(next, 460);
-      }
       iframe.style.height = next + "px";
       iframe.style.minHeight = next + "px";
     }
@@ -698,8 +693,11 @@
       try {
         var doc = iframe.contentDocument;
         if (!doc || !doc.body) return;
+        var root = doc.getElementById("root");
         var height = Math.ceil(
-          Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight),
+          root
+            ? Math.max(root.scrollHeight, root.getBoundingClientRect().height)
+            : Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight),
         );
         applyHeight(iframe, height);
       } catch (err) {

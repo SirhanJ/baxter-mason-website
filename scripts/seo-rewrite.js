@@ -394,6 +394,99 @@ const SKIP_LINKING = new Set([
 ]);
 
 /**
+ * Success-story cards use a stretched story link so the full card remains
+ * clickable. Suburb links must therefore be sibling anchors, never anchors
+ * nested inside the story link. Keep this explicit map small and deterministic:
+ * these are the eight story summaries that name a serviced suburb.
+ */
+const SUCCESS_STORY_SUBURB_LINKS = [
+  ["/story-palmwoods-dual-income", "Palmwoods", "/palmwoods-buyers-agent"],
+  ["/post/success-story-sunshine-coast-off-market-family-home", "Buderim", "/buderim-buyers-agent"],
+  ["/post/success-story-peters-sea-change-to-buddina", "Buddina", "/buddina-buyers-agent"],
+  ["/post/entry-level-buyer-success-story-sunshine-coast-buyers-agent-3623", "Mooloolaba", "/mooloolaba-buyers-agent"],
+  ["/post/superfast-purchase-and-turn-around-sunshine-coast-property-buyer", "Maroochydore", "/maroochydore-buyers-agent"],
+  ["/post/wilma-success-story", "Woombye", "/woombye-buyers-agent"],
+  ["/post/shaun-and-hayley-success-story-baxter-and-mason-property-buyers-agent-sunshine-coast", "Golden Beach", "/goldenbeach-buyers-agent"],
+  ["/post/dream-home-brooke-and-kent-baxter-and-mason-property-buyers-agent-sunshine-coast", "Kuluin", "/kuluin-buyers-agent"],
+];
+
+function escapeRe(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function linkSuccessStorySuburbs(html, page) {
+  if (page.slug !== "success-stories") return html;
+
+  for (const [storyUrl, suburb, suburbUrl] of SUCCESS_STORY_SUBURB_LINKS) {
+    html = html.replace(/<article\b[^>]*>[\s\S]*?<\/article>/gi, (card) => {
+      if (!card.includes('href="' + storyUrl + '"')) return card;
+      if (
+        card.includes('class="guide-card-story-link"') &&
+        card.includes('data-suburb-link href="' + suburbUrl + '"')
+      ) {
+        return card
+          .replace(/(<div class="guide-card-inner">)\r\n/i, "$1\n")
+          .replace(
+            /(<h3><a class="guide-card-story-link"[^>]*>[\s\S]*?<\/a><\/h3>)\r\n/i,
+            "$1\n",
+          );
+      }
+
+      let out = card.replace(
+        new RegExp(
+          '<a\\s+data-suburb-link\\s+href="' +
+            escapeRe(suburbUrl) +
+            '">' +
+            escapeRe(suburb) +
+            '<\\/a>',
+          "i",
+        ),
+        suburb,
+      );
+
+      out = out.replace(
+        new RegExp(
+          '<a class="guide-card-inner" href="' + escapeRe(storyUrl) + '">',
+          "i",
+        ),
+        '<div class="guide-card-inner">',
+      );
+      out = out.replace(/\r?\n<\/a>\r?\n(?=<\/article>)/i, "\n</div>\n");
+
+      if (!out.includes('class="guide-card-story-link"')) {
+        out = out.replace(
+          /<h3>([\s\S]*?)<\/h3>/i,
+          '<h3><a class="guide-card-story-link" href="' +
+            storyUrl +
+            '">$1</a></h3>',
+        );
+      }
+
+      const paragraph = /<p>([\s\S]*?)<\/p>/i;
+      out = out.replace(paragraph, (whole, inner) => {
+        if (inner.includes("data-suburb-link")) return whole;
+        const linked = inner.replace(
+          new RegExp("\\b" + escapeRe(suburb) + "\\b"),
+          '<a data-suburb-link href="' + suburbUrl + '">' + suburb + "</a>",
+        );
+        return linked === inner ? whole : "<p>" + linked + "</p>";
+      });
+
+      out = out
+        .replace(/(<div class="guide-card-inner">)\r\n/i, "$1\n")
+        .replace(
+          /(<h3><a class="guide-card-story-link"[^>]*>[\s\S]*?<\/a><\/h3>)\r\n/i,
+          "$1\n",
+        );
+
+      return out;
+    });
+  }
+
+  return html;
+}
+
+/**
  * Link the first mention of each serviced suburb in a page's body copy. Only
  * paragraph text is touched, and only once per suburb, so nothing turns into a
  * wall of links.
@@ -471,6 +564,28 @@ function applyOverrides(html, page) {
   return out;
 }
 
+/** Keep booking-labelled CTAs on the indexed booking URL; Contact stays separate. */
+function rewriteBookingLinks(html) {
+  const bookingPath = "/book-a-free-discovery-call";
+  const oldBookingPaths = new Set([
+    "/contact",
+    "/contact.html",
+    "/contact#book-call",
+    "#book-call",
+    "#book",
+  ]);
+
+  return html.replace(
+    /<a\b([^>]*?)href="([^"]*)"([^>]*)>([\s\S]*?)<\/a>/gi,
+    (anchor, before, href, after, content) => {
+      if (!oldBookingPaths.has(href.toLowerCase())) return anchor;
+      const label = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+      if (!/\bbook\b/i.test(label) || !/\bcall\b/i.test(label)) return anchor;
+      return `<a${before}href="${bookingPath}"${after}>${content}</a>`;
+    },
+  );
+}
+
 /* ----------------------------------------------------------------- run */
 
 let changed = 0;
@@ -482,6 +597,7 @@ for (const page of pages) {
 
   html = applyOverrides(html, page);
   html = lib.rewriteLinks(html);
+  html = rewriteBookingLinks(html);
   html = lib.rewriteInlineBackgrounds(html);
   html = lib.setHead(html, page.url);
   html = lib.fixImages(html);
@@ -499,6 +615,7 @@ for (const page of pages) {
   html = replaceHomeReviews(html, page);
   html = dropLegacyOrgBlock(html);
   const beforeLink = html;
+  html = linkSuccessStorySuburbs(html, page);
   html = linkSuburbs(html, page);
   if (html !== beforeLink) report.linked += 1;
   html = injectGraph(html, page);

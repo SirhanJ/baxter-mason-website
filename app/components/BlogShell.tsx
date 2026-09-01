@@ -75,11 +75,11 @@ export function SiteHeader() {
           <a className="l" href="/contact">
             Contact
           </a>
-          <a className="btn nav-mobile-cta" href="/contact">
+          <a className="btn nav-mobile-cta" href="/book-a-free-discovery-call">
             Book a discovery call <span className="ar">→</span>
           </a>
         </nav>
-        <a className="btn nav-desktop-cta" href="/contact">
+        <a className="btn nav-desktop-cta" href="/book-a-free-discovery-call">
           Book a discovery call <span className="ar">→</span>
         </a>
         <button
@@ -118,7 +118,7 @@ export function SiteFooter() {
                 <span className="final-chip">Sunshine Coast</span>
               </div>
               <div className="cta-row">
-                <a className="btn lg" href="/contact">
+                <a className="btn lg" href="/book-a-free-discovery-call">
                   Book a discovery call <span className="ar">→</span>
                 </a>
                 <a
@@ -257,7 +257,7 @@ export function SiteFooter() {
                 <li>QLD Licence 4684962</li>
                 <li>Sunshine Coast, Australia</li>
                 <li>
-                  <a href="/contact">Book a discovery call</a>
+                  <a href="/book-a-free-discovery-call">Book a discovery call</a>
                 </li>
                 <li>
                   <a href="/privacy-statement-buyers-agent-sunshine-coast">Privacy policy</a>
