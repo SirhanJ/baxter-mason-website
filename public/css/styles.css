@@ -2093,11 +2093,6 @@ section.blk.services-page,
   transform: scale(1.05);
 }
 
-.svc-card#coaching .svc-card-img {
-  aspect-ratio: 4 / 3;
-  max-height: 280px;
-}
-
 .svc-card#coaching .svc-card-img img {
   object-position: center 22%;
 }
@@ -3999,6 +3994,43 @@ section.page-hero.img-hero .sub .blog-meta {
 section.page-hero.img-hero .eyebrow {
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 1px 10px rgba(20, 19, 18, 0.6);
+}
+
+section.page-hero.img-hero.hero-family {
+  background-position: center bottom;
+}
+
+section.page-hero.img-hero.hero-family::before {
+  background:
+    linear-gradient(
+      270deg,
+      rgba(20, 19, 18, 0.88) 0%,
+      rgba(20, 19, 18, 0.66) 34%,
+      rgba(20, 19, 18, 0.24) 62%,
+      rgba(20, 19, 18, 0.04) 100%
+    ),
+    linear-gradient(0deg, rgba(20, 19, 18, 0.45) 0%, transparent 52%);
+}
+
+section.page-hero.img-hero.hero-family .page-hero-copy {
+  width: min(46%, 34rem);
+  margin-left: auto;
+}
+
+@media (max-width: 720px) {
+  section.page-hero.img-hero.hero-family {
+    min-height: 500px;
+    background-position: 38% bottom;
+  }
+
+  section.page-hero.img-hero.hero-family::before {
+    background: rgba(20, 19, 18, 0.66);
+  }
+
+  section.page-hero.img-hero.hero-family .page-hero-copy {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 /* ---------- site-wide light theme ---------- */
@@ -6287,8 +6319,6 @@ section.blk.faq-page,
 
 .team-card-photo--kelly img {
   object-position: center 28%;
-  transform: scale(0.86);
-  transform-origin: center 35%;
 }
 
 .team-card-bio {
@@ -11471,7 +11501,7 @@ body.vx-book-open {
   color: #575756;
 }
 
-.vx-reviews-intro a {
+.vx-reviews-intro p a {
   color: #e44013;
   font-weight: 600;
 }

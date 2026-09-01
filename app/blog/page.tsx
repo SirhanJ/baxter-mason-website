@@ -12,7 +12,7 @@ import { fetchArchive, fetchPostCards } from '../lib/blogSource';
  */
 export const revalidate = 3600;
 
-const URL = `${SITE}/blog`;
+const URL = `${SITE}/blogs-buyers-agent-sunshine-coast`;
 const TITLE = 'Blog | Baxter & Mason';
 const DESCRIPTION =
   'Sunshine Coast property insight from a working buyers agency: market reads, buying strategy and what we are seeing on the ground.';

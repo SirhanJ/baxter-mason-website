@@ -36,13 +36,13 @@ export default function NotFound() {
         <h2>The main pages</h2>
         <ul className="notfound-links">
           <li><a href="/">Home</a></li>
-          <li><a href="/what-we-do">What we do</a></li>
+          <li><a href="/what-we-do-buyers-agent-sunshine-coast">What we do</a></li>
           <li><a href="/services">Services</a></li>
-          <li><a href="/success-stories">Success stories</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/free-guides">Free guides</a></li>
-          <li><a href="/faq">FAQ</a></li>
-          <li><a href="/our-people">Our people</a></li>
+          <li><a href="/success-stories-buyers-agent-sunshine-coast">Success stories</a></li>
+          <li><a href="/blogs-buyers-agent-sunshine-coast">Blog</a></li>
+          <li><a href="/free-guides-and-downloads">Free guides</a></li>
+          <li><a href="/FAQ-Buyers-Agent-Sunshine-Coast">FAQ</a></li>
+          <li><a href="/our-people-buyers-agent-sunshine-coast">Our people</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
 

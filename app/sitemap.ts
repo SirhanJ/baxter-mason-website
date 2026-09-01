@@ -4,6 +4,7 @@ import path from "path";
 import { SITE } from "./lib/seo";
 import { fetchPostCards } from "./lib/blogSource";
 import legacyPosts from "../data/legacy-posts.json";
+import canonicalRoutes from "../data/canonical-routes.json";
 
 /**
  * Built from the routes that actually exist, rather than maintained by hand.
@@ -11,6 +12,7 @@ import legacyPosts from "../data/legacy-posts.json";
  * at all; drift like that is how a third of a site goes unseen.
  */
 export const revalidate = 3600;
+const routeMap = canonicalRoutes as Record<string, string>;
 
 function priorityFor(slug: string): number {
   if (slug === "index") return 1;
@@ -35,14 +37,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((file) => file.replace(/\.html$/, ""))
     // /blog is an App Router page now, not a file in public.
     .filter((slug) => slug !== "blog")
-    .map((slug) => ({
-      url: slug === "index" ? `${SITE}/` : `${SITE}/${slug}`,
+    .map((slug) => {
+      const internal = slug === "index" ? "/" : `/${slug}`;
+      const canonical = routeMap[internal] || internal;
+      return {
+      url: `${SITE}${canonical}`,
       lastModified: now,
       changeFrequency: (slug === "index" ? "weekly" : "monthly") as
         | "weekly"
         | "monthly",
       priority: priorityFor(slug),
-    }));
+      };
+    });
 
   const cards = await fetchPostCards();
   const blogPosts = cards.map((card) => ({
@@ -66,9 +72,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // App Router pages that have no file in public/ and so are not picked up above.
   // /thank-you is deliberately absent: it is noindex.
   const appPages = [
-    { url: `${SITE}/blog`, changeFrequency: "weekly" as const, priority: 0.8 },
     {
-      url: `${SITE}/reviews`,
+      url: `${SITE}/blogs-buyers-agent-sunshine-coast`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${SITE}/google-reviews-buyers-agent-sunshine-coast`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     },

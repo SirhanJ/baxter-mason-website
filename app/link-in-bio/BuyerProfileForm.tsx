@@ -258,7 +258,7 @@ export function BuyerProfileForm() {
           {submitting ? "Submitting…" : "Submit buyer profile"} <span className="ar">→</span>
         </button>
         <p className="buyer-privacy">
-          Your information is handled according to our <a href="/privacy">privacy policy</a>.
+          Your information is handled according to our <a href="/privacy-statement-buyers-agent-sunshine-coast">privacy policy</a>.
         </p>
       </form>
     </section>

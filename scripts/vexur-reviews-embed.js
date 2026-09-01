@@ -17,7 +17,7 @@ const HOME_PARAMS = {
   minRating: "4",
   reviewSort: "newest",
   layout: "horizontal",
-  animation: "slide",
+  animation: "none",
   animationSpeed: "standard",
   showBranding: "true",
   showCarouselArrows: "true",
@@ -77,8 +77,8 @@ function homeReviewsBlock() {
   return (
     REVIEWS_MARK +
     '\n<div class="hm-reviews-widget rv d1">\n' +
-    iframeMarkup(homeReviewsEmbedUrl(), 480) +
-    '\n<p class="rv-all"><a href="/reviews">Read all reviews <span class="ar">&rarr;</span></a></p>\n' +
+    iframeMarkup(homeReviewsEmbedUrl(), 360) +
+    '\n<p class="rv-all"><a href="/google-reviews-buyers-agent-sunshine-coast">Read all reviews <span class="ar">&rarr;</span></a></p>\n' +
     "</div>\n" +
     REVIEWS_MARK
   );

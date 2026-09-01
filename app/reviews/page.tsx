@@ -16,7 +16,7 @@ type ReviewsFile = {
 };
 
 const DATA = reviewsData as ReviewsFile;
-const URL = `${SITE}/reviews`;
+const URL = `${SITE}/google-reviews-buyers-agent-sunshine-coast`;
 const TITLE = "Client Reviews | Baxter & Mason";
 const DESCRIPTION = `Google reviews from Sunshine Coast buyers represented by Baxter & Mason. ${DATA.googleTotals.ratingValue.toFixed(1)} from ${DATA.googleTotals.reviewCount} ${DATA.source} reviews.`;
 
@@ -72,15 +72,15 @@ export default function ReviewsPage() {
           Relocating families, first-home buyers and investors go through the
           same process: in-person inspections, overlay and flood checks, and
           negotiation that stays inside the brief. The longer purchase stories
-          sit on <a href="/success-stories">success stories</a>.{" "}
-          <a href="/what-we-do">What we do</a> covers the process.{" "}
+          sit on <a href="/success-stories-buyers-agent-sunshine-coast">success stories</a>.{" "}
+          <a href="/what-we-do-buyers-agent-sunshine-coast">What we do</a> covers the process.{" "}
           <a href="/services">Services</a> lists where we buy.
         </p>
         <div className="cta-row">
           <a className="btn" href="/contact">
             Book a discovery call <span className="ar">→</span>
           </a>
-          <a className="btn glass" href="/success-stories">
+          <a className="btn glass" href="/success-stories-buyers-agent-sunshine-coast">
             Read success stories
           </a>
         </div>

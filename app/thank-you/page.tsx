@@ -38,19 +38,19 @@ export default function ThankYouPage() {
         <h2>While you wait</h2>
         <ul className="notfound-links">
           <li>
-            <a href="/reviews">Read client reviews</a>
+            <a href="/google-reviews-buyers-agent-sunshine-coast">Read client reviews</a>
           </li>
           <li>
-            <a href="/success-stories">Read a few client outcomes</a>
+            <a href="/success-stories-buyers-agent-sunshine-coast">Read a few client outcomes</a>
           </li>
           <li>
-            <a href="/what-we-do">See exactly how we work</a>
+            <a href="/what-we-do-buyers-agent-sunshine-coast">See exactly how we work</a>
           </li>
           <li>
-            <a href="/free-guides">Download the buyer guides</a>
+            <a href="/free-guides-and-downloads">Download the buyer guides</a>
           </li>
           <li>
-            <a href="/blog">Read the blog</a>
+            <a href="/blogs-buyers-agent-sunshine-coast">Read the blog</a>
           </li>
         </ul>
       </div>

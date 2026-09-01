@@ -109,7 +109,7 @@ export default async function LegacyPostPage({ params }: Props) {
       inLanguage: 'en-AU',
     },
     breadcrumb(url, [
-      { name: 'Blog', item: `${SITE}/blog` },
+      { name: 'Blog', item: `${SITE}/blogs-buyers-agent-sunshine-coast` },
       { name: post.title, item: url },
     ]),
   ]);
@@ -118,7 +118,7 @@ export default async function LegacyPostPage({ params }: Props) {
     <BlogShell heroTitle={<>{post.title}</>} heroSub="" showInsightsHead={false}>
       <JsonLd data={schema} />
       <p className="blog-back-row">
-        <a className="blog-back" href="/blog">
+        <a className="blog-back" href="/blogs-buyers-agent-sunshine-coast">
           <span className="ar">←</span> Back to blog
         </a>
       </p>

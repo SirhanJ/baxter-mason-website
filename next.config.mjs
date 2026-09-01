@@ -17,6 +17,8 @@ const pageSlugs = fs
 
 const legacyRedirects = read('./data/legacy-redirects.json');
 const postRedirects = read('./data/post-redirects.json');
+const canonicalRoutes = read('./data/canonical-routes.json');
+const canonicalPaths = new Set(Object.values(canonicalRoutes));
 
 const permanent = (source, destination) => ({ source, destination, permanent: true });
 
@@ -30,18 +32,29 @@ const permanent = (source, destination) => ({ source, destination, permanent: tr
  */
 const cleanUrlRewrites = [
   { source: '/', destination: '/index.html' },
+  ...Object.entries(canonicalRoutes).map(([internal, canonical]) => ({
+    source: canonical,
+    destination: pageSlugs.includes(internal.slice(1))
+      ? `${internal}.html`
+      : internal,
+  })),
   ...pageSlugs.map((slug) => ({ source: `/${slug}`, destination: `/${slug}.html` })),
 ];
 
 const cleanUrlRedirects = [
   permanent('/index.html', '/'),
-  ...pageSlugs.map((slug) => permanent(`/${slug}.html`, `/${slug}`)),
+  ...pageSlugs.map((slug) =>
+    permanent(`/${slug}.html`, canonicalRoutes[`/${slug}`] || `/${slug}`),
+  ),
+  ...Object.entries(canonicalRoutes).map(([internal, canonical]) =>
+    permanent(internal, canonical),
+  ),
 ];
 
 /** The old site's URLs, so nothing that is indexed today lands on a 404. */
 const migrationRedirects = [
   ...Object.entries(legacyRedirects)
-    .filter(([source]) => source.startsWith('/'))
+    .filter(([source]) => source.startsWith('/') && !canonicalPaths.has(source))
     .map(([source, destination]) => permanent(source, destination)),
 
   // Posts that now live in the blog under a new slug.

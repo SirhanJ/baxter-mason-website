@@ -40,21 +40,21 @@ export function SiteHeader() {
               About <span className="drop-chevron" />
             </button>
             <div className="drop-menu">
-              <a href="/what-we-do">What We Do</a>
-              <a href="/why-work-with-us">Why Work With Us</a>
-              <a href="/coaching">Coaching</a>
-              <a href="/investment">Investment</a>
-              <a href="/commercial">Commercial</a>
-              <a href="/empowering-women">Empowering Women</a>
-              <a href="/our-people">Our People</a>
-              <a href="/privacy">Privacy Policy</a>
-              <a href="/terms">Terms &amp; Conditions</a>
+              <a href="/what-we-do-buyers-agent-sunshine-coast">What We Do</a>
+              <a href="/sunshine-coast-buyers-agent">Why Work With Us</a>
+              <a href="/property-coaching-sunshine-coast-buyers-agent">Coaching</a>
+              <a href="/investment-expertise-sunshine-coast">Investment</a>
+              <a href="/commercial-property-acquisition-sunshine-coast-buyers-agent">Commercial</a>
+              <a href="/empowering-women-through-property-sunshine-coast">Empowering Women</a>
+              <a href="/our-people-buyers-agent-sunshine-coast">Our People</a>
+              <a href="/privacy-statement-buyers-agent-sunshine-coast">Privacy Policy</a>
+              <a href="/terms--conditions">Terms &amp; Conditions</a>
             </div>
           </div>
           <a className="l" href="/services">
             Services
           </a>
-          <a className="l" href="/success-stories">
+          <a className="l" href="/success-stories-buyers-agent-sunshine-coast">
             Success Stories
           </a>
           <div className="nav-item has-drop">
@@ -66,10 +66,10 @@ export function SiteHeader() {
               Resources <span className="drop-chevron" />
             </button>
             <div className="drop-menu">
-              <a href="/free-guides">Free Guides</a>
-              <a href="/faq">FAQ</a>
-              <a href="/blog">Blog</a>
-              <a href="/reviews">Client Reviews</a>
+              <a href="/free-guides-and-downloads">Free Guides</a>
+              <a href="/FAQ-Buyers-Agent-Sunshine-Coast">FAQ</a>
+              <a href="/blogs-buyers-agent-sunshine-coast">Blog</a>
+              <a href="/google-reviews-buyers-agent-sunshine-coast">Client Reviews</a>
             </div>
           </div>
           <a className="l" href="/contact">
@@ -217,19 +217,19 @@ export function SiteFooter() {
               <h4>Explore</h4>
               <ul>
                 <li>
-                  <a href="/what-we-do">What We Do</a>
+                  <a href="/what-we-do-buyers-agent-sunshine-coast">What We Do</a>
                 </li>
                 <li>
-                  <a href="/our-people">Our People</a>
+                  <a href="/our-people-buyers-agent-sunshine-coast">Our People</a>
                 </li>
                 <li>
                   <a href="/services">Services</a>
                 </li>
                 <li>
-                  <a href="/success-stories">Success Stories</a>
+                  <a href="/success-stories-buyers-agent-sunshine-coast">Success Stories</a>
                 </li>
                 <li>
-                  <a href="/reviews">Client Reviews</a>
+                  <a href="/google-reviews-buyers-agent-sunshine-coast">Client Reviews</a>
                 </li>
               </ul>
             </div>
@@ -260,10 +260,10 @@ export function SiteFooter() {
                   <a href="/contact">Book a discovery call</a>
                 </li>
                 <li>
-                  <a href="/privacy">Privacy policy</a>
+                  <a href="/privacy-statement-buyers-agent-sunshine-coast">Privacy policy</a>
                 </li>
                 <li>
-                  <a href="/terms">Terms &amp; Conditions</a>
+                  <a href="/terms--conditions">Terms &amp; Conditions</a>
                 </li>
               </ul>
             </div>

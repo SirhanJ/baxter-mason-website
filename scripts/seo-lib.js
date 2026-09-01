@@ -14,6 +14,11 @@ const GRAPH_OPEN = "<!-- seo:graph -->";
 const GRAPH_CLOSE = "<!-- /seo:graph -->";
 const ROBOTS_MARK = "seo:robots";
 const LINKED_MARK = "data-suburb-link";
+const CANONICAL_ROUTES = require("../data/canonical-routes.json");
+
+function canonicalPath(url) {
+  return CANONICAL_ROUTES[url] || url;
+}
 
 const read = (f) => fs.readFileSync(f, "utf8");
 const write = (f, s) => fs.writeFileSync(f, s, "utf8");
@@ -35,7 +40,8 @@ const strip = (s) =>
 /** public/foo.html -> /foo ; public/index.html -> / */
 function urlFor(file) {
   const base = path.basename(file, ".html");
-  return base === "index" ? "/" : "/" + base;
+  const internal = base === "index" ? "/" : "/" + base;
+  return canonicalPath(internal);
 }
 
 /* ------------------------------------------------------ image dimensions */
@@ -161,10 +167,15 @@ function rewriteLinks(html) {
     if (/\.html$/i.test(bare)) {
       const slug = bare.replace(/\.html$/i, "");
       if (!SLUGS.has(slug)) return whole;
-      return attr + '="' + (slug === "index" ? "/" : "/" + slug) + suffix + '"';
+      const internal = slug === "index" ? "/" : "/" + slug;
+      return attr + '="' + canonicalPath(internal) + suffix + '"';
     }
     if (/^(images|css|js)\//i.test(bare))
       return attr + '="/' + bare + suffix + '"';
+    if (attr.toLowerCase() === "href" && pathPart.startsWith("/")) {
+      const canonical = canonicalPath(pathPart);
+      if (canonical !== pathPart) return attr + '="' + canonical + suffix + '"';
+    }
     return whole;
   });
 }
@@ -193,20 +204,23 @@ function rewriteInlineBackgrounds(html) {
  * redirect — add it to the Explore column so every page links to it.
  */
 function ensureReviewsLink(html) {
-  if (html.indexOf('href="/reviews"') !== -1) return html;
+  const reviewsUrl = canonicalPath("/reviews");
+  if (html.indexOf('href="' + reviewsUrl + '"') !== -1) return html;
   return html.replace(
-    /(<li><a href="\/success-stories">Success Stories<\/a><\/li>)/i,
-    '$1\n<li><a href="/reviews">Client Reviews</a></li>',
+    /(<li><a href="\/success-stories-buyers-agent-sunshine-coast">Success Stories<\/a><\/li>)/i,
+    '$1\n<li><a href="' + reviewsUrl + '">Client Reviews</a></li>',
   );
 }
 
 const SUBURB_PROOF_MARK = "<!-- seo:suburb-proof -->";
 
 function ensureReviewsNav(html) {
-  if (/href="\/blog">Blog<\/a>\s*<a href="\/reviews">/i.test(html)) return html;
+  const blogUrl = canonicalPath("/blog");
+  const reviewsUrl = canonicalPath("/reviews");
+  if (html.indexOf('href="' + reviewsUrl + '"') !== -1) return html;
   return html.replace(
-    /(<a href="\/blog">Blog<\/a>)/i,
-    '$1\n<a href="/reviews">Client Reviews</a>',
+    new RegExp('(<a href="' + blogUrl + '">Blog<\\/a>)', 'i'),
+    '$1\n<a href="' + reviewsUrl + '">Client Reviews</a>',
   );
 }
 
@@ -224,7 +238,7 @@ function addSuburbProof(html, suburbName) {
     SUBURB_PROOF_MARK +
     '\n<div class="prose-block rv suburb-proof">\n<p>Buyers we represent in ' +
     name +
-    ' get the same in-person inspections, overlay checks and negotiation we use across the Coast. Read the <a href="/reviews">Google reviews</a> from those purchases, or <a href="/contact">book a discovery call</a> to talk through ' +
+    ' get the same in-person inspections, overlay checks and negotiation we use across the Coast. Read the <a href="' + canonicalPath("/reviews") + '">Google reviews</a> from those purchases, or <a href="/contact">book a discovery call</a> to talk through ' +
     name +
     ".</p>\n</div>\n" +
     SUBURB_PROOF_MARK;
@@ -370,6 +384,7 @@ module.exports = {
   write,
   unesc,
   strip,
+  canonicalPath,
   urlFor,
   dimsFor,
   webpSibling,

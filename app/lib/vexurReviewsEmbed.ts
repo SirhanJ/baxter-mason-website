@@ -21,7 +21,7 @@ export function homeReviewsEmbedUrl(): string {
     minRating: "4",
     reviewSort: "newest",
     layout: "horizontal",
-    animation: "slide",
+    animation: "none",
     animationSpeed: "standard",
     showBranding: "true",
     showCarouselArrows: "true",

@@ -36,17 +36,17 @@ const LINKS: { href: string; label: string; note: string }[] = [
     note: '15 minutes, no obligation. The fastest way to work out whether we can help.',
   },
   {
-    href: '/what-we-do',
+    href: '/what-we-do-buyers-agent-sunshine-coast',
     label: 'What we do',
     note: 'How a buyers agency actually works, what we charge, and what you get.',
   },
   {
-    href: '/our-people',
+    href: '/our-people-buyers-agent-sunshine-coast',
     label: 'Who we are',
     note: 'A woman-led buyers agency based in Buddina, buying across the Sunshine Coast.',
   },
   {
-    href: '/success-stories',
+    href: '/success-stories-buyers-agent-sunshine-coast',
     label: 'Success stories',
     note: 'Real purchases, real numbers — from first homes to dual-income investments.',
   },
@@ -56,17 +56,17 @@ const LINKS: { href: string; label: string; note: string }[] = [
     note: 'Thirty suburbs from Caloundra to Noosa, each one covered properly.',
   },
   {
-    href: '/free-guides',
+    href: '/free-guides-and-downloads',
     label: 'Free guides',
     note: 'The checklists and explainers we hand our own clients.',
   },
   {
-    href: '/blog',
+    href: '/blogs-buyers-agent-sunshine-coast',
     label: 'The blog',
     note: 'Market reads and buying strategy, written between inspections.',
   },
   {
-    href: '/faq',
+    href: '/FAQ-Buyers-Agent-Sunshine-Coast',
     label: 'FAQs',
     note: 'The questions we get asked before every engagement.',
   },

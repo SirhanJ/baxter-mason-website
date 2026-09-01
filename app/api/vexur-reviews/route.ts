@@ -45,7 +45,22 @@ export async function GET(request: Request) {
       });
     }
 
-    return new Response(html, {
+    const isHorizontal = incoming.searchParams.get("layout") === "horizontal";
+    const servedHtml = isHorizontal
+      ? html.replace(
+          /<\/head>/i,
+          `<style id="baxter-review-layout">
+            .vx-card { max-width: none !important; }
+            @media (min-width: 760px) {
+              .vx-card .vx-reviews-horizontal .vx-review-card {
+                flex: 0 0 calc((100% - 24px) / 3) !important;
+              }
+            }
+          </style></head>`,
+        )
+      : html;
+
+    return new Response(servedHtml, {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=utf-8",

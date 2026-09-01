@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params }: Props) {
       publisher: { '@id': ORG_ID },
       inLanguage: 'en-AU',
       mainEntityOfPage: { '@id': `${url}#webpage` },
-      isPartOf: { '@id': `${SITE}/blog#blog` },
+      isPartOf: { '@id': `${SITE}/blogs-buyers-agent-sunshine-coast#blog` },
     },
     {
       '@type': 'WebPage',
@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: Props) {
       inLanguage: 'en-AU',
     },
     breadcrumb(url, [
-      { name: 'Blog', item: `${SITE}/blog` },
+      { name: 'Blog', item: `${SITE}/blogs-buyers-agent-sunshine-coast` },
       { name: post.title, item: url },
     ]),
   ]);
@@ -95,7 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
       <JsonLd data={schema} />
       <BlogLinkFixup />
       <p className="blog-back-row">
-        <a className="blog-back" href="/blog">
+        <a className="blog-back" href="/blogs-buyers-agent-sunshine-coast">
           <span className="ar">←</span> Back to blog
         </a>
       </p>

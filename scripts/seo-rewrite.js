@@ -27,6 +27,7 @@ const {
   GRAPH_OPEN,
   GRAPH_CLOSE,
   LINKED_MARK,
+  canonicalPath,
   PAGES,
 } = lib;
 
@@ -125,10 +126,10 @@ function breadcrumb(page) {
     trail.push({ name: "Areas We Service", item: absolute("/services") });
     trail.push({ name: page.h1, item: absolute(page.url) });
   } else if (page.type === "story") {
-    trail.push({ name: "Success Stories", item: absolute("/success-stories") });
+    trail.push({ name: "Success Stories", item: absolute(canonicalPath("/success-stories")) });
     trail.push({ name: page.h1, item: absolute(page.url) });
   } else if (page.type === "article") {
-    trail.push({ name: "Blog", item: absolute("/blog") });
+    trail.push({ name: "Blog", item: absolute(canonicalPath("/blog")) });
     trail.push({ name: page.h1, item: absolute(page.url) });
   } else if (page.type !== "home") {
     trail.push({
@@ -383,7 +384,14 @@ function addAreasHub(html, page) {
 
 /* ------------------------------------------------- suburb interlinking */
 
-const SKIP_LINKING = new Set(["index", "privacy", "terms", "contact", "faq"]);
+const SKIP_LINKING = new Set([
+  "index",
+  "privacy",
+  "terms",
+  "contact",
+  "faq",
+  "success-stories",
+]);
 
 /**
  * Link the first mention of each serviced suburb in a page's body copy. Only
