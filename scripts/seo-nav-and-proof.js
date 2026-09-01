@@ -10,7 +10,7 @@ const PUBLIC = path.join(__dirname, "..", "public");
 
 function bumpCaches(html) {
   return html
-    .replace(/main\.js\?v=\d+/g, "main.js?v=23")
+    .replace(/main\.js\?v=\d+/g, "main.js?v=24")
     .replace(/css\/styles\.css\?v=\d+/g, "css/styles.css?v=57")
     .replace(/css\/home\.css\?v=\d+/g, "css/home.css?v=31");
 }

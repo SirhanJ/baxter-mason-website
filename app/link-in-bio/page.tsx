@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { BlogShell } from '../components/BlogShell';
 import { JsonLd } from '../components/JsonLd';
 import { SITE, breadcrumb, graph } from '../lib/seo';
+import { BuyerProfileForm } from './BuyerProfileForm';
 
 /**
  * The destination in the Instagram and TikTok bios. It existed on the old site
@@ -11,7 +12,7 @@ import { SITE, breadcrumb, graph } from '../lib/seo';
 const URL = `${SITE}/link-in-bio`;
 const TITLE = 'Start here | Baxter & Mason';
 const DESCRIPTION =
-  'Everything in one place: who we are, what we do, real client outcomes, and a link to book a free discovery call with a Sunshine Coast buyers agent.';
+  'Complete your Baxter & Mason buyer profile, book a discovery call, and find the key resources for buying property on the Sunshine Coast.';
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -32,7 +33,7 @@ const LINKS: { href: string; label: string; note: string }[] = [
   {
     href: '/contact',
     label: 'Book a free discovery call',
-    note: '30 minutes, no obligation. The fastest way to work out whether we can help.',
+    note: '15 minutes, no obligation. The fastest way to work out whether we can help.',
   },
   {
     href: '/what-we-do',
@@ -99,13 +100,18 @@ export default function LinkInBioPage() {
     <BlogShell
       heroTitle={
         <>
-          Start <span className="gi">here</span>.
+          Your property <span className="gi">brief</span>.
         </>
       }
-      heroSub="You came from our bio. Everything worth reading is below."
+      heroSub="Tell Sally what you want to buy, then use the quick links below whenever you need them."
       showInsightsHead={false}
     >
       <JsonLd data={schema} />
+      <BuyerProfileForm />
+      <div className="bio-resource-head">
+        <span className="eyebrow">Quick links</span>
+        <h2>Keep exploring.</h2>
+      </div>
       <ul className="bio-links">
         {LINKS.map((link) => (
           <li key={link.href}>

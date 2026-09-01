@@ -11509,3 +11509,306 @@ body.vx-book-open {
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Privacy consent and the restored buyer profile.
+   --------------------------------------------------------------------------- */
+
+.form-honeypot,
+.buyer-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.cookie-consent {
+  position: fixed;
+  z-index: 100000;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 1.15rem 1.25rem;
+  color: #fff;
+  background: #292928;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.cookie-consent[hidden] {
+  display: none;
+}
+
+.cookie-consent-copy {
+  max-width: 680px;
+}
+
+.cookie-consent-copy strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.cookie-consent-copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.cookie-consent-copy a {
+  color: #fff;
+  text-underline-offset: 3px;
+}
+
+.cookie-consent-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.65rem;
+}
+
+.cookie-consent .btn {
+  min-width: 132px;
+  justify-content: center;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.privacy-choices-button {
+  position: fixed;
+  z-index: 99990;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.42rem 0.7rem;
+  color: #fff;
+  background: rgba(41, 41, 40, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font: 600 0.72rem/1 var(--sans);
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
+}
+
+.consent-embed-placeholder {
+  display: grid;
+  min-height: 280px;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--grey);
+  background: var(--slate-3);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+}
+
+.consent-embed-placeholder p {
+  max-width: 440px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.buyer-profile {
+  margin: 0 0 4rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 22px;
+  box-shadow: 0 20px 55px rgba(20, 20, 20, 0.06);
+}
+
+.buyer-profile-head {
+  max-width: 760px;
+  margin-bottom: 2rem;
+}
+
+.buyer-profile-head h2,
+.bio-resource-head h2 {
+  margin: 0.45rem 0 0.7rem;
+  font: 400 clamp(1.8rem, 4vw, 3rem)/1.08 var(--disp);
+  letter-spacing: -0.035em;
+}
+
+.buyer-profile-head p {
+  margin: 0;
+  color: var(--grey);
+  line-height: 1.7;
+}
+
+.buyer-profile-head .buyer-required-note {
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+}
+
+.buyer-profile-form {
+  position: relative;
+}
+
+.buyer-form-section {
+  padding: 1.65rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.buyer-form-section h3 {
+  margin: 0 0 1rem;
+  font: 600 1rem/1.3 var(--sans);
+}
+
+.buyer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.buyer-grid-compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.buyer-field-full {
+  grid-column: 1 / -1;
+}
+
+.buyer-field label,
+.buyer-choice legend {
+  display: block;
+  margin: 0 0 0.4rem;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.buyer-field label span,
+.buyer-choice legend span {
+  color: var(--orange);
+}
+
+.buyer-field input,
+.buyer-field textarea {
+  width: 100%;
+  padding: 0.82rem 0.9rem;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  font: 400 0.95rem/1.45 var(--sans);
+}
+
+.buyer-field textarea {
+  min-height: 128px;
+  resize: vertical;
+}
+
+.buyer-field input:focus,
+.buyer-field textarea:focus {
+  outline: 3px solid rgba(228, 64, 19, 0.14);
+  border-color: var(--orange);
+}
+
+.buyer-choice {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.buyer-choice-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.buyer-choice-options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.7rem 0.75rem;
+  color: var(--grey-deep);
+  background: var(--slate-3);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.buyer-choice-options input {
+  flex: 0 0 auto;
+  margin-top: 0.13rem;
+  accent-color: var(--orange);
+}
+
+.buyer-form-error {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  color: #a1260d;
+  background: #fff1ec;
+  border: 1px solid #ffc8b8;
+  border-radius: 10px;
+}
+
+.buyer-submit {
+  min-width: 220px;
+  justify-content: center;
+}
+
+.buyer-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.buyer-privacy {
+  margin: 0.85rem 0 0;
+  color: var(--grey);
+  font-size: 0.82rem;
+}
+
+.buyer-privacy a {
+  color: inherit;
+}
+
+.bio-resource-head {
+  margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+  .cookie-consent {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cookie-consent-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .buyer-grid,
+  .buyer-grid-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-choice-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 440px) {
+  .cookie-consent-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cookie-consent .btn {
+    width: 100%;
+  }
+}

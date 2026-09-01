@@ -3,6 +3,7 @@
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+
   var revealsStarted = false;
   function startReveals() {
     if (revealsStarted) return;
@@ -315,12 +316,7 @@
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
     var VEXUR_FORM_SUBMIT_URL =
-      "https://iipazmwbtctblpyszspb.supabase.co/functions/v1/form-submit";
-    var VEXUR_FORM_ID = "22c0524f-a1d7-40d8-bc9f-ef5f498aa140";
-    // Public anon key shipped with Vexur's embed widget (same as their contact.js)
-    var VEXUR_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpcGF6bXdidGN0YmxweXN6c3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzNDEzODcsImV4cCI6MjA3MzkxNzM4N30.YQ2IaG-Uywn1zPeRnSOnY5O7WwdXT8QOAs0toHy1GUE";
-
+      "https://iipazmwbtctblpyszspb.supabase.co/functions/v1/headless-form-submit/hli_76d4bd96867422782685e7b828300f9648520d4417cb4e9c";
     contactForm.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var first = document.getElementById("first-name");
@@ -328,6 +324,7 @@
       var email = document.getElementById("email");
       var phone = document.getElementById("phone");
       var message = document.getElementById("message");
+      var honeypot = document.getElementById("vx-company-website");
       var success = document.getElementById("form-success");
       var errorEl = document.getElementById("form-error");
       var submitBtn = contactForm.querySelector(".contact-submit");
@@ -344,18 +341,14 @@
       var fullName = (first.value.trim() + " " + last.value.trim()).trim();
       fetch(VEXUR_FORM_SUBMIT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: VEXUR_ANON_KEY,
-          Authorization: "Bearer " + VEXUR_ANON_KEY,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          formId: VEXUR_FORM_ID,
           fields: {
             name: fullName,
             email: email.value.trim(),
             phone: phone.value.trim(),
             message: message.value.trim(),
+            vx_company_website: honeypot ? honeypot.value.trim() : "",
           },
           attribution: {
             pageUrl: window.location.href,
@@ -544,7 +537,6 @@
         ' data-theme="light"' +
         ' data-primary-color="#e44013"' +
         ' data-show-branding="true"' +
-        ' data-consent="pending"' +
         ' data-vx-no-fallback="true"' +
         ' data-vx-param-calendar-widget-build-id="' +
         BUILD +

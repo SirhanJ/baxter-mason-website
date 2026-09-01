@@ -77,6 +77,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.4,
     },
+    {
+      url: `${SITE}/interview-funnel`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${SITE}/3big`,
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${SITE}/video-page-2417-2491`,
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${SITE}/special-video-report-v1-3603-7869`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${SITE}/special-video-report-v1-4327-6380-5418`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${SITE}/special-video-report-v1-4327-1283-3541-7869`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${SITE}/special-video-report-v1-4327-1283-6652-7055-4904`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
   ].map((page) => ({ ...page, lastModified: now }));
 
   return [...appPages, ...staticPages, ...blogPosts, ...preserved];

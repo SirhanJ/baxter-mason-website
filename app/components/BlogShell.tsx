@@ -113,7 +113,7 @@ export function SiteFooter() {
                 what you want to buy.
               </p>
               <div className="final-chips">
-                <span className="final-chip">Free · 30 min</span>
+                <span className="final-chip">Free · 15 min</span>
                 <span className="final-chip">No obligation</span>
                 <span className="final-chip">Sunshine Coast</span>
               </div>
@@ -274,7 +274,7 @@ export function SiteFooter() {
           </div>
         </div>
       </footer>
-      <Script src="/js/main.js?v=23" strategy="afterInteractive" />
+      <Script src="/js/main.js?v=24" strategy="afterInteractive" />
     </>
   );
 }
