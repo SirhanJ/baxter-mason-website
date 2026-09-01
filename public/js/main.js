@@ -664,6 +664,9 @@
     function applyHeight(iframe, height) {
       var next = Math.round(Number(height));
       if (!isFinite(next) || next < 200) return;
+      if (iframe.closest && iframe.closest(".hm-reviews-widget")) {
+        next = Math.min(next, 460);
+      }
       iframe.style.height = next + "px";
       iframe.style.minHeight = next + "px";
     }

@@ -4,6 +4,7 @@ import path from "path";
 import { SITE } from "./lib/seo";
 import { fetchPostCards } from "./lib/blogSource";
 import legacyPosts from "../data/legacy-posts.json";
+import postRedirects from "../data/post-redirects.json";
 import canonicalRoutes from "../data/canonical-routes.json";
 
 /**
@@ -69,6 +70,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
+  const historicalAliases = Object.keys(
+    postRedirects as Record<string, string>,
+  ).map((slug) => ({
+    url: `${SITE}/post/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   // App Router pages that have no file in public/ and so are not picked up above.
   // /thank-you is deliberately absent: it is noindex.
   const appPages = [
@@ -124,5 +134,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ].map((page) => ({ ...page, lastModified: now }));
 
-  return [...appPages, ...staticPages, ...blogPosts, ...preserved];
+  return [
+    ...appPages,
+    ...staticPages,
+    ...blogPosts,
+    ...preserved,
+    ...historicalAliases,
+  ];
 }

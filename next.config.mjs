@@ -16,7 +16,6 @@ const pageSlugs = fs
   .filter((slug) => slug !== 'index');
 
 const legacyRedirects = read('./data/legacy-redirects.json');
-const postRedirects = read('./data/post-redirects.json');
 const canonicalRoutes = read('./data/canonical-routes.json');
 const canonicalPaths = new Set(Object.values(canonicalRoutes));
 
@@ -56,11 +55,6 @@ const migrationRedirects = [
   ...Object.entries(legacyRedirects)
     .filter(([source]) => source.startsWith('/') && !canonicalPaths.has(source))
     .map(([source, destination]) => permanent(source, destination)),
-
-  // Posts that now live in the blog under a new slug.
-  ...Object.entries(postRedirects).map(([oldSlug, newSlug]) =>
-    permanent(`/post/${oldSlug}`, `/blog/${newSlug}`),
-  ),
 
   // The two alternate post paths the old CMS also served.
   permanent('/blogs-buyers-agent-sunshine-coast/b/:slug', '/post/:slug'),

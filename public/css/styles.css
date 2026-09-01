@@ -7890,6 +7890,10 @@ section.blk.prose-page {
     grid-template-columns: 1fr;
   }
 
+  .prose-page .prose-intro:has(.prose-intro-visual) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .prose-page .prose-intro:has(.prose-intro-visual) .prose-intro-copy {
     padding: clamp(24px, 4vw, 32px);
   }

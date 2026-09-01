@@ -755,12 +755,12 @@
    ============================================================ */
 .hm-love {
   background: var(--hm-cream);
-  padding: clamp(56px, 7vw, 84px) 0;
+  padding: clamp(40px, 5vw, 56px) 0;
 }
 .hm-love-head {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 30px;
+  margin: 0 auto 24px;
 }
 .hm-love-head p {
   margin: 18px auto 0;
@@ -825,21 +825,6 @@
 .hm-reviews-widget .rv-all {
   margin: 18px 0 0;
   text-align: center;
-}
-
-.hm-love-video {
-  max-width: 900px;
-  margin: 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-  box-shadow: 0 30px 70px -34px rgba(27, 26, 25, 0.55);
-}
-.hm-love-video iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
 }
 
 /* ============================================================
