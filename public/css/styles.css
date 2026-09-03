@@ -11864,3 +11864,60 @@ body.vx-book-open {
     width: 100%;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Bio hero portrait.
+
+   Sally asked for her photo to sit in the background of the page rather than
+   in a box, the way her old site had it. So: a cut-out with a transparent
+   background, bleeding off the bottom-right of the hero, behind the copy —
+   no frame, no border, no card. The copy keeps its own stacking context so it
+   stays readable over her at every width.
+   -------------------------------------------------------------------------- */
+
+.page-hero.has-bio-portrait {
+  /* Enough height for the whole portrait to sit inside the hero, uncropped. */
+  min-height: clamp(300px, 34vw, 430px);
+  padding-bottom: clamp(48px, 6vw, 72px);
+}
+
+.bio-hero-portrait {
+  position: absolute;
+  right: clamp(-24px, 1vw, 24px);
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: auto;
+  max-width: 44%;
+  object-fit: contain;
+  object-position: bottom right;
+  z-index: 1;
+  pointer-events: none;
+  /* Sits in the page rather than on it: softened into the hero at the base. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 78%, rgba(0, 0, 0, 0.15) 100%);
+  mask-image: linear-gradient(to bottom, #000 78%, rgba(0, 0, 0, 0.15) 100%);
+  opacity: 0.95;
+}
+
+.page-hero.has-bio-portrait > .wrap {
+  position: relative;
+  z-index: 2;
+}
+
+.page-hero.has-bio-portrait .page-hero-copy {
+  max-width: 58%;
+}
+
+@media (max-width: 900px) {
+  .page-hero.has-bio-portrait {
+    min-height: clamp(260px, 60vw, 340px);
+  }
+  .page-hero.has-bio-portrait .page-hero-copy {
+    max-width: 100%;
+  }
+  .bio-hero-portrait {
+    max-width: 62%;
+    right: -18px;
+    opacity: 0.42;
+  }
+}

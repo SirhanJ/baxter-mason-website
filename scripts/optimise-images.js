@@ -55,8 +55,11 @@ async function run() {
     if (!DRY && (needsResize || startSize > 300 * 1024)) {
       const pipeline = sharp(source, { failOn: 'none' }).rotate();
       if (needsResize) pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
+      // No palette quantisation: it is fine for flat graphics and ruins
+      // photographs, and the cut-out portraits are PNGs precisely because they
+      // carry alpha. Plain zlib recompression is always safe.
       const buf = await (isPng
-        ? pipeline.png({ compressionLevel: 9, palette: true }).toBuffer()
+        ? pipeline.png({ compressionLevel: 9 }).toBuffer()
         : pipeline.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer());
       if (buf.length < startSize) {
         fs.writeFileSync(file, buf);
