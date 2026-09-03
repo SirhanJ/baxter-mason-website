@@ -3849,7 +3849,9 @@ section.page-hero.img-hero {
 /* Family photo hero: taller frame + bottom anchor so nobody is cropped out. */
 section.page-hero.img-hero.hero-family {
   min-height: clamp(500px, 58vw, 640px);
-  background-position: 78% bottom;
+  /* confidence.webp is 1600x1324 in a 2.2:1 band, so the crop has to be
+     aimed: 12% keeps both faces in frame and the copy clear on the right. */
+  background-position: center 12%;
 }
 
 /* Bio pages: clean dark gradient banner (no photo crop issues) */
