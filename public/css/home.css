@@ -287,9 +287,9 @@
   overflow: hidden;
   text-align: left;
   background-color: #fff;
-  background-image: url("/images/property-coast.webp?v=2");
+  background-image: url("/images/sally.webp?v=3");
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: left 8% center;
   background-size: cover;
   padding: 20px 0;
 }
