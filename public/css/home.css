@@ -1332,3 +1332,9 @@ body.hm header.nav.stuck .burger span {
     color: #e44013;
   }
 }
+
+/* Blog CTA sits under the three cards, per Sally's note. */
+.hm-blog-cta {
+  margin: 40px 0 0;
+  text-align: center;
+}
