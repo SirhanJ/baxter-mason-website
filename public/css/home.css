@@ -287,13 +287,10 @@
   overflow: hidden;
   text-align: left;
   background-color: #fff;
-  background-image: url("/images/sally.webp?v=3");
+  background-image: url("/images/property-coast.webp?v=2");
   background-repeat: no-repeat;
-  background-position: left center;
-  /* sally.webp is 390x516. At cover on a full-width band it magnifies ~3.7x
-     and crops to her neck, so scale to the section height instead and let her
-     sit at the left, which is how her current site frames it. */
-  background-size: auto 100%;
+  background-position: center center;
+  background-size: cover;
   padding: 20px 0;
 }
 .hm-statement--split .wrap {
