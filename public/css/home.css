@@ -287,12 +287,13 @@
   overflow: hidden;
   text-align: left;
   background-color: #fff;
-  background-image: url("/images/property-coast.webp?v=2");
+  background-image: url("/images/sally-confidence.webp?v=1");
   background-repeat: no-repeat;
-  /* Sally's head sits 18.7% down a 1600x840 frame. The section is far wider
-     than it is tall, so cover crops vertically, and center splits that crop
-     evenly: past roughly 1900px wide it takes more than 188px off the top
-     and beheads her. Anchoring to the top never cuts it, at any width. */
+  /* sally-confidence.webp is property-coast.webp with 100px of dead white
+     trimmed off the top, so her head sits 7.7% down rather than 18.7%. Anchored
+     to the top that holds 45-90px of headroom at every width and keeps 89-94%
+     of the frame at normal desktop sizes. Centring the untrimmed image cut her
+     head above ~1900px wide and wasted the space above it below that. */
   background-position: center top;
   background-size: cover;
   padding: 20px 0;
