@@ -838,19 +838,12 @@
 }
 .hm-reviews-widget .rv-all {
   margin: 0;
-  padding: 4px 20px 22px;
+  padding: 8px 20px 24px;
   text-align: center;
 }
-.hm-reviews-widget .rv-all a {
-  color: #9b2b0f;
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-.hm-reviews-widget .rv-all a:hover,
-.hm-reviews-widget .rv-all a:focus-visible {
-  color: var(--hm-ink);
+.hm-reviews-widget .rv-all a.hm-btn {
+  /* Sally asked for this to be a button, matching the other two on the page. */
+  text-decoration: none;
 }
 .hm-love-video {
   max-width: 900px;

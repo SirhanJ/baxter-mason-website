@@ -80,7 +80,7 @@ function homeReviewsBlock() {
     '\n<div class="hm-reviews-widget rv d1">\n' +
     iframeMarkup(homeReviewsEmbedUrl(), 460) +
     "\n" +
-    '<p class="rv-all"><a href="/google-reviews-buyers-agent-sunshine-coast">Read all reviews <span class="ar">&rarr;</span></a></p>\n' +
+    '<p class="rv-all"><a class="hm-btn" href="/google-reviews-buyers-agent-sunshine-coast">Read all reviews <span class="ar">&rarr;</span></a></p>\n' +
     "</div>\n" +
     REVIEWS_MARK
   );
