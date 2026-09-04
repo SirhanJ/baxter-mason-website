@@ -289,7 +289,11 @@
   background-color: #fff;
   background-image: url("/images/property-coast.webp?v=2");
   background-repeat: no-repeat;
-  background-position: center center;
+  /* Sally's head sits 18.7% down a 1600x840 frame. The section is far wider
+     than it is tall, so cover crops vertically, and center splits that crop
+     evenly: past roughly 1900px wide it takes more than 188px off the top
+     and beheads her. Anchoring to the top never cuts it, at any width. */
+  background-position: center top;
   background-size: cover;
   padding: 20px 0;
 }
