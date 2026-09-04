@@ -289,8 +289,11 @@
   background-color: #fff;
   background-image: url("/images/sally.webp?v=3");
   background-repeat: no-repeat;
-  background-position: left 8% center;
-  background-size: cover;
+  background-position: left center;
+  /* sally.webp is 390x516. At cover on a full-width band it magnifies ~3.7x
+     and crops to her neck, so scale to the section height instead and let her
+     sit at the left, which is how her current site frames it. */
+  background-size: auto 100%;
   padding: 20px 0;
 }
 .hm-statement--split .wrap {
