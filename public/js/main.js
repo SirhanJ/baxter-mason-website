@@ -49,7 +49,10 @@
   if (reduceMotion || !loader) {
     dismissLoader();
   } else {
-    var minShow = 650;
+    // Waiting on "load" meant waiting on every hero image, which on a phone
+    // held the splash over the page for seconds. The content is ready at
+    // DOMContentLoaded, so dismiss there and keep a short safety net.
+    var minShow = 450;
     function scheduleDismiss() {
       var wait = Math.max(
         0,
@@ -57,12 +60,12 @@
       );
       setTimeout(dismissLoader, wait);
     }
-    if (document.readyState === "complete") {
+    if (document.readyState !== "loading") {
       scheduleDismiss();
     } else {
-      window.addEventListener("load", scheduleDismiss);
+      document.addEventListener("DOMContentLoaded", scheduleDismiss);
     }
-    setTimeout(dismissLoader, 3600);
+    setTimeout(dismissLoader, 1800);
   }
 
   function ease(t) {

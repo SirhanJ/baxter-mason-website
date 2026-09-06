@@ -363,7 +363,10 @@ img {
   background: var(--cream);
   opacity: 1;
   visibility: visible;
-  animation: loaderAutoHide 0.7s var(--ease) 2.8s forwards;
+  /* Was 2.8s. The fade runs over the hero, so a long hold is exactly the
+     "logo showing through" Sally reported, and it delays first paint of
+     real content for no benefit. */
+  animation: loaderAutoHide 0.5s var(--ease) 0.9s forwards;
 }
 
 .site-loader.done {
@@ -737,12 +740,19 @@ body.nav-open {
   gap: clamp(18px, 2.2vw, 28px);
 }
 
-@media (max-width: 1100px) {
+/* Narrow-desktop sizing for the horizontal nav, scoped above the drawer
+   breakpoint. .links .l:not(.drop-toggle) outranks the drawer's own
+   .links > a.l, so unscoped this shrank Services, Success Stories and
+   Contact to 13px inside the mobile menu while About and Resources kept
+   16px, and the plain links read as small print rather than menu items. */
+@media (min-width: 981px) and (max-width: 1100px) {
   .links .l:not(.drop-toggle),
   .links a.l {
     font-size: 13px;
   }
+}
 
+@media (max-width: 1100px) {
   .nav .btn {
     padding: 11px 18px;
     font-size: 13px;
@@ -1003,6 +1013,13 @@ body.nav-open {
   }
 
   .nav-item.has-drop.open .drop-menu {
+    /* The desktop open state centres the panel with translateX(-50%). The
+       collapsed rule above resets transform, but .nav-item.has-drop.open
+       .drop-menu outranks it, so on a phone the submenu was still shifted
+       half its width left: it started at x=-63 against a drawer beginning
+       at x=45, and the drawer clipped the first 108px of every item, which
+       is why "What We Do" read as "Do". */
+    transform: none;
     max-height: 520px;
     margin-top: 10px;
     margin-bottom: 4px;
