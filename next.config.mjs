@@ -86,12 +86,19 @@ const migrationRedirects = [
   permanent('/success-stories-buyers-agent-sunshine-coast/b/:slug', '/post/:slug'),
   permanent('/buyers-agent-real-results/b/:slug', '/post/:slug'),
   permanent('/:prefix(blogs?-[^/]+)/b/:slug', '/post/:slug'),
+  permanent('/:prefix(home-blog-[^/]+)/b/:slug', '/post/:slug'),
 
-  // The old success-story CMS had two collection namespaces. Their post
-  // addresses survive; collection and archive variants consolidate directly.
+  // The old success-story CMS had three collection namespaces: the two named
+  // for the page they sat on, and the /home-blog-<id> address GoHighLevel gave
+  // the same collection elsewhere. Their post addresses survive; collection and
+  // archive variants consolidate directly. The home-blog form was missed the
+  // first time and left 83 indexed tag and category addresses on a 404.
   permanent('/buyers-agent-real-results', canonicalSuccessStoriesPath),
-  ...['buyers-agent-real-results', 'success-stories-buyers-agent-sunshine-coast']
-    .flatMap((prefix) => ['c', 'category', 'tag', 'author'].map((segment) =>
+  ...[
+    'buyers-agent-real-results',
+    'success-stories-buyers-agent-sunshine-coast',
+    ':prefix(home-blog-[^/]+)',
+  ].flatMap((prefix) => ['c', 'category', 'tag', 'author'].map((segment) =>
       permanent(`/${prefix}/${segment}/:path*`, canonicalSuccessStoriesPath),
     )),
 
