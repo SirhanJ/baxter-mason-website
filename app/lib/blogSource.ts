@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { rewriteBlogLinks } from './rewriteBlogLinks';
 import { OLD_TO_CURRENT_POST_SLUG } from './blogCanonical';
 
@@ -88,8 +90,15 @@ export type Post = {
   image: string;
 };
 
-/** One post, with its title and description read out of the rendered body. */
-export async function fetchPost(slug: string): Promise<Post | null> {
+/**
+ * One post, with its title and description read out of the rendered body.
+ *
+ * Wrapped in React's cache so generateMetadata and the page body share a single call. Both ask
+ * for the same slug on every request, and without this the fetch, the link rewrite and the
+ * regex parse all ran twice - doubling the CPU on a route that was already exceeding the
+ * Cloudflare Worker's budget (2026-09-07).
+ */
+export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
   let html: string;
   try {
     html = rewriteBlogLinks(await fetchText(`${BASE}/${encodeURIComponent(slug)}?embed=true`));
@@ -109,4 +118,4 @@ export async function fetchPost(slug: string): Promise<Post | null> {
     description: firstPara ? plain(firstPara[1]).slice(0, 155) : '',
     image: image ? image[1] : '',
   };
-}
+});
