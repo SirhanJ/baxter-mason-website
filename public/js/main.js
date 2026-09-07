@@ -550,11 +550,11 @@
         ' data-vx-param-v="' +
         VERSION +
         '"' +
-        "></div>" +
-        '<p class="vx-book-modal__fallback">Cannot find a time that suits? Call ' +
-        '<a href="tel:+61490744453">0490 744 453</a> or email ' +
-        '<a href="mailto:mail@baxtermason.com.au">mail@baxtermason.com.au</a>.</p>';
+        "></div>";
 
+      // Inert until opened. It stays full-size and rendered the whole time so the widget keeps
+      // real dimensions, so without this its controls would be tabbable behind the page.
+      modal.setAttribute("inert", "");
       document.body.appendChild(modal);
 
       modal.addEventListener("click", function (ev) {
@@ -577,27 +577,29 @@
     }
 
     function openModal() {
+      // No-op once the idle warm-up has run. Only does work if the click beat idle.
+      warm();
       var el = ensureModal();
       lastFocus = document.activeElement;
+      el.removeAttribute("inert");
       el.classList.add("is-open");
       el.setAttribute("aria-hidden", "false");
       document.body.classList.add("vx-book-open");
       var closeBtn = el.querySelector(".vx-book-modal__close");
       if (closeBtn) closeBtn.focus();
-      ensureLoader(function () {
-        if (
-          window.VexurWidgetLoader &&
-          typeof window.VexurWidgetLoader.mountAll === "function"
-        ) {
-          window.VexurWidgetLoader.mountAll();
-        }
-      });
+      // Deliberately nothing else. There is no mount call on open: the loader refetches its
+      // render envelope every time a widget mounts, whatever its cache headers say, so mounting
+      // here is what made the first open cost seconds. The widget is already mounted and
+      // rendered by now, and the click only fades it in.
     }
 
     function closeModal() {
       if (!modal) return;
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
+      // Keeps the still-rendered widget out of the tab order and the accessibility tree while
+      // it sits there invisible.
+      modal.setAttribute("inert", "");
       document.body.classList.remove("vx-book-open");
       if (lastFocus && typeof lastFocus.focus === "function") {
         try {
@@ -658,11 +660,30 @@
       ensureLoader();
     }
 
-    // Preload + mount the calendar as early as possible so it opens instantly.
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", warm);
+    /*
+     * Mount the calendar before anyone clicks, on idle.
+     *
+     * Warming the network alone does nothing: the loader refetches its render envelope on every
+     * mount regardless of HTTP caching, so prefetching the render URL still left the click paying
+     * for a full fetch and render. The only thing that helps is having the widget already mounted,
+     * which is why the modal is built and mounted here rather than on open.
+     *
+     * On idle rather than DOMContentLoaded so it never competes with first paint, with a timeout
+     * so it still happens on a busy page, and a setTimeout fallback where requestIdleCallback is
+     * missing (Safari). openModal() calls warm() too, so a click that beats idle still works.
+     */
+    function scheduleWarm() {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(warm, { timeout: 1200 });
+      } else {
+        window.setTimeout(warm, 600);
+      }
+    }
+
+    if (document.readyState === "complete") {
+      scheduleWarm();
     } else {
-      warm();
+      window.addEventListener("load", scheduleWarm, { once: true });
     }
   })();
   /* ---------- Vexur Google Reviews: grow the iframe to content ---------- */

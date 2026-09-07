@@ -11012,6 +11012,17 @@ body .drop-menu a:hover {
 /* ============================================================
    Vexur booking overlay — embed only (no card / title / copy)
    ============================================================ */
+/*
+ * Hidden with opacity only - never display:none or visibility:hidden.
+ *
+ * The Vexur loader needs the host to have real layout dimensions. Given none it marks the host
+ * mounted and bails, so the calendar would only start rendering on the click and the first open
+ * cost seconds. Kept at full size and transparent, the widget mounts during the idle warm-up and
+ * the click just fades in something that already exists.
+ *
+ * pointer-events:none is what stops the invisible full-screen layer swallowing clicks, and the
+ * script pairs it with inert so it is out of the tab order and the accessibility tree too.
+ */
 .vx-book-modal {
   position: fixed;
   inset: 0;
@@ -11022,14 +11033,19 @@ body .drop-menu a:hover {
   justify-content: center;
   padding: 16px;
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
+  transition: opacity 0.22s ease;
 }
 
 .vx-book-modal.is-open {
   opacity: 1;
-  visibility: visible;
   pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vx-book-modal {
+    transition: none;
+  }
 }
 
 .vx-book-modal__backdrop {
@@ -11067,21 +11083,6 @@ body .drop-menu a:hover {
   font-size: 28px;
   line-height: 1;
   cursor: pointer;
-}
-
-.vx-book-modal__fallback {
-  position: relative;
-  z-index: 2;
-  margin: 14px 0 0;
-  max-width: 920px;
-  text-align: center;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.vx-book-modal__fallback a {
-  color: #ff8a5c;
-  text-decoration: underline;
 }
 
 body.vx-book-open {
