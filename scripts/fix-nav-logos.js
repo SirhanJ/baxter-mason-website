@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const PUBLIC = path.join(__dirname, '..', 'public');
 const TARGET_SRC = 'images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo-nav.png';
