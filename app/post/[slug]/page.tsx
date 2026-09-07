@@ -42,7 +42,20 @@ function snippet(text: string, limit = 155): string {
 }
 
 export const revalidate = 3600;
-export const dynamicParams = false;
+/**
+ * Render on demand rather than serving only what was prerendered.
+ *
+ * With this false, every /post address 404'd in production - including slugs served purely from
+ * data/legacy-posts.json, which need no network at all. The prerendered pages do not survive into
+ * the Cloudflare Worker deployment, and dynamicParams:false makes anything absent a hard 404, so
+ * the entire blog archive was unreachable. /blog/<slug> redirects into /post/<slug>, so every
+ * article on the site was dead (reported 2026-09-07).
+ *
+ * generateStaticParams below still lists every known slug, so the common paths stay prerendered
+ * where the build output does survive. Unknown slugs are not a hole: the component calls
+ * notFound() for anything absent from both the archive and the alias map.
+ */
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return [
