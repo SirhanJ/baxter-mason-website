@@ -1,7 +1,13 @@
 import type { MetadataRoute } from "next";
-import fs from "fs";
-import path from "path";
 import { SITE } from "./lib/seo";
+/**
+ * Captured at build time by scripts/materialise-canonical-pages.js.
+ *
+ * This used to be an fs.readdirSync of public/ inside the handler. A Cloudflare Worker has no
+ * filesystem, so it threw and /sitemap.xml returned 500 in production while working under
+ * `next dev` - with robots.txt pointing search engines straight at it.
+ */
+import pageSlugs from "../data/page-slugs.json";
 import { fetchPostCards } from "./lib/blogSource";
 import { oldPostSlugForCurrent } from "./lib/blogCanonical";
 import legacyPosts from "../data/legacy-posts.json";
@@ -44,10 +50,7 @@ function priorityFor(slug: string): number {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const staticPages = fs
-    .readdirSync(path.join(process.cwd(), "public"))
-    .filter((file) => file.endsWith(".html"))
-    .map((file) => file.replace(/\.html$/, ""))
+  const staticPages = (pageSlugs as string[])
     // /blog is an App Router page now, not a file in public.
     .filter((slug) => slug !== "blog")
     .map((slug) => {

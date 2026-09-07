@@ -28,7 +28,32 @@ const ROOT = path.join(__dirname, "..");
 const PUBLIC_DIR = path.join(ROOT, "public");
 const canonicalRoutes = JSON.parse(fs.readFileSync(path.join(ROOT, "data/canonical-routes.json"), "utf8"));
 
+function writePageSlugs(canonicalTargets) {
+  // app/sitemap.ts used to read public/ with fs at request time. A Cloudflare Worker has no
+  // filesystem, so that threw and /sitemap.xml returned 500 in production while working under
+  // `next dev` (found 2026-09-07, with robots.txt pointing search engines straight at it).
+  //
+  // The list is captured here instead, at build time. Canonical copies are excluded: they are
+  // duplicates of a page already in the list, and including them would list every page twice.
+  const slugs = fs
+    .readdirSync(PUBLIC_DIR)
+    .filter((file) => file.endsWith(".html"))
+    .map((file) => file.replace(/.html$/, ""))
+    .filter((slug) => !canonicalTargets.has(slug))
+    .sort();
+
+  fs.writeFileSync(path.join(ROOT, "data/page-slugs.json"), JSON.stringify(slugs, null, 2) + "\n");
+  return slugs.length;
+}
+
 function main() {
+  const canonicalTargets = new Set(
+    Object.entries(canonicalRoutes)
+      .filter(([internal, canonical]) => internal !== canonical)
+      .map(([, canonical]) => canonical.replace(/^\//, "")),
+  );
+  const slugCount = writePageSlugs(canonicalTargets);
+
   let written = 0;
   let skipped = 0;
   const noSource = [];
@@ -55,6 +80,7 @@ function main() {
     else written += 1;
   }
 
+  console.log(`page slugs recorded     : ${slugCount}`);
   console.log(`canonical pages written : ${written}`);
   console.log(`refreshed               : ${skipped}`);
   console.log(`served by a route       : ${noSource.length}${noSource.length ? ` (${noSource.join(", ")})` : ""}`);
