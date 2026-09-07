@@ -4,12 +4,18 @@
  */
 export const VEXUR_REVIEWS_AGENT_ID = "09a089fd-72c0-412d-bb2b-0b0ab9cc4ecd";
 export const VEXUR_REVIEWS_ORIGIN = "https://app.vexur.com.au";
-const PRIMARY = "#e44013";
+/**
+ * Brand colour for the widget. Deliberately NOT placed in the browser URL: the "#" is decoded
+ * back to a literal fragment marker before the proxy route reads the query string, which drops
+ * primaryColor AND every parameter after it (layout, presentation), leaving the stock widget in
+ * platform green. The route sets this on the upstream request instead, as it already does for
+ * the agent id.
+ */
+export const VEXUR_REVIEWS_PRIMARY_COLOR = "#e44013";
 
 function embedUrl(params: Record<string, string>): string {
   const query = new URLSearchParams({
     theme: "light",
-    primaryColor: PRIMARY,
     ...params,
   });
   return `/api/vexur-reviews?${query.toString()}`;

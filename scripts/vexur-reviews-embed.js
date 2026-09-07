@@ -42,7 +42,10 @@ const PAGE_PARAMS = {
 
 function embedUrl(params) {
   const query = new URLSearchParams(params);
+  // Both are set by the proxy route. primaryColor especially must not travel in the browser
+  // URL: its "#" is decoded to a fragment marker and swallows every parameter after it.
   query.delete("agent-id");
+  query.delete("primaryColor");
   return "/api/vexur-reviews?" + query.toString();
 }
 

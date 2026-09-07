@@ -1,11 +1,13 @@
 import {
   VEXUR_REVIEWS_AGENT_ID,
   VEXUR_REVIEWS_ORIGIN,
+  VEXUR_REVIEWS_PRIMARY_COLOR,
 } from "../../lib/vexurReviewsEmbed";
 
+// primaryColor is set from VEXUR_REVIEWS_PRIMARY_COLOR, never read from the query - a "#" in the
+// browser URL is decoded to a fragment marker and swallows every parameter after it.
 const ALLOWED_PARAMS = [
   "theme",
-  "primaryColor",
   "maxReviews",
   "minRating",
   "reviewSort",
@@ -418,6 +420,7 @@ export async function GET(request: Request) {
     const incoming = new URL(request.url);
     const target = new URL(`${VEXUR_REVIEWS_ORIGIN}/embed/v1/google-reviews`);
     target.searchParams.set("agent-id", VEXUR_REVIEWS_AGENT_ID);
+    target.searchParams.set("primaryColor", VEXUR_REVIEWS_PRIMARY_COLOR);
 
     for (const key of ALLOWED_PARAMS) {
       const value = incoming.searchParams.get(key);
