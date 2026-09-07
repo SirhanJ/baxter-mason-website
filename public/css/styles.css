@@ -8858,6 +8858,26 @@ section.blk.contact-page,
   -webkit-backdrop-filter: none;
 }
 
+/*
+ * The booking page is the only page that embeds the calendar widget, and it is the only page
+ * with #book-call, so this cannot reach the contact page's form.
+ *
+ * The shared two-column grid gave the widget 459px at a 1440px viewport, which is not enough for
+ * a month grid beside the available times - it rendered with most of the weekday columns cut off
+ * (2026-09-07). Stacking hands it the panel's full inner width, roughly 875px, which is the room
+ * the booking modal already gives it at min(920px, 100%).
+ *
+ * Deliberately not inside a min-width query: the mobile rule below stacks it too, so one value
+ * applies at every width and there is no id-versus-class specificity fight.
+ */
+#book-call .contact-panel {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#book-call .contact-side {
+  width: 100%;
+}
+
 .contact-page .contact-card {
   background: #ffffff;
   border-color: var(--help-border);

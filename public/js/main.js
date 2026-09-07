@@ -611,11 +611,16 @@
       if (anchor.classList.contains("js-book-call")) return true;
 
       var href = (anchor.getAttribute("href") || "").trim().toLowerCase();
-      var isContactHref =
+      // /book-a-free-discovery-call is where every CTA points since the URLs were rebuilt. Until
+      // it was listed here the match only knew the old addresses, so no CTA on the site opened
+      // the calendar - all 414 of them navigated to the booking page instead, where the widget is
+      // boxed into a 459px column (2026-09-07). The old forms stay for any link not yet rewritten.
+      var isBookHref =
+        href.indexOf("/book-a-free-discovery-call") === 0 ||
         href.indexOf("contact.html") !== -1 ||
         href === "#book-call" ||
         href === "#book";
-      if (!isContactHref) return false;
+      if (!isBookHref) return false;
 
       if (
         anchor.classList.contains("nav-desktop-cta") ||
