@@ -8,7 +8,8 @@
     "start": "next start",
     "seo": "node scripts/seo-rewrite.js",
     "seo:images": "node scripts/optimise-images.js",
-    "prebuild": "node scripts/seo-rewrite.js"
+    "prebuild": "node scripts/seo-rewrite.js && node scripts/materialise-canonical-pages.js",
+    "seo:canonical-pages": "node scripts/materialise-canonical-pages.js"
   },
   "dependencies": {
     "next": "^15.1.0",
