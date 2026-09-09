@@ -18,6 +18,7 @@ const lib = require("./seo-lib");
 
 const ORG = require("../data/organisation.json");
 const OVERRIDES = require("../data/meta-overrides.json");
+const NEIGHBOURS = require("../data/suburb-neighbours.json");
 
 const {
   PUBLIC,
@@ -35,7 +36,9 @@ const {
 
 function classify(slug) {
   if (slug === "index") return "home";
-  if (/-buyers-agent$/.test(slug)) return "suburb";
+  // Canonical service-page copies also end in -buyers-agent after prebuild.
+  // Only the named suburbs in our geography map belong in the areas list.
+  if (Object.hasOwn(NEIGHBOURS, slug) && !slug.startsWith("_")) return "suburb";
   if (/^story-/.test(slug)) return "story";
   if (/^blog-/.test(slug)) return "article";
   if (slug === "success-stories" || slug === "blog") return "collection";
@@ -294,7 +297,6 @@ function replaceHomeReviews(html, page) {
 
 /* --------------------------------------------- suburb cluster linking */
 
-const NEIGHBOURS = require("../data/suburb-neighbours.json");
 const NEARBY_MARK = "<!-- seo:nearby -->";
 const AREAS_MARK = "<!-- seo:areas -->";
 
