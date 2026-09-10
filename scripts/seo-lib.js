@@ -244,9 +244,15 @@ function addSuburbProof(html, suburbName) {
     SUBURB_PROOF_MARK +
     '\n<div class="prose-block rv suburb-proof">\n<p>Buyers we represent in ' +
     name +
-    ' get the same in-person inspections, overlay checks and negotiation we use across the Coast. Read the <a href="' + canonicalPath("/reviews") + '">Google reviews</a> from those purchases, or <a href="/contact">book a discovery call</a> to talk through ' +
+    ' receive the same in-person inspections, overlay checks and negotiation support we use across the entire Sunshine Coast. You can explore our <a href="' +
+    canonicalPath("/reviews") +
+    '">Google reviews</a> and <a href="' +
+    canonicalPath("/success-stories") +
+    '">Success Stories</a> to see how these purchases came together, or <a href="/contact">book a discovery call</a> to talk through ' +
     name +
-    ".</p>\n</div>\n" +
+    ' or any other suburb you are considering for your home or investment.</p>\n<p>If you would like to understand the full service and support we provide throughout your buying journey, you can return to the <a href="' +
+    canonicalPath("/services") +
+    '">Services</a> page to see how we help buyers across the Coast and hinterland.</p>\n</div>\n' +
     SUBURB_PROOF_MARK;
 
   const start = html.indexOf(SUBURB_PROOF_MARK);

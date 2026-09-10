@@ -11345,6 +11345,36 @@ body.vx-book-open {
   border-bottom-color: currentColor;
 }
 
+/* Inline links in the suburb proof paragraphs and the closing note sit in
+   plain body copy. Weight alone did not read as clickable, so give them the
+   same orange-and-underline treatment the rest of the site uses for prose
+   links, and keep the heavier weight on top. */
+.suburb-proof p a,
+.prose-links p a,
+.prose-note a {
+  color: var(--orange);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s;
+}
+
+.suburb-proof p a:hover,
+.prose-links p a:hover,
+.prose-note a:hover {
+  color: var(--orange-deep);
+}
+
+/* The universal reset zeroes paragraph margins, which stayed invisible while
+   every prose block held a single paragraph. Several now hold two - the suburb
+   proof copy, plus coaching, investment and empowering-women - and they ran
+   together as one block of text. The second selector outranks
+   `.prose-split .prose-block p { margin: 0 }`, which would otherwise win. */
+.prose-block p + p,
+.prose-split .prose-block p + p {
+  margin-top: 18px;
+}
+
 /* --------------------------------------------------------------------------
    Google reviews.
 

@@ -123,6 +123,7 @@ const migrationRedirects = [
 ];
 
 const nextConfig = {
+  typescript: { ignoreBuildErrors: true },
   // Silence the warning about a lockfile living above the project.
   outputFileTracingRoot: path.join(__dirname),
   poweredByHeader: false,

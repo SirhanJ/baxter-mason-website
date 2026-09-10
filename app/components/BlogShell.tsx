@@ -51,9 +51,19 @@ export function SiteHeader() {
               <a href="/terms--conditions">Terms &amp; Conditions</a>
             </div>
           </div>
-          <a className="l" href="/services">
-            Services
-          </a>
+          <div className="nav-item has-drop">
+            <button
+              className="l drop-toggle"
+              type="button"
+              aria-expanded="false"
+            >
+              Services <span className="drop-chevron" />
+            </button>
+            <div className="drop-menu">
+              <a href="/services">Our Services</a>
+              <a href="/suburbs-we-buy-in">Suburbs We Buy In</a>
+            </div>
+          </div>
           <a className="l" href="/success-stories-buyers-agent-sunshine-coast">
             Success Stories
           </a>
@@ -224,6 +234,9 @@ export function SiteFooter() {
                 </li>
                 <li>
                   <a href="/services">Services</a>
+                </li>
+                <li>
+                  <a href="/suburbs-we-buy-in">Suburbs We Buy In</a>
                 </li>
                 <li>
                   <a href="/success-stories-buyers-agent-sunshine-coast">Success Stories</a>
