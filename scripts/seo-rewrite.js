@@ -347,28 +347,51 @@ function addNearbyBlock(html, page) {
   return html.replace(/(<p class="prose-note rv">)/i, block + "\n$1");
 }
 
-/**
- * /services is the breadcrumb parent of all 30 suburb pages but linked to none
- * of them, so the hierarchy the markup claimed did not exist in the HTML.
- */
-function addAreasHub(html, page) {
-  if (page.slug !== "services") return html;
-
-  const links = pages
+/** Every serviced suburb, alphabetical by the name on its page. */
+function suburbDirectory() {
+  return pages
     .filter((p) => p.type === "suburb")
     .map((p) => ({
       url: p.url,
       label: p.h1.replace(/\s*Buyers Agent$/i, "").trim(),
     }))
-    .sort((a, b) => a.label.localeCompare(b.label))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+/**
+ * "Thirty suburbs" was hardcoded in the areas heading and went stale the moment
+ * a suburb page was added. Spell the count out so the heading keeps reading as
+ * display copy rather than a statistic.
+ */
+function countInWords(n) {
+  const ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+  const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+  const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+  if (n < 10) return ones[n] || String(n);
+  if (n < 20) return teens[n - 10];
+  if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? "-" + ones[n % 10] : "");
+  return String(n);
+}
+
+/**
+ * /services is the breadcrumb parent of all the suburb pages but linked to none
+ * of them, so the hierarchy the markup claimed did not exist in the HTML.
+ */
+function addAreasHub(html, page) {
+  if (page.slug !== "services") return html;
+
+  const directory = suburbDirectory();
+  const links = directory
     .map((s) => '<li><a href="' + s.url + '">' + s.label + "</a></li>")
     .join("\n");
+  const count = countInWords(directory.length);
+  const heading = count.charAt(0).toUpperCase() + count.slice(1) + " suburbs, from Caloundra to Noosa.";
 
   const block =
     AREAS_MARK +
     '\n<section class="blk areas-hub" id="areas"><div class="wrap">\n' +
     '<div class="head">\n<span class="eyebrow rv">Where we buy</span>\n' +
-    '<h2 class="rv d1">Thirty suburbs, from Caloundra to Noosa.</h2>\n' +
+    '<h2 class="rv d1">' + heading + "</h2>\n" +
     '<p class="intro rv d2">Coast, hinterland and everything between. Each one has its own page covering how we search there.</p>\n' +
     '</div>\n<ul class="areas-list rv d3">\n' +
     links +
@@ -382,6 +405,35 @@ function addAreasHub(html, page) {
     return html.slice(0, start) + block + html.slice(end);
   }
   return html.replace(/(<section class="final final-rich)/i, block + "\n$1");
+}
+
+const DIRECTORY_MARK = "<!-- seo:suburb-directory -->";
+
+/**
+ * The pill-style suburb directory on /suburbs-we-buy-in and /why-work-with-us.
+ * Both lists were hand-written and drifted the first time a suburb page was
+ * added (Palmview, Mons, Forest Glen and Mapleton were missing, 10 Sep 2026).
+ * Any page that carries the markers now gets the same alphabetical list the
+ * /services hub is built from, so the three can never disagree.
+ */
+function addSuburbDirectory(html) {
+  const start = html.indexOf(DIRECTORY_MARK);
+  if (start === -1) return html;
+  const end = html.indexOf(DIRECTORY_MARK, start + DIRECTORY_MARK.length);
+  if (end === -1) return html;
+
+  const links = suburbDirectory()
+    .map((s) => '<a href="' + s.url + '">' + s.label + "</a>")
+    .join("\n");
+
+  const block =
+    DIRECTORY_MARK +
+    '\n<div class="suburb-link-grid rv d1">\n' +
+    links +
+    "\n</div>\n" +
+    DIRECTORY_MARK;
+
+  return html.slice(0, start) + block + html.slice(end + DIRECTORY_MARK.length);
 }
 
 /* ------------------------------------------------- suburb interlinking */
@@ -614,6 +666,7 @@ for (const page of pages) {
     );
   }
   html = addAreasHub(html, page);
+  html = addSuburbDirectory(html);
   html = replaceHomeReviews(html, page);
   html = dropLegacyOrgBlock(html);
   const beforeLink = html;

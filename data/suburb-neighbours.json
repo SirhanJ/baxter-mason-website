@@ -21,15 +21,18 @@
   "perigianbeach-buyers-agent": ["coolum-buyers-agent", "sunshinebeach-buyers-agent", "noosa-buyers-agent"],
   "sunshinebeach-buyers-agent": ["noosa-buyers-agent", "perigianbeach-buyers-agent", "coolum-buyers-agent"],
   "noosa-buyers-agent": ["sunshinebeach-buyers-agent", "perigianbeach-buyers-agent", "coolum-buyers-agent"],
-
-  "sippydowns-buyers-agent": ["mountaincreek-buyers-agent", "buderim-buyers-agent", "palmwoods-buyers-agent"],
-  "mountaincreek-buyers-agent": ["buderim-buyers-agent", "sippydowns-buyers-agent", "minyama-buyers-agent", "mooloolaba-buyers-agent"],
-  "buderim-buyers-agent": ["mountaincreek-buyers-agent", "kuluin-buyers-agent", "sippydowns-buyers-agent", "alexandraheadland-buyers-agent"],
-  "kuluin-buyers-agent": ["buderim-buyers-agent", "maroochydore-buyers-agent", "blibli-buyers-agent"],
+  "sippydowns-buyers-agent": ["mountaincreek-buyers-agent", "buderim-buyers-agent", "palmwoods-buyers-agent", "palmview-buyers-agent"],
+  "mountaincreek-buyers-agent": ["buderim-buyers-agent", "sippydowns-buyers-agent", "minyama-buyers-agent", "mooloolaba-buyers-agent", "palmview-buyers-agent"],
+  "buderim-buyers-agent": ["mountaincreek-buyers-agent", "kuluin-buyers-agent", "sippydowns-buyers-agent", "alexandraheadland-buyers-agent", "mons-buyers-agent", "forestglen-buyers-agent"],
+  "kuluin-buyers-agent": ["buderim-buyers-agent", "maroochydore-buyers-agent", "blibli-buyers-agent", "mons-buyers-agent"],
   "blibli-buyers-agent": ["nambour-buyers-agent", "twinwaters-buyers-agent", "kuluin-buyers-agent", "mudjimbaandsurrounds-buyers-agent"],
-  "nambour-buyers-agent": ["woombye-buyers-agent", "blibli-buyers-agent", "palmwoods-buyers-agent"],
-  "woombye-buyers-agent": ["nambour-buyers-agent", "palmwoods-buyers-agent", "buderim-buyers-agent"],
-  "palmwoods-buyers-agent": ["woombye-buyers-agent", "nambour-buyers-agent", "sippydowns-buyers-agent", "montville-buyers-agent"],
-  "montville-buyers-agent": ["maleny-buyers-agent", "palmwoods-buyers-agent", "woombye-buyers-agent"],
-  "maleny-buyers-agent": ["montville-buyers-agent", "palmwoods-buyers-agent"]
+  "nambour-buyers-agent": ["woombye-buyers-agent", "blibli-buyers-agent", "palmwoods-buyers-agent", "mapleton-buyers-agent"],
+  "woombye-buyers-agent": ["nambour-buyers-agent", "palmwoods-buyers-agent", "buderim-buyers-agent", "forestglen-buyers-agent"],
+  "palmwoods-buyers-agent": ["woombye-buyers-agent", "nambour-buyers-agent", "sippydowns-buyers-agent", "montville-buyers-agent", "palmview-buyers-agent", "forestglen-buyers-agent"],
+  "montville-buyers-agent": ["maleny-buyers-agent", "palmwoods-buyers-agent", "woombye-buyers-agent", "mapleton-buyers-agent"],
+  "maleny-buyers-agent": ["montville-buyers-agent", "palmwoods-buyers-agent", "mapleton-buyers-agent"],
+  "palmview-buyers-agent": ["sippydowns-buyers-agent", "palmwoods-buyers-agent", "mountaincreek-buyers-agent"],
+  "mons-buyers-agent": ["buderim-buyers-agent", "forestglen-buyers-agent", "kuluin-buyers-agent"],
+  "forestglen-buyers-agent": ["mons-buyers-agent", "buderim-buyers-agent", "woombye-buyers-agent", "palmwoods-buyers-agent"],
+  "mapleton-buyers-agent": ["montville-buyers-agent", "nambour-buyers-agent", "maleny-buyers-agent"]
 }

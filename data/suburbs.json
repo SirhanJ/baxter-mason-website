@@ -40,6 +40,11 @@
     "url": "/dickiebeach-buyers-agent"
   },
   {
+    "slug": "forestglen-buyers-agent",
+    "name": "Forest Glen",
+    "url": "/forestglen-buyers-agent"
+  },
+  {
     "slug": "goldenbeach-buyers-agent",
     "name": "Golden Beach",
     "url": "/goldenbeach-buyers-agent"
@@ -60,6 +65,11 @@
     "url": "/maleny-buyers-agent"
   },
   {
+    "slug": "mapleton-buyers-agent",
+    "name": "Mapleton",
+    "url": "/mapleton-buyers-agent"
+  },
+  {
     "slug": "marcoola-buyers-agent",
     "name": "Marcoola",
     "url": "/marcoola-buyers-agent"
@@ -78,6 +88,11 @@
     "slug": "moffatbeach-buyers-agent",
     "name": "Moffat Beach",
     "url": "/moffatbeach-buyers-agent"
+  },
+  {
+    "slug": "mons-buyers-agent",
+    "name": "Mons",
+    "url": "/mons-buyers-agent"
   },
   {
     "slug": "montville-buyers-agent",
@@ -108,6 +123,11 @@
     "slug": "noosa-buyers-agent",
     "name": "Noosa",
     "url": "/noosa-buyers-agent"
+  },
+  {
+    "slug": "palmview-buyers-agent",
+    "name": "Palmview",
+    "url": "/palmview-buyers-agent"
   },
   {
     "slug": "palmwoods-buyers-agent",

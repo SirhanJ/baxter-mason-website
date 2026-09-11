@@ -152,6 +152,22 @@
     {
       "@type": "Place",
       "name": "Maleny"
+    },
+    {
+      "@type": "Place",
+      "name": "Palmview"
+    },
+    {
+      "@type": "Place",
+      "name": "Mons"
+    },
+    {
+      "@type": "Place",
+      "name": "Forest Glen"
+    },
+    {
+      "@type": "Place",
+      "name": "Mapleton"
     }
   ],
   "founder": {
