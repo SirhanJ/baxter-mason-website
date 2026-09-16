@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { rewriteBlogLinks } from './rewriteBlogLinks';
 import { OLD_TO_CURRENT_POST_SLUG } from './blogCanonical';
 
-const BASE = 'https://iipazmwbtctblpyszspb.supabase.co/functions/v1/blog-render/baxter-mason';
+const BASE = 'https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/blog-render/baxter-mason';
 
 /** An hour of ISR: new posts appear without a deploy, crawlers get static HTML. */
 export const BLOG_REVALIDATE = 3600;

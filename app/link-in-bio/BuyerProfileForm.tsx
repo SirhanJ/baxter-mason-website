@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 const BUYER_PROFILE_ENDPOINT =
-  "https://iipazmwbtctblpyszspb.supabase.co/functions/v1/headless-form-submit/hli_56fbac87cf0d4c9582e452c328823154";
+  "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_56fbac87cf0d4c9582e452c328823154";
 
 type ChoiceProps = {
   id: string;

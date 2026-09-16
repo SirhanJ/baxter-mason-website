@@ -17,13 +17,13 @@ export function rewriteBlogLinks(html: string, siteOrigin?: string): string {
 
   // Absolute Supabase post URLs → the preserved old path where one exists.
   out = out.replace(
-    /https?:\/\/iipazmwbtctblpyszspb\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/([a-z0-9][a-z0-9-]*)\/?(?=["'?\s&#])/gi,
+    /https?:\/\/(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/([a-z0-9][a-z0-9-]*)\/?(?=["'?\s&#])/gi,
     (_match, slug: string) => canonicalPostPathForCurrent(slug),
   );
 
   // Absolute Supabase archive URL → the canonical historical blog index.
   out = out.replace(
-    /https?:\/\/iipazmwbtctblpyszspb\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/?(?=["'?\s&#])/gi,
+    /https?:\/\/(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason\/?(?=["'?\s&#])/gi,
     BLOG_INDEX_PATH,
   );
 
@@ -53,22 +53,22 @@ export function rewriteBlogLinks(html: string, siteOrigin?: string): string {
   // URL-encoded supabase forms inside share-button query strings
   if (origin) {
     out = out.replace(
-      /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
+      /https%3A%2F%2F(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
       (_match, slug: string) =>
         encodeURIComponent(`${origin}${canonicalPostPathForCurrent(slug)}`),
     );
     out = out.replace(
-      /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
+      /https%3A%2F%2F(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
       encodeURIComponent(`${origin}${BLOG_INDEX_PATH}`),
     );
   } else {
     out = out.replace(
-      /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
+      /https%3A%2F%2F(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason%2F([a-z0-9][a-z0-9-]*)/gi,
       (_match, slug: string) =>
         encodeURIComponent(canonicalPostPathForCurrent(slug)),
     );
     out = out.replace(
-      /https%3A%2F%2Fiipazmwbtctblpyszspb\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
+      /https%3A%2F%2F(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co%2Ffunctions%2Fv1%2Fblog-render%2Fbaxter-mason(?!%2F)/gi,
       encodeURIComponent(BLOG_INDEX_PATH),
     );
   }

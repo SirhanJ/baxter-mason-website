@@ -319,7 +319,7 @@
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
     var VEXUR_FORM_SUBMIT_URL =
-      "https://iipazmwbtctblpyszspb.supabase.co/functions/v1/headless-form-submit/hli_76d4bd96867422782685e7b828300f9648520d4417cb4e9c";
+      "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_76d4bd96867422782685e7b828300f9648520d4417cb4e9c";
     contactForm.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var first = document.getElementById("first-name");

@@ -4,7 +4,7 @@ import Script from "next/script";
 import { FormEvent, useEffect, useState } from "react";
 
 const ENDPOINT =
-  "https://iipazmwbtctblpyszspb.supabase.co/functions/v1/headless-form-submit/hli_2aa0483e69264a02a84aefdeafcb7e08";
+  "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_2aa0483e69264a02a84aefdeafcb7e08";
 const VIDEO_URL = "https://player.vimeo.com/video/1090722248?h=6293b704d4&title=0&byline=0&portrait=0";
 
 function AccessForm({ close }: { close: () => void }) {
