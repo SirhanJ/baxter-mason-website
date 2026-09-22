@@ -852,4 +852,66 @@
       start();
     });
   })();
+
+  // The home page is static HTML, so its Blog cards were typed in by hand and
+  // never changed when a post went up. Swap them for the newest posts. The
+  // hand-written cards stay if the request fails.
+  (function () {
+    var grid = document.querySelector("#blog-preview .hm-blog-grid");
+    if (!grid || !window.fetch) return;
+
+    // "17 September 2026" -> "September 17, 2026", the way the cards print dates.
+    function cardDate(value) {
+      var m = /^(\d{1,2}) ([A-Za-z]+) (\d{4})$/.exec(value || "");
+      if (!m) return value || "";
+      return m[2] + " " + (m[1].length === 1 ? "0" + m[1] : m[1]) + ", " + m[3];
+    }
+
+    function el(tag, className, text) {
+      var node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text) node.textContent = text;
+      return node;
+    }
+
+    function card(post) {
+      var link = el("a", "hm-post");
+      link.href = post.href;
+      if (post.image) {
+        var media = el("div", "hm-post-img");
+        var img = el("img");
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.width = 640;
+        img.height = 380;
+        img.src = post.image;
+        img.alt = post.title;
+        media.appendChild(img);
+        link.appendChild(media);
+      }
+      var meta = [cardDate(post.date), post.readTime].filter(Boolean).join(" · ");
+      if (meta) link.appendChild(el("span", "hm-post-date", meta));
+      link.appendChild(el("h3", "", post.title));
+      if (post.excerpt) link.appendChild(el("p", "", post.excerpt));
+      return link;
+    }
+
+    fetch("/api/latest-posts", { headers: { Accept: "application/json" } })
+      .then(function (res) {
+        return res.ok ? res.json() : null;
+      })
+      .then(function (data) {
+        var posts = (data && Array.isArray(data.posts) ? data.posts : []).filter(
+          function (post) {
+            return post && post.href && post.title;
+          },
+        );
+        if (!posts.length) return;
+        while (grid.firstChild) grid.removeChild(grid.firstChild);
+        posts.forEach(function (post) {
+          grid.appendChild(card(post));
+        });
+      })
+      .catch(function () {});
+  })();
 })();
