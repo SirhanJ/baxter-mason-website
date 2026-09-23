@@ -13,10 +13,6 @@ export type PostCard = {
   title: string;
   excerpt: string;
   image: string;
-  /** As the archive prints it, e.g. "17 September 2026". Empty when absent. */
-  date: string;
-  /** e.g. "1 min read". Empty when absent. */
-  readTime: string;
 };
 
 const unesc = (s: string) =>
@@ -75,16 +71,12 @@ export async function fetchPostCards(): Promise<PostCard[]> {
     const title = chunk.match(/class="blog-card-title">([\s\S]*?)<\/h2>/);
     const excerpt = chunk.match(/class="blog-card-excerpt">([\s\S]*?)<\/p>/);
     const image = chunk.match(/<img[^>]+src="([^"]+)"/);
-    const date = chunk.match(/class="blog-card-meta-date">([\s\S]*?)<\/span>/);
-    const readTime = chunk.match(/class="blog-card-meta-read">([\s\S]*?)<\/span>/);
 
     cards.push({
       slug,
       title: title ? plain(title[1]) : slug.replace(/-/g, ' '),
       excerpt: excerpt ? plain(excerpt[1]) : '',
-      image: image ? unesc(image[1]) : '',
-      date: date ? plain(date[1]) : '',
-      readTime: readTime ? plain(readTime[1]) : '',
+      image: image ? image[1] : '',
     });
   }
   return cards;
