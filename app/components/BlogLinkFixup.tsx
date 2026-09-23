@@ -19,7 +19,7 @@ export function BlogLinkFixup() {
 
       const abs = anchor.href || '';
       const supabase = abs.match(
-        /(?:iipazmwbtctblpyszspb|pgsnbsjtpxfmzedjldyu)\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason(?:\/([^?#/]+))?/i,
+        /(?:pgsnbsjtpxfmzedjldyu|pgsnbsjtpxfmzedjldyu)\.supabase\.co\/functions\/v1\/blog-render\/baxter-mason(?:\/([^?#/]+))?/i,
       );
       if (supabase) {
         event.preventDefault();

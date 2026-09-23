@@ -411,9 +411,9 @@
     var BUILD = "calendar-7ca2673d";
     var RENDERER = "calendar-render-v2";
     var VERSION = "2026-07-21T01:16:39.219295+00:00";
-    var LOADER_SRC = "https://embed.vexur.com.au/v1.1.10/loader.js";
+    var LOADER_SRC = "https://embed.vexur.com.au/v1.1.24/loader.js";
     var LOADER_INTEGRITY =
-      "sha384-dx3l2judEexylNgMj/LWd1UZOwIoR4gyPHKTfRUwtE/QSHhy/C1iYfOW0y4dKp62";
+      "sha384-cLQZ3Nziw0hz3qwUhtLERZgDPxlWGHqdt7mkRgeGdIPjtK1m0fjI4bBnz6KQ4Jnc";
     var modal = null;
     var lastFocus = null;
     var loaderRequested = false;
