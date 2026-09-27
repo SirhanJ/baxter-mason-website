@@ -7,6 +7,7 @@ import { cleanUrlRedirects, cleanUrlRewrites, migrationRedirects } from './confi
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig = {
+  images: { unoptimized: true },
   typescript: { ignoreBuildErrors: true },
   // Silence the warning about a lockfile living above the project.
   outputFileTracingRoot: path.join(__dirname),

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "./lib/seo";
+import "./globals.css";
 
 export const metadata: Metadata = {
   // Lets every page declare relative og:image paths and still emit absolute URLs.
