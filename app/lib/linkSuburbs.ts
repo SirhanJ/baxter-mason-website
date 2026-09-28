@@ -31,25 +31,6 @@ const SUBURBS = (suburbs as Suburb[])
  * flow. Capped at one link per paragraph and one per suburb per post so the
  * copy still reads like prose.
  */
-const escapeHtml = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-/**
- * A card summary is plain text from the CMS. Escape it and link the first serviced suburb it
- * names, the way the hand-written Success Stories cards did (data-suburb-link, one link).
- */
-export function linkSuburbInExcerpt(text: string): { html: string; linked: boolean } {
-  const html = escapeHtml(text || '');
-  for (const suburb of SUBURBS) {
-    if (!suburb.pattern.test(html)) continue;
-    return {
-      html: html.replace(suburb.pattern, `$1<a data-suburb-link href="${suburb.url}">$2</a>`),
-      linked: true,
-    };
-  }
-  return { html, linked: false };
-}
-
 export function linkSuburbs(html: string, max = 6): string {
   if (!html) return html;
   const used = new Set<string>();
