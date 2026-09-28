@@ -28,6 +28,15 @@ const canonicalPaths = new Set(Object.values(canonicalRoutes));
 const canonicalBlogPath = canonicalRoutes['/blog'];
 const canonicalSuccessStoriesPath = canonicalRoutes['/success-stories'];
 
+/**
+ * Success stories are Case Studies in Vexur, rendered by app/post/[slug]. The old story file
+ * names still redirect to each story's address, and the two stories that were always served
+ * at the site root keep that address through a rewrite onto the /post route.
+ */
+const storyAliases = read('./data/story-aliases.json');
+const storyRedirects = storyAliases.redirects;
+const storyRootPaths = storyAliases.rootPaths;
+
 const postTargets = Object.values(postRedirects);
 if (new Set(postTargets).size !== postTargets.length) {
   throw new Error('data/post-redirects.json must map one old post URL to one current blog slug');
@@ -60,6 +69,7 @@ export const cleanUrlRewrites = [
       : internal,
   })),
   ...pageSlugs.map((slug) => ({ source: `/${slug}`, destination: `/${slug}.html` })),
+  ...Object.entries(storyRootPaths).map(([source, slug]) => ({ source, destination: `/post/${slug}` })),
 ];
 
 export const cleanUrlRedirects = [
@@ -71,6 +81,14 @@ export const cleanUrlRedirects = [
   ...Object.entries(canonicalRoutes).map(([internal, canonical]) =>
     permanent(internal, canonical),
   ),
+  ...Object.entries(storyRedirects).flatMap(([internal, canonical]) => [
+    permanent(internal, canonical),
+    permanent(`${internal}.html`, canonical),
+  ]),
+  ...Object.entries(storyRootPaths).flatMap(([address, slug]) => [
+    permanent(`${address}.html`, address),
+    permanent(`/post/${slug}`, address),
+  ]),
 ];
 
 /** The old site's URLs, so nothing that is indexed today lands on a 404. */

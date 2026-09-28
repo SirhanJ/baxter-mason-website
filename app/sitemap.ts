@@ -9,6 +9,7 @@ import { SITE } from "./lib/seo";
  */
 import pageSlugs from "../data/page-slugs.json";
 import { fetchPostCards } from "./lib/blogSource";
+import { fetchStories } from "./lib/caseStudySource";
 import { oldPostSlugForCurrent } from "./lib/blogCanonical";
 import legacyPosts from "../data/legacy-posts.json";
 import postRedirects from "../data/post-redirects.json";
@@ -112,6 +113,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${SITE}/success-stories-buyers-agent-sunshine-coast`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
       url: `${SITE}/link-in-bio`,
       changeFrequency: "monthly" as const,
       priority: 0.4,
@@ -128,12 +134,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ].map((page) => ({ ...page, lastModified: now }));
 
+  // Success stories come from Case Studies in Vexur now, not from files in public/. Listed
+  // last so a story whose address is also an archived post keeps the story's entry.
+  const stories = (await fetchStories()).map((story) => ({
+    url: `${SITE}${story.path}`,
+    lastModified: new Date(`${story.date}T00:00:00Z`),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   const entries = [
     ...appPages,
     ...staticPages,
     ...blogPosts,
     ...preserved,
     ...historicalAliases,
+    ...stories,
   ];
 
   // Static/App route overlap and archived/CMS overlap must never emit two

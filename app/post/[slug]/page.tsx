@@ -8,6 +8,16 @@ import legacyPosts from '../../../data/legacy-posts.json';
 import postRedirects from '../../../data/post-redirects.json';
 import { fetchPost } from '../../lib/blogSource';
 import { linkSuburbs } from '../../lib/linkSuburbs';
+import { preload } from 'react-dom';
+import { StoryShell } from '../../components/StoryShell';
+import { StoryPage } from '../../components/StoryPage';
+import legacyStoryFile from '../../../data/story-legacy.json';
+import {
+  fetchStories,
+  fetchStory,
+  relatedStories,
+  type StoryWithBody,
+} from '../../lib/caseStudySource';
 
 /**
  * Preserve every article that was live on the old site at its original
@@ -57,17 +67,107 @@ export const revalidate = 3600;
  */
 export const dynamicParams = true;
 
-export function generateStaticParams() {
+/** Stories imported from the hand-written pages. Six share an address with an archived post. */
+const IMPORTED_STORY_SLUGS = new Set(
+  Object.keys((legacyStoryFile as { stories: Record<string, unknown> }).stories),
+);
+
+/**
+ * A success story from Case Studies wins the address, as the story's static file used to.
+ * Known blog addresses never ask Vexur, so a Case Studies outage cannot touch the blog; any
+ * other address asks, which is how a story Sally publishes in Vexur gets its page. A failed
+ * request throws rather than 404ing, so an hourly refresh keeps the last good page.
+ */
+async function storyFor(slug: string): Promise<StoryWithBody | null> {
+  const knownPost = BY_SLUG.has(slug) || slug in POST_ALIASES;
+  if (knownPost && !IMPORTED_STORY_SLUGS.has(slug)) return null;
+  return fetchStory(slug);
+}
+
+export async function generateStaticParams() {
+  const storySlugs = new Set(IMPORTED_STORY_SLUGS);
+  for (const story of await fetchStories().catch(() => [])) storySlugs.add(story.slug);
   return [
     ...POSTS.map((post) => ({ slug: post.slug })),
     ...Object.keys(POST_ALIASES).map((slug) => ({ slug })),
+    ...[...storySlugs].filter((slug) => !BY_SLUG.has(slug)).map((slug) => ({ slug })),
   ];
 }
 
 type Props = { params: Promise<{ slug: string }> };
 
+function storyMetadata(story: StoryWithBody): Metadata {
+  const url = `${SITE}${story.path}`;
+  const title = `${story.seoTitle} | Baxter & Mason`;
+  return {
+    title,
+    description: story.description,
+    alternates: { canonical: url },
+    robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+    openGraph: {
+      type: 'article',
+      title,
+      description: story.description,
+      url,
+      siteName: 'Baxter & Mason',
+      locale: 'en_AU',
+      images: [{ url: story.ogImage, alt: story.imageAlt }],
+      publishedTime: story.date,
+    },
+    twitter: { card: 'summary_large_image' },
+  };
+}
+
+async function SuccessStory({ story }: { story: StoryWithBody }) {
+  preload(story.heroImage, { as: 'image', fetchPriority: 'high' });
+  const all = await fetchStories().catch(() => []);
+  const url = `${SITE}${story.path}`;
+  const successStories = `${SITE}/success-stories-buyers-agent-sunshine-coast`;
+  const schema = graph([
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#webpage`,
+      url,
+      name: `${story.seoTitle} | Baxter & Mason`,
+      description: story.description,
+      isPartOf: { '@id': `${SITE}/#website` },
+      about: { '@id': ORG_ID },
+      inLanguage: 'en-AU',
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      primaryImageOfPage: { '@type': 'ImageObject', url: story.ogImage },
+    },
+    breadcrumb(url, [
+      { name: 'Success Stories', item: successStories },
+      { name: story.title, item: url },
+    ]),
+    {
+      '@type': 'Article',
+      '@id': `${url}#article`,
+      headline: story.title,
+      description: story.description,
+      mainEntityOfPage: { '@id': `${url}#webpage` },
+      author: { '@id': ORG_ID },
+      publisher: { '@id': ORG_ID },
+      inLanguage: 'en-AU',
+      image: story.ogImage,
+      datePublished: story.date,
+      dateModified: story.updated,
+    },
+  ]);
+
+  return (
+    <StoryShell>
+      <JsonLd data={schema} />
+      <StoryPage story={story} related={relatedStories(all, story.slug)} />
+    </StoryShell>
+  );
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const story = await storyFor(slug);
+  if (story) return storyMetadata(story);
+
   const post = BY_SLUG.get(slug);
   const url = `${SITE}/post/${slug}`;
 
@@ -117,6 +217,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LegacyPostPage({ params }: Props) {
   const { slug } = await params;
+  const story = await storyFor(slug);
+  if (story) return <SuccessStory story={story} />;
+
   const post = BY_SLUG.get(slug);
 
   if (!post) {
