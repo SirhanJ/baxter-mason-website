@@ -853,3 +853,28 @@
     });
   })();
 })();
+
+/* Sally website chat and calculator navigation */
+(function () {
+  function ready() {
+    var resources = Array.prototype.find.call(document.querySelectorAll('#menu .nav-item.has-drop'), function (item) {
+      return item.querySelector('.drop-toggle') && item.querySelector('.drop-toggle').textContent.indexOf('Resources') >= 0;
+    });
+    var menu = resources && resources.querySelector('.drop-menu');
+    if (menu && !menu.querySelector('a[href="/calculators"]')) {
+      var link = document.createElement('a');
+      link.href = '/calculators';
+      link.textContent = 'Calculators';
+      menu.insertBefore(link, menu.firstChild);
+    }
+    if (!document.querySelector('script[data-widget-id="15d121be-084e-4a88-b0a3-5eacb35ae70c"]')) {
+      var script = document.createElement('script');
+      script.src = 'https://app.vexur.com.au/sdk/chatbot-widget.js';
+      script.setAttribute('data-widget-id', '15d121be-084e-4a88-b0a3-5eacb35ae70c');
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
+  else ready();
+})();
