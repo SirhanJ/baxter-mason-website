@@ -23,7 +23,7 @@
 <!-- seo:graph -->
 
 <!-- /seo:graph -->
-<meta property="og:type" content="website"><meta property="og:site_name" content="Baxter &amp; Mason"><meta property="og:title" content="Property Calculators | Baxter &amp; Mason"><meta property="og:description" content="Explore nine practical property calculators."><meta property="og:url" content="https://www.baxtermason.com.au/calculators"><link rel="stylesheet" href="/css/calculators.css?v=2"></head>
+<meta property="og:type" content="website"><meta property="og:site_name" content="Baxter &amp; Mason"><meta property="og:title" content="Property Calculators | Baxter &amp; Mason"><meta property="og:description" content="Explore nine practical property calculators."><meta property="og:url" content="https://www.baxtermason.com.au/calculators"><link rel="stylesheet" href="/css/calculators.css?v=3"></head>
 <body><div class="site-loader" id="siteLoader" role="presentation" aria-hidden="true">
 <div class="site-loader-inner">
 <img loading="eager" decoding="async" class="site-loader-logo" src="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-logo-color-clear.webp?v=3" alt="Baxter &amp; Mason Property Buyers Agent" width="320" height="80">
@@ -65,7 +65,7 @@
 </nav>
 <a class="btn nav-desktop-cta" href="/book-a-free-discovery-call">Book a discovery call <span class="ar">→</span></a>
 <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-</div></header><main><section class="page-hero calc-hero"><div class="grain"></div><div class="wrap"><div class="page-hero-copy"><span class="eyebrow">Property tools</span><h1 class="display">Property <span class="gi">calculators</span>.</h1><p class="sub">Explore the numbers behind your next property decision.</p></div></div></section><section class="calc-section"><div class="wrap"><div class="calc-list" role="group" aria-label="Choose a calculator"></div><div class="calc-panel"><h2 id="calc-title">Stamp Duty Calculator</h2><iframe id="calc-frame" title="Stamp Duty Calculator" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div></section></main><footer class="ft"><div class="wrap">
+</div></header><main><section class="page-hero calc-hero"><div class="grain"></div><div class="wrap"><div class="page-hero-copy"><span class="eyebrow">Property tools</span><h1 class="display">Property <span class="gi">calculators</span>.</h1><p class="sub">Explore the numbers behind your next property decision.</p></div></div></section><section class="calc-section"><div class="wrap"><div class="calc-list" role="group" aria-label="Choose a calculator"></div><div class="calc-panel"><h2 id="calc-title">Stamp Duty Calculator</h2><iframe id="calc-frame" scrolling="no" title="Stamp Duty Calculator" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div></section></main><footer class="ft"><div class="wrap">
 <div class="ft-top">
 <div class="brand-col">
 <img loading="lazy" decoding="async" width="258" height="252" class="ft-logo" src="/images/logos%20and%20sally%20stuff/BM-circle-transparent.webp?v=4" alt="Baxter &amp; Mason">
@@ -112,4 +112,61 @@
 <span>© 2026 Baxter &amp; Mason Property Buyers Agent</span>
 <span>Licensed buyers agent · QLD 4684962</span>
 </div>
-</div></footer><script src="/js/main.js?v=60"></script><script>(function(){var tools=[['stamp-duty','Stamp Duty'],['income-tax','Income Tax'],['loan-repayment','Loan Repayment'],['borrowing-power','Borrowing Power'],['savings-calculator','Savings'],['property-buying-cost','Buying Costs'],['savings-goal','Savings Goal'],['rent-vs-buy','Rent vs Buy'],['rental-yield','Rental Yield']];var list=document.querySelector('.calc-list'),frame=document.getElementById('calc-frame'),title=document.getElementById('calc-title');function show(id){var found=tools.find(function(x){return x[0]===id})||tools[0];title.textContent=found[1]+' Calculator';frame.title=title.textContent;frame.src='https://embed.vexur.com.au/embed/v1/'+found[0]+'?agent-id=09a089fd-72c0-412d-bb2b-0b0ab9cc4ecd&theme=light&primaryColor=%23e44013&showBranding=false';frame.style.height=({ 'borrowing-power':'1600px','rent-vs-buy':'1550px','rental-yield':'1150px','loan-repayment':'1150px','property-buying-cost':'1150px' }[found[0]]||'850px');list.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tool===found[0]))});history.replaceState(null,'','/calculators?tool='+encodeURIComponent(found[0]));}tools.forEach(function(x){var b=document.createElement('button');b.type='button';b.className='calc-choice';b.dataset.tool=x[0];b.textContent=x[1];b.addEventListener('click',function(){show(x[0])});list.appendChild(b)});show(new URLSearchParams(location.search).get('tool'));})();</script></body></html>
+</div></footer><script src="/js/main.js?v=60"></script><script>
+(function () {
+  var tools = [
+    ['stamp-duty', 'Stamp Duty'],
+    ['income-tax', 'Income Tax'],
+    ['loan-repayment', 'Loan Repayment'],
+    ['borrowing-power', 'Borrowing Power'],
+    ['savings-calculator', 'Savings'],
+    ['property-buying-cost', 'Buying Costs'],
+    ['savings-goal', 'Savings Goal'],
+    ['rent-vs-buy', 'Rent vs Buy'],
+    ['rental-yield', 'Rental Yield']
+  ];
+  var list = document.querySelector('.calc-list');
+  var frame = document.getElementById('calc-frame');
+  var title = document.getElementById('calc-title');
+  var currentTool = null;
+
+  window.addEventListener('message', function (event) {
+    var data = event.data;
+    if (event.origin !== 'https://embed.vexur.com.au' ||
+        event.source !== frame.contentWindow ||
+        !data || data.type !== 'vexur:height' ||
+        data.source !== 'vexur-embed' ||
+        data.widget !== currentTool ||
+        !Number.isFinite(data.height)) return;
+
+    frame.style.height = Math.max(240, Math.min(20000, Math.ceil(data.height) + 12)) + 'px';
+  });
+
+  function show(id) {
+    var found = tools.find(function (item) { return item[0] === id; }) || tools[0];
+    currentTool = found[0];
+    title.textContent = found[1] + ' Calculator';
+    frame.title = title.textContent;
+    frame.style.height = '520px';
+    frame.src = 'https://embed.vexur.com.au/embed/v1/' + currentTool +
+      '?agent-id=09a089fd-72c0-412d-bb2b-0b0ab9cc4ecd&theme=light&primaryColor=%23e44013&showBranding=false';
+
+    list.querySelectorAll('button').forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.tool === currentTool));
+    });
+    history.replaceState(null, '', '/calculators?tool=' + encodeURIComponent(currentTool));
+  }
+
+  tools.forEach(function (item) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'calc-choice';
+    button.dataset.tool = item[0];
+    button.textContent = item[1];
+    button.addEventListener('click', function () { show(item[0]); });
+    list.appendChild(button);
+  });
+
+  show(new URLSearchParams(location.search).get('tool'));
+})();
+</script></body></html>
