@@ -327,7 +327,7 @@
       var email = document.getElementById("email");
       var phone = document.getElementById("phone");
       var message = document.getElementById("message");
-      var honeypot = document.getElementById("vx-company-website");
+      var honeypot = document.getElementById("vexur-honeypot");
       var success = document.getElementById("form-success");
       var errorEl = document.getElementById("form-error");
       var submitBtn = contactForm.querySelector(".contact-submit");
@@ -351,7 +351,7 @@
             email: email.value.trim(),
             phone: phone.value.trim(),
             message: message.value.trim(),
-            vx_company_website: honeypot ? honeypot.value.trim() : "",
+            vexur_honeypot: honeypot ? honeypot.value.trim() : "",
           },
           attribution: {
             pageUrl: window.location.href,

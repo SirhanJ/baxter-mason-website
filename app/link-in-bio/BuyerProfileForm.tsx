@@ -133,7 +133,7 @@ export function BuyerProfileForm() {
         <input
           className="buyer-honeypot"
           type="text"
-          name="vx_company_website"
+          name="vexur_honeypot"
           tabIndex={-1}
           autoComplete="off"
           aria-hidden="true"
