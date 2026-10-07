@@ -358,14 +358,14 @@
     grid-template-columns: 1fr;
     min-height: 0;
   }
+  /* Stacked, the copy sat over Sally's face. Plain white on phones and
+     tablets; the portrait stays on the desktop split layout. */
   .hm-statement--split {
-    background-position: 25% center;
-    background-size: cover;
+    background-image: none;
     padding: 52px 0;
   }
   .hm-statement--split::after {
-    display: block;
-    background: rgba(255, 252, 247, 0.58);
+    display: none;
   }
   .hm-statement-body {
     grid-column: 1;
@@ -1166,28 +1166,30 @@
 }
 
 @media (max-width: 620px) {
+  /* Phones: a full-height crop of the wide family photo only showed the
+     blurred rocks. Instead the photo spans the top of the hero with Sally and
+     both boys in frame, lifted 40px under the nav, and fades into the dark
+     base under the copy. At 230% width the photo is 109.8vw tall. */
   .hm-hero {
+    --hm-photo-end: calc(109.8vw - 40px);
     min-height: min(88vh, 720px);
     align-items: flex-end;
   }
   .hm-hero::before {
-    background-position: 48% 28%;
+    background-size: 230% auto;
+    background-repeat: no-repeat;
+    background-position: 86% -40px;
   }
   .hm-hero::after {
-    background:
-      linear-gradient(
-        180deg,
-        rgba(18, 16, 14, 0.55) 0%,
-        rgba(18, 16, 14, 0.15) 24%,
-        transparent 42%
-      ),
-      linear-gradient(
-        0deg,
-        rgba(18, 16, 14, 0.88) 0%,
-        rgba(18, 16, 14, 0.55) 42%,
-        rgba(18, 16, 14, 0.18) 68%,
-        transparent 88%
-      );
+    background: linear-gradient(
+      180deg,
+      rgba(18, 16, 14, 0.55) 0,
+      rgba(18, 16, 14, 0.1) 90px,
+      transparent 140px,
+      transparent calc(var(--hm-photo-end) - 190px),
+      rgba(27, 26, 25, 0.8) calc(var(--hm-photo-end) - 60px),
+      #1b1a19 var(--hm-photo-end)
+    );
   }
   .hm-hero h1 {
     font-size: clamp(34px, 9vw, 48px);
@@ -1211,7 +1213,7 @@
     max-width: 400px;
   }
   .hm-hero .wrap {
-    padding-top: 130px;
+    padding-top: calc(var(--hm-photo-end) - 120px);
   }
   .hm-hero-meta {
     display: none;
