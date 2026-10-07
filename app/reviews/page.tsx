@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     url: URL,
     siteName: "Baxter & Mason",
     locale: "en_AU",
+    images: [{ url: `${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`, alt: "Baxter & Mason, Sunshine Coast buyers agents" }],
   },
   twitter: { card: "summary_large_image" },
 };
