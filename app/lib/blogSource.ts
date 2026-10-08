@@ -26,10 +26,31 @@ const unesc = (s: string) =>
 
 const plain = (s: string) => unesc(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 
+/** Vexur says this post does not exist (blog-render answered 404). */
+class BlogPostMissing extends Error {}
+
+/**
+ * blog-render, with three tries. A hiccup used to become a 404: fetchPost read every failure as "no
+ * such post", so one failed fetch while the site was built baked "Page not found" into that post's
+ * page until the next build (the Unethical Selling Agents post, Oct 2026). Only a real 404 from
+ * Vexur means missing; anything else is retried and then thrown, so a bad moment never gets cached
+ * as a missing page.
+ */
 async function fetchText(url: string, revalidate = BLOG_REVALIDATE): Promise<string> {
-  const response = await fetch(url, { next: { revalidate } });
-  if (!response.ok) throw new Error(`blog-render ${response.status} for ${url}`);
-  return response.text();
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(url, { next: { revalidate } });
+      if (response.status === 404) throw new BlogPostMissing(`blog-render 404 for ${url}`);
+      if (!response.ok) throw new Error(`blog-render ${response.status} for ${url}`);
+      return await response.text();
+    } catch (error) {
+      if (error instanceof BlogPostMissing) throw error;
+      lastError = error;
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 750));
+    }
+  }
+  throw lastError;
 }
 
 /** The rendered archive, with links already pointing at our own /blog routes. */
@@ -102,8 +123,9 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
   let html: string;
   try {
     html = rewriteBlogLinks(await fetchText(`${BASE}/${encodeURIComponent(slug)}?embed=true`));
-  } catch {
-    return null;
+  } catch (error) {
+    if (error instanceof BlogPostMissing) return null;
+    throw error;
   }
   if (!html.trim()) return null;
 
