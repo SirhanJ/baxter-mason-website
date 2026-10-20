@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import descriptions from '../../data/seo-descriptions.json';
 
 import { rewriteBlogLinks } from './rewriteBlogLinks';
 import { OLD_TO_CURRENT_POST_SLUG } from './blogCanonical';
@@ -137,7 +138,7 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
     slug,
     html,
     title: heading ? plain(heading[1]) : slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-    description: firstPara ? plain(firstPara[1]).slice(0, 155) : '',
+    description: (descriptions as Record<string, string>)[slug] || (firstPara ? plain(firstPara[1]).slice(0, 155) : ''),
     image: image ? image[1] : '',
   };
 });

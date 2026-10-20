@@ -1,3 +1,4 @@
+import { searchTitle } from "../../lib/searchTitle";
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (post) {
     const description = snippet(post.description);
     return {
-      title: `${post.title.trim()} | Baxter & Mason`,
+      title: searchTitle(`/post/${slug}`, `${post.title.trim()} | Baxter & Mason`),
       description,
       keywords: post.tags?.length ? post.tags : undefined,
       alternates: { canonical: url },
@@ -99,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!currentPost) return { title: 'Post not found | Baxter & Mason' };
 
   return {
-    title: `${currentPost.title} | Baxter & Mason`,
+    title: searchTitle(`/post/${slug}`, `${currentPost.title} | Baxter & Mason`),
     description: currentPost.description,
     alternates: { canonical: url },
     openGraph: {

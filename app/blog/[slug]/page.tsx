@@ -1,3 +1,4 @@
+import { searchTitle } from "../../lib/searchTitle";
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
   return {
-    title: `${post.title} | Baxter & Mason`,
+    title: searchTitle(`/blog/${slug}`, `${post.title} | Baxter & Mason`),
     description: post.description,
     alternates: { canonical: url },
     openGraph: {
