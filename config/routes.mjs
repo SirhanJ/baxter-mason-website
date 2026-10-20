@@ -81,10 +81,9 @@ export const migrationRedirects = [
       permanent(source, canonicalRoutes[destination] || destination),
     ),
 
-  // The GoHighLevel /post URLs are the indexed addresses. The replacement
-  // /blog slugs are implementation details and must consolidate back to them.
+  // Preserve old links with a one-to-one 301 to the verified published article.
   ...Object.entries(postRedirects).map(([oldSlug, currentSlug]) =>
-    permanent(`/blog/${currentSlug}`, `/post/${oldSlug}`),
+    ({ source: `/post/${oldSlug}`, destination: `/blog/${currentSlug}`, statusCode: 301 }),
   ),
 
   // The two alternate post paths the old CMS also served.

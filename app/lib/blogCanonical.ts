@@ -24,6 +24,5 @@ export function oldPostSlugForCurrent(currentSlug: string): string | undefined {
 }
 
 export function canonicalPostPathForCurrent(currentSlug: string): string {
-  const oldSlug = oldPostSlugForCurrent(currentSlug);
-  return oldSlug ? `/post/${oldSlug}` : `/blog/${currentSlug}`;
+  return `/blog/${currentSlug}`;
 }

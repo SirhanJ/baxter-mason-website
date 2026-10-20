@@ -26,11 +26,14 @@ const redirectMap = legacyRedirects as Record<string, string>;
 
 function canonicalStaticPath(internal: string): string {
   const redirected = redirectMap[internal];
-  return (
+  const destination = (
     routeMap[internal] ||
     (redirected ? routeMap[redirected] || redirected : undefined) ||
     internal
   );
+  const oldSlug = destination.startsWith("/post/") ? destination.slice(6) : "";
+  const currentSlug = (postRedirects as Record<string,string>)[oldSlug];
+  return currentSlug ? `/blog/${currentSlug}` : destination;
 }
 
 function priorityFor(slug: string): number {
@@ -70,7 +73,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPosts = cards
     // The indexed GoHighLevel /post address remains canonical whenever a post
     // was migrated into the replacement blog feed.
-    .filter((card) => !oldPostSlugForCurrent(card.slug))
     .map((card) => ({
       url: `${SITE}/blog/${card.slug}`,
       lastModified: now,
@@ -80,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const preserved = (legacyPosts as { slug: string; published: string }[]).map(
     (post) => ({
-      url: `${SITE}/post/${post.slug}`,
+      url: `${SITE}${(postRedirects as Record<string,string>)[post.slug] ? "/blog/" + (postRedirects as Record<string,string>)[post.slug] : "/post/" + post.slug}`,
       lastModified: post.published
         ? new Date(`${post.published}T00:00:00Z`)
         : now,
@@ -89,10 +91,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
-  const historicalAliases = Object.keys(
+  const historicalAliases = Object.values(
     postRedirects as Record<string, string>,
   ).map((slug) => ({
-    url: `${SITE}/post/${slug}`,
+    url: `${SITE}/blog/${slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,

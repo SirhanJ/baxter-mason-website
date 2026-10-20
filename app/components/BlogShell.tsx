@@ -296,6 +296,7 @@ type BlogShellProps = {
   children: React.ReactNode;
   heroTitle?: React.ReactNode;
   heroSub?: string;
+  heroHeadingAs?: "h1" | "h2";
   heroEyebrow?: string;
   showInsightsHead?: boolean;
 };
@@ -310,6 +311,7 @@ export function BlogShell({
   heroSub = "Smarter property decisions for Sunshine Coast buyers.",
   heroEyebrow = "Blog",
   showInsightsHead = true,
+  heroHeadingAs: HeroHeading = "h1",
 }: BlogShellProps) {
   return (
     <>
@@ -322,7 +324,7 @@ export function BlogShell({
         <div className="wrap">
           <div className="page-hero-copy">
             <span className="eyebrow rv">{heroEyebrow}</span>
-            <h1 className="display rv d1">{heroTitle}</h1>
+            <HeroHeading className="display rv d1">{heroTitle}</HeroHeading>
             {heroSub ? <p className="sub rv d2">{heroSub}</p> : null}
           </div>
         </div>

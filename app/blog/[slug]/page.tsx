@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound, permanentRedirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
 import { BlogLinkFixup } from '../../components/BlogLinkFixup';
 import { JsonLd } from '../../components/JsonLd';
@@ -23,7 +23,6 @@ export const dynamicParams = true;
 export async function generateStaticParams() {
   const cards = await fetchPostCards();
   return cards
-    .filter((card) => !oldPostSlugForCurrent(card.slug))
     .map((card) => ({ slug: card.slug }));
 }
 
@@ -54,8 +53,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const oldSlug = oldPostSlugForCurrent(slug);
-  if (oldSlug) permanentRedirect(`/post/${oldSlug}`);
 
   const post = await fetchPost(slug);
   if (!post) notFound();
@@ -93,6 +90,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <BlogShell
+      heroHeadingAs="h2"
       heroTitle={
         <>
           From the <span className="gi">blog</span>.

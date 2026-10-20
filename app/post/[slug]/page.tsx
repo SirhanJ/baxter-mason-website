@@ -248,7 +248,7 @@ export default async function LegacyPostPage({ params }: Props) {
             </time>
           </p>
         ) : null}
-        <div dangerouslySetInnerHTML={{ __html: body }} />
+        <div dangerouslySetInnerHTML={{ __html: body.replace(/<(\/?)h1\b/gi, '<$1h2') }} />
       </article>
     </BlogShell>
   );
