@@ -31,6 +31,15 @@ const nextConfig = {
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {
+        // The active Website Lab preview uses Cloudflare, not Vercel.
+        source: '/:path*',
+        has: [{
+          type: 'host',
+          value: 'vexur-baxter-mason-property-buyers-agent-draft\\.ben-03a\\.workers\\.dev',
+        }],
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
         source: '/images/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },

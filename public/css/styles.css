@@ -339,6 +339,19 @@ img {
   transform: none;
 }
 
+/* Reveal content and dismiss the splash when JavaScript is disabled. */
+@media (scripting: none) {
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .site-loader {
+    display: none !important;
+  }
+}
+
 .rv.d1 {
   transition-delay: 0.08s;
 }
