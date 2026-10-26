@@ -109,7 +109,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // App Router pages that have no file in public/ and so are not picked up above.
-  // /thank-you is deliberately absent: it is noindex.
+  // /thank-you is deliberately absent: it is noindex. So are the thin funnel pages
+  // (/interview-funnel, /video-page-2417-2491): they are for ad traffic, not search.
   const appPages = [
     {
       url: `${SITE}/blogs-buyers-agent-sunshine-coast`,
@@ -123,16 +124,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${SITE}/link-in-bio`,
-      changeFrequency: "monthly" as const,
-      priority: 0.4,
-    },
-    {
-      url: `${SITE}/interview-funnel`,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    },
-    {
-      url: `${SITE}/video-page-2417-2491`,
       changeFrequency: "monthly" as const,
       priority: 0.4,
     },

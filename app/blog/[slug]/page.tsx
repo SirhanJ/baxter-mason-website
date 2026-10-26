@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: Props) {
       headline: post.title,
       description: post.description,
       url,
-      image: post.image || undefined,
+      image: post.image ? new URL(post.image, SITE).toString() : undefined,
       author: { '@id': ORG_ID },
       publisher: { '@id': ORG_ID },
       inLanguage: 'en-AU',
