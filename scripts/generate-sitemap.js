@@ -26,8 +26,6 @@ function changefreqFor(file) {
   return 'monthly';
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
 const pages = fs
   .readdirSync(publicDir)
   .filter((f) => f.endsWith('.html') && !EXCLUDE.has(f))
@@ -45,7 +43,7 @@ urls.push({ loc: `${ORIGIN}/blog`, priority: '0.8', changefreq: 'weekly' });
 const body = urls
   .map(
     (u) =>
-      `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n` +
+      `  <url>\n    <loc>${u.loc}</loc>\n` +
       `    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`,
   )
   .join('\n');

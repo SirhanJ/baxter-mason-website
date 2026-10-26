@@ -142,3 +142,51 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
     image: image ? image[1] : '',
   };
 });
+
+/** Slugs are letters, digits and . _ ~ - ; anything else from Vexur is never redirected to. */
+const SLUG_OK = /^[A-Za-z0-9][A-Za-z0-9._~-]*$/;
+
+/**
+ * The slug a post is published at NOW. Vexur answers /<slug>?metadata=true for a renamed post's
+ * old slug too, and the `slug` it returns is the current one - the page uses that to send the old
+ * address to the new one instead of serving the post twice. null when the post does not exist
+ * (404) or the answer has no usable slug. Any other failure is thrown, never read as "no
+ * redirect", so a bad moment cannot cache a duplicate of the post.
+ */
+export const fetchCurrentSlug = cache(async (slug: string): Promise<string | null> => {
+  let body: string;
+  try {
+    body = await fetchText(`${BASE}/${encodeURIComponent(slug)}?metadata=true`);
+  } catch (error) {
+    if (error instanceof BlogPostMissing) return null;
+    throw error;
+  }
+  try {
+    const current = JSON.parse(body)?.slug;
+    return typeof current === 'string' && SLUG_OK.test(current) ? current : null;
+  } catch {
+    return null;
+  }
+});
+
+/**
+ * Real change date per post for the sitemap: slug -> ISO string of Vexur's updated_at, else its
+ * published_at. One request covers every post. Empty when Vexur cannot be reached, so the
+ * sitemap then sends no lastmod rather than a made-up one.
+ */
+export async function fetchPostDates(): Promise<Map<string, string>> {
+  const dates = new Map<string, string>();
+  try {
+    const data = JSON.parse(await fetchText(`${BASE}?metadata=true`));
+    for (const post of Array.isArray(data?.posts) ? data.posts : []) {
+      const raw = post?.updated_at || post?.published_at;
+      const time = raw ? new Date(raw) : null;
+      if (typeof post?.slug === 'string' && time && !Number.isNaN(time.getTime())) {
+        dates.set(post.slug, time.toISOString());
+      }
+    }
+  } catch {
+    // no dates is safe: the sitemap leaves lastmod off
+  }
+  return dates;
+}

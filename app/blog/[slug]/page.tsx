@@ -1,12 +1,12 @@
 import { searchTitle } from "../../lib/searchTitle";
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
 import { BlogLinkFixup } from '../../components/BlogLinkFixup';
 import { JsonLd } from '../../components/JsonLd';
 import { SITE, ORG_ID, breadcrumb, graph } from '../../lib/seo';
 import { linkSuburbs } from '../../lib/linkSuburbs';
-import { fetchPost, fetchPostCards } from '../../lib/blogSource';
+import { fetchCurrentSlug, fetchPost, fetchPostCards } from '../../lib/blogSource';
 import {
   canonicalPostPathForCurrent,
   oldPostSlugForCurrent,
@@ -29,9 +29,22 @@ export async function generateStaticParams() {
 
 type Props = { params: Promise<{ slug: string }> };
 
+/**
+ * A renamed post still answers at its old slug, and used to serve the full post there with a
+ * self-canonical, so Google indexed both addresses. Vexur reports the slug a post is published at
+ * now; when the requested one is not it, send the request to the current address with a permanent
+ * redirect. A post that does not exist reports no slug and falls through to the real 404.
+ */
+async function redirectIfRenamed(slug: string) {
+  const currentSlug = await fetchCurrentSlug(slug);
+  if (currentSlug && currentSlug !== slug) {
+    permanentRedirect(canonicalPostPathForCurrent(currentSlug));
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchPost(slug);
+  const [, post] = await Promise.all([redirectIfRenamed(slug), fetchPost(slug)]);
   if (!post) return { title: 'Post not found | Baxter & Mason' };
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
@@ -55,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
 
-  const post = await fetchPost(slug);
+  const [, post] = await Promise.all([redirectIfRenamed(slug), fetchPost(slug)]);
   if (!post) notFound();
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;

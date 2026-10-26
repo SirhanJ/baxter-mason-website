@@ -8,7 +8,7 @@ import { SITE } from "./lib/seo";
  * `next dev` - with robots.txt pointing search engines straight at it.
  */
 import pageSlugs from "../data/page-slugs.json";
-import { fetchPostCards } from "./lib/blogSource";
+import { fetchPostCards, fetchPostDates } from "./lib/blogSource";
 import { oldPostSlugForCurrent } from "./lib/blogCanonical";
 import legacyPosts from "../data/legacy-posts.json";
 import postRedirects from "../data/post-redirects.json";
@@ -51,7 +51,16 @@ function priorityFor(slug: string): number {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+  /**
+   * lastmod is only worth sending when it is true. The build or render time is not a change date,
+   * so pages with no real date carry none; posts carry the date Vexur holds for them (updated_at,
+   * else published_at); archived /post entries keep their fixed published date.
+   */
+  const postDates = await fetchPostDates();
+  const postDate = (slug: string) => {
+    const date = postDates.get(slug);
+    return date ? { lastModified: date } : {};
+  };
 
   const staticPages = (pageSlugs as string[])
     // /blog is an App Router page now, not a file in public.
@@ -61,7 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const canonical = canonicalStaticPath(internal);
       return {
       url: `${SITE}${canonical}`,
-      lastModified: now,
       changeFrequency: (slug === "index" ? "weekly" : "monthly") as
         | "weekly"
         | "monthly",
@@ -75,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // was migrated into the replacement blog feed.
     .map((card) => ({
       url: `${SITE}/blog/${card.slug}`,
-      lastModified: now,
+      ...postDate(card.slug),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     }));
@@ -83,9 +91,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const preserved = (legacyPosts as { slug: string; published: string }[]).map(
     (post) => ({
       url: `${SITE}${(postRedirects as Record<string,string>)[post.slug] ? "/blog/" + (postRedirects as Record<string,string>)[post.slug] : "/post/" + post.slug}`,
-      lastModified: post.published
-        ? new Date(`${post.published}T00:00:00Z`)
-        : now,
+      ...(post.published
+        ? { lastModified: new Date(`${post.published}T00:00:00Z`) }
+        : {}),
       changeFrequency: "yearly" as const,
       priority: 0.5,
     }),
@@ -95,7 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     postRedirects as Record<string, string>,
   ).map((slug) => ({
     url: `${SITE}/blog/${slug}`,
-    lastModified: now,
+    ...postDate(slug),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -128,7 +136,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.4,
     },
-  ].map((page) => ({ ...page, lastModified: now }));
+  ];
 
   const entries = [
     ...appPages,
