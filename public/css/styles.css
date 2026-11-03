@@ -339,6 +339,16 @@ img {
   transform: none;
 }
 
+/* Above-the-fold hero copy paints on first load. A headline that starts at
+   opacity 0 is not painted until its fade ends, which made it the late LCP
+   element on mobile. Only sections below the fold fade in. */
+.hm-hero .rv,
+.page-hero .rv {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 /* Reveal content and dismiss the splash when JavaScript is disabled. */
 @media (scripting: none) {
   .rv {

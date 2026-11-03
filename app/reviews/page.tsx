@@ -17,7 +17,7 @@ type ReviewsFile = {
 
 const DATA = reviewsData as ReviewsFile;
 const URL = `${SITE}/google-reviews-buyers-agent-sunshine-coast`;
-const TITLE = "Client Reviews | Baxter & Mason";
+const TITLE = "Buyers Agent Reviews Sunshine Coast | Baxter & Mason";
 const DESCRIPTION = `Google reviews from Sunshine Coast buyers represented by Baxter & Mason. ${DATA.googleTotals.ratingValue.toFixed(1)} from ${DATA.googleTotals.reviewCount} ${DATA.source} reviews.`;
 
 export const metadata: Metadata = {

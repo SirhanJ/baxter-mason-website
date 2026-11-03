@@ -16,14 +16,17 @@ const ROBOTS_MARK = "seo:robots";
 const LINKED_MARK = "data-suburb-link";
 const CANONICAL_ROUTES = require("../data/canonical-routes.json");
 const LEGACY_REDIRECTS = require("../data/legacy-redirects.json");
+// Success stories that are also blog posts (same story, two addresses). The /post/ page keeps loading,
+// but the blog post is the one that is indexed, so every canonical, og:url and internal link names it.
+const STORY_BLOG_TWINS = require("../data/story-blog-twins.json");
 
 function canonicalPath(url) {
   const redirected = LEGACY_REDIRECTS[url];
-  return (
+  const path =
     CANONICAL_ROUTES[url] ||
     (redirected ? CANONICAL_ROUTES[redirected] || redirected : undefined) ||
-    url
-  );
+    url;
+  return STORY_BLOG_TWINS[path] || path;
 }
 
 const read = (f) => fs.readFileSync(f, "utf8");
@@ -218,6 +221,29 @@ function ensureReviewsLink(html) {
   );
 }
 
+/**
+ * Calculators and the Buyers Concierge page had no link from anywhere on the site, so crawlers only found
+ * them in the sitemap. Both go in the footer's Explore column, in the same list style as the other links.
+ */
+const ORPHAN_FOOTER_LINKS = [
+  ["/calculators", "Calculators"],
+  ["/buyers-concierge-service-sunshine-coast", "Buyers Concierge"],
+];
+
+function ensureOrphanLinks(html) {
+  const reviewsLink = new RegExp(
+    '(<li><a href="' + canonicalPath("/reviews") + '">Client Reviews<\/a><\/li>)',
+    "i",
+  );
+  let out = html;
+  const eol = out.indexOf(String.fromCharCode(13, 10)) !== -1 ? String.fromCharCode(13, 10) : String.fromCharCode(10);
+  for (const [href, label] of ORPHAN_FOOTER_LINKS.slice().reverse()) {
+    if (out.indexOf('<li><a href="' + href + '">') !== -1) continue;
+    out = out.replace(reviewsLink, "$1" + eol + '<li><a href="' + href + '">' + label + "</a></li>");
+  }
+  return out;
+}
+
 const SUBURB_PROOF_MARK = "<!-- seo:suburb-proof -->";
 
 function ensureReviewsNav(html) {
@@ -272,7 +298,8 @@ function addSuburbProof(html, suburbName) {
 
 function setHead(html, url) {
   const abs = SITE + url;
-  let out = html;
+  // Absolute URLs must not carry a double slash (".com.au//images/..."), in og:image or JSON-LD.
+  let out = html.replace(/(https?:[/][/][^/"' ]+)[/][/](?=images[/])/g, "$1/");
 
   out = out.replace(
     /<link rel="canonical" href="[^"]*">/i,
@@ -409,6 +436,7 @@ module.exports = {
   preloadHero,
   ensureReviewsLink,
   ensureReviewsNav,
+  ensureOrphanLinks,
   addSuburbProof,
   SUBURB_PROOF_MARK,
 };

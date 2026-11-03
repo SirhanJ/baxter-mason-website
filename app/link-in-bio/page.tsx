@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: URL },
+  // The page is for people who follow the Instagram and TikTok bios, not for search results.
+  robots: { index: false, follow: true },
   openGraph: { images: ["https://www.baxtermason.com.au/images/66f243dc0b3af8e3d2500f2d.jpeg"],
     type: 'website',
     title: TITLE,

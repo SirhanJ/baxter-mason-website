@@ -26,3 +26,17 @@ export function oldPostSlugForCurrent(currentSlug: string): string | undefined {
 export function canonicalPostPathForCurrent(currentSlug: string): string {
   return `/blog/${currentSlug}`;
 }
+
+/**
+ * Blog posts whose own /blog address changed (a typo or placeholder slug fixed in Vexur).
+ * data/post-redirects.json only maps the old site's /post/<old> addresses, and config/routes.mjs
+ * allows one old address per current slug, so the earlier /blog/<slug> addresses are redirected
+ * here instead: app/blog/[slug]/page.tsx sends them permanently to the new address.
+ */
+export const RENAMED_BLOG_SLUGS: Readonly<Record<string, string>> = {
+  'the-power-of-local-relationshipsew-blog-post': 'the-power-of-local-relationships',
+  'number-strategy-tips-for-property-investors-in-year-4':
+    'hidden-costs-buyers-are-missing-in-2026-and-how-to-avoid-them',
+  'number-strategy-tips-for-property-investors-in-year-5':
+    'school-catchment-effect-sunshine-coast-property-prices',
+};

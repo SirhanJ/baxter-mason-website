@@ -46,7 +46,22 @@ function writePageSlugs(canonicalTargets) {
   return slugs.length;
 }
 
+/**
+ * Routes whose short address must answer with a 301 to the canonical one. Cloudflare serves a matching
+ * file in public/ before the worker runs, so /success-stories answered 200 from public/success-stories.html
+ * and the redirect in next.config.mjs never fired. The canonical copy is written first, then the short
+ * file is removed from the build output so the request reaches the worker and is redirected.
+ * (The repo still holds the source page; a second prebuild run restores it from the copy first.)
+ */
+const REDIRECT_ONLY = ["/success-stories"];
+
 function main() {
+  for (const internal of REDIRECT_ONLY) {
+    const source = path.join(PUBLIC_DIR, internal.slice(1) + ".html");
+    const copy = path.join(PUBLIC_DIR, canonicalRoutes[internal].slice(1) + ".html");
+    if (!fs.existsSync(source) && fs.existsSync(copy)) fs.copyFileSync(copy, source);
+  }
+
   const canonicalTargets = new Set(
     Object.entries(canonicalRoutes)
       .filter(([internal, canonical]) => internal !== canonical)
@@ -78,6 +93,11 @@ function main() {
     fs.copyFileSync(source, target);
     if (existed) skipped += 1;
     else written += 1;
+  }
+
+  for (const internal of REDIRECT_ONLY) {
+    const source = path.join(PUBLIC_DIR, internal.slice(1) + ".html");
+    if (fs.existsSync(source)) fs.rmSync(source);
   }
 
   console.log(`page slugs recorded     : ${slugCount}`);

@@ -25,6 +25,7 @@
     "description": "Three buyers, one townhouse, and a Sunshine Coast search that closed in three weeks. How we ran the competing brief."
   },
   "story-53k-equity": {
+    "title": "$53K Instant Equity, Interstate Buyer | Baxter & Mason",
     "description": "Buying property on the Sunshine Coast is tough right now, especially for interstate buyers with a strict budget and specific investment goals."
   },
   "story-beachside-holiday-26-days": {
@@ -70,7 +71,7 @@
     "description": "Two hospital workers wanted to live within walking distance of SCUH. How we found and secured the right home in Birtinya for them."
   },
   "story-investment-freestanding": {
-    "title": "Investment Win: A Freestanding Move-In Home | Baxter & Mason",
+    "title": "Investment Win: Freestanding Move-In Home | Baxter & Mason",
     "description": "How we found an investor a freestanding, move-in-ready home on the Sunshine Coast without the renovation budget or the waiting."
   },
   "story-jody-nervous-investor": {
@@ -119,5 +120,53 @@
   },
   "terms": {
     "description": "The terms that apply when you engage Baxter & Mason as your Sunshine Coast buyers agent, including scope of service and licensing."
+  },
+  "services": {
+    "title": "Buyers Agent Services Sunshine Coast | Baxter & Mason"
+  },
+  "contact": {
+    "title": "Contact a Sunshine Coast Buyers Agent | Baxter & Mason"
+  },
+  "faq": {
+    "title": "Buyers Agent FAQs Sunshine Coast | Baxter & Mason"
+  },
+  "coaching": {
+    "title": "Property Coaching Sunshine Coast | Baxter & Mason"
+  },
+  "commercial": {
+    "title": "Commercial Buyers Agent Sunshine Coast | Baxter & Mason"
+  },
+  "empowering-women": {
+    "title": "Empowering Women Through Property | Baxter & Mason"
+  },
+  "investment": {
+    "title": "Sunshine Coast Investment Buyers Agent | Baxter & Mason"
+  },
+  "our-people": {
+    "title": "Meet the Sunshine Coast Buyers Agent Team | Baxter & Mason"
+  },
+  "kelly-galletly": {
+    "title": "Kelly Galletly, Commercial Buyers Agent | Baxter & Mason"
+  },
+  "sally-blyth": {
+    "title": "Sally Blyth, Sunshine Coast Buyers Agent | Baxter & Mason"
+  },
+  "success-stories": {
+    "title": "Buyers Agent Success Stories Sunshine Coast | Baxter & Mason"
+  },
+  "suburbs-we-buy-in": {
+    "title": "Sunshine Coast Suburbs We Buy In | Baxter & Mason"
+  },
+  "what-we-do": {
+    "title": "Sunshine Coast Buyers Agent: What We Do | Baxter & Mason"
+  },
+  "why-work-with-us": {
+    "title": "Why Use a Sunshine Coast Buyers Agent | Baxter & Mason"
+  },
+  "free-guides": {
+    "title": "Free Property Buying Guides & Downloads | Baxter & Mason"
+  },
+  "book-a-free-discovery-call": {
+    "title": "Book a Free Buyers Agent Discovery Call | Baxter & Mason"
   }
 }

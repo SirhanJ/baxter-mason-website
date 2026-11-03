@@ -14,12 +14,16 @@ const read = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
 
 const PROD_HOST = 'www.baxtermason.com.au';
 
+// Short addresses that only redirect: scripts/materialise-canonical-pages.js removes their public/ file
+// from the build, otherwise Cloudflare serves that file (200) before the worker can redirect it.
+const redirectOnly = new Set(['/success-stories']);
+
 /** Every static page in public/, by slug. */
 const pageSlugs = fs
   .readdirSync(path.join(ROOT, 'public'))
   .filter((f) => f.endsWith('.html'))
   .map((f) => f.replace(/\.html$/, ''))
-  .filter((slug) => slug !== 'index');
+  .filter((slug) => slug !== 'index' && !redirectOnly.has(`/${slug}`));
 
 const legacyRedirects = read('./data/legacy-redirects.json');
 const postRedirects = read('./data/post-redirects.json');
@@ -53,17 +57,20 @@ const canonicalDestination = (source) => {
  */
 export const cleanUrlRewrites = [
   { source: '/', destination: '/index.html' },
-  ...Object.entries(canonicalRoutes).map(([internal, canonical]) => ({
-    source: canonical,
-    destination: pageSlugs.includes(internal.slice(1))
-      ? `${internal}.html`
-      : internal,
-  })),
+  ...Object.entries(canonicalRoutes)
+    .filter(([internal]) => !redirectOnly.has(internal))
+    .map(([internal, canonical]) => ({
+      source: canonical,
+      destination: pageSlugs.includes(internal.slice(1))
+        ? `${internal}.html`
+        : internal,
+    })),
   ...pageSlugs.map((slug) => ({ source: `/${slug}`, destination: `/${slug}.html` })),
 ];
 
 export const cleanUrlRedirects = [
   permanent('/index.html', '/'),
+  ...[...redirectOnly].map((internal) => permanent(`${internal}.html`, canonicalRoutes[internal])),
   ...pageSlugs.map((slug) => {
     const internal = `/${slug}`;
     return permanent(`${internal}.html`, canonicalDestination(internal));

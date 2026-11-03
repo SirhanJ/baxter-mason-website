@@ -62,7 +62,10 @@ function readPage(file) {
     description: lib.unesc(
       grab(/<meta name="description" content="([^"]*)"/i).trim(),
     ),
-    image: grab(/<meta property="og:image" content="([^"]*)"/i),
+    image: grab(/<meta property="og:image" content="([^"]*)"/i).replace(
+      /(https?:[/][/][^/]+)[/][/]+/,
+      "$1/",
+    ),
     h1: lib.strip(grab(/<h1[^>]*>([\s\S]*?)<\/h1>/i)).replace(/\.$/, ""),
     date: grab(
       /\b((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+20\d\d)/,
@@ -188,6 +191,19 @@ function graphFor(page) {
   nodes.push(webPage);
 
   nodes.push(breadcrumb(page));
+
+  if (page.slug === "sally-blyth") {
+    nodes.push({
+      "@type": "Person",
+      "@id": url + "#person",
+      name: "Sally Blyth",
+      jobTitle: "Director and Founder",
+      worksFor: { "@id": ORG_ID },
+      url,
+      hasCredential: "QLD Real Estate Licence 4684962",
+    });
+    webPage.mainEntity = { "@id": url + "#person" };
+  }
 
   if (page.type === "suburb") {
     const name = page.h1.replace(/\s*Buyers Agent$/i, "").trim();
@@ -658,6 +674,7 @@ for (const page of pages) {
   html = lib.preloadHero(html);
   html = lib.ensureReviewsLink(html);
   html = lib.ensureReviewsNav(html);
+  html = lib.ensureOrphanLinks(html);
   html = addNearbyBlock(html, page);
   if (page.type === "suburb") {
     html = lib.addSuburbProof(

@@ -244,6 +244,12 @@ export function SiteFooter() {
                 <li>
                   <a href="/google-reviews-buyers-agent-sunshine-coast">Client Reviews</a>
                 </li>
+                <li>
+                  <a href="/calculators">Calculators</a>
+                </li>
+                <li>
+                  <a href="/buyers-concierge-service-sunshine-coast">Buyers Concierge</a>
+                </li>
               </ul>
             </div>
             <div className="ft-col">

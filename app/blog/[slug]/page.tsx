@@ -4,10 +4,11 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
 import { BlogLinkFixup } from '../../components/BlogLinkFixup';
 import { JsonLd } from '../../components/JsonLd';
-import { SITE, ORG_ID, breadcrumb, graph } from '../../lib/seo';
+import { SITE, breadcrumb, graph } from '../../lib/seo';
 import { linkSuburbs } from '../../lib/linkSuburbs';
-import { fetchCurrentSlug, fetchPost, fetchPostCards } from '../../lib/blogSource';
+import { blogPostingNode, blogSeoTitle, fetchCurrentSlug, fetchPost, fetchPostCards } from '../../lib/blogSource';
 import {
+  RENAMED_BLOG_SLUGS,
   canonicalPostPathForCurrent,
   oldPostSlugForCurrent,
 } from '../../lib/blogCanonical';
@@ -44,12 +45,16 @@ async function redirectIfRenamed(slug: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (RENAMED_BLOG_SLUGS[slug]) return {};
   const [, post] = await Promise.all([redirectIfRenamed(slug), fetchPost(slug)]);
   if (!post) return { title: 'Post not found | Baxter & Mason' };
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
+  // The title and description Vexur holds for the post win; the fallbacks are for a post that has none.
   return {
-    title: searchTitle(`/blog/${slug}`, `${post.title} | Baxter & Mason`),
+    title: post.metaTitle
+      ? blogSeoTitle(post.metaTitle)
+      : searchTitle(`/blog/${slug}`, `${post.title} | Baxter & Mason`),
     description: post.description,
     alternates: { canonical: url },
     openGraph: {
@@ -59,33 +64,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url,
       siteName: 'Baxter & Mason',
       locale: 'en_AU',
-      images: post.image ? [post.image] : undefined,
+      images: [post.image],
+      publishedTime: post.datePublished,
+      modifiedTime: post.dateModified,
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [post.image],
+    },
   };
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
 
+  // A post whose address changed or that duplicates another: send the old /blog address on.
+  const renamedTo = RENAMED_BLOG_SLUGS[slug];
+  if (renamedTo) permanentRedirect(`/blog/${renamedTo}`);
+
   const [, post] = await Promise.all([redirectIfRenamed(slug), fetchPost(slug)]);
   if (!post) notFound();
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
   const schema = graph([
-    {
-      '@type': 'BlogPosting',
-      '@id': `${url}#article`,
-      headline: post.title,
-      description: post.description,
-      url,
-      image: post.image ? new URL(post.image, SITE).toString() : undefined,
-      author: { '@id': ORG_ID },
-      publisher: { '@id': ORG_ID },
-      inLanguage: 'en-AU',
-      mainEntityOfPage: { '@id': `${url}#webpage` },
-      isPartOf: { '@id': `${SITE}/blogs-buyers-agent-sunshine-coast#blog` },
-    },
+    blogPostingNode(url, post),
     {
       '@type': 'WebPage',
       '@id': `${url}#webpage`,
