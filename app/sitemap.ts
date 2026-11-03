@@ -9,6 +9,7 @@ import { SITE } from "./lib/seo";
  */
 import pageSlugs from "../data/page-slugs.json";
 import { fetchPostCards, fetchPostDates } from "./lib/blogSource";
+import { fetchStoriesNeedingPage, storyPath } from "./lib/caseStudySource";
 import { oldPostSlugForCurrent } from "./lib/blogCanonical";
 import legacyPosts from "../data/legacy-posts.json";
 import postRedirects from "../data/post-redirects.json";
@@ -88,6 +89,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
 
+  // Success stories with no address of their own on this site get one under the success stories page,
+  // dated by when Vexur last changed them. Stories already at a /post/ or /story- address are listed
+  // below with that address, so they are not repeated here.
+  const storyPages = (await fetchStoriesNeedingPage()).map((story) => {
+    const raw = story.updated_at || story.published_at;
+    const time = raw ? new Date(raw) : null;
+    return {
+      url: `${SITE}${storyPath(story.slug)}`,
+      ...(time && !Number.isNaN(time.getTime()) ? { lastModified: time.toISOString() } : {}),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    };
+  });
+
   const preserved = (legacyPosts as { slug: string; published: string }[]).map(
     (post) => ({
       url: `${SITE}${(postRedirects as Record<string,string>)[post.slug] ? "/blog/" + (postRedirects as Record<string,string>)[post.slug] : "/post/" + post.slug}`,
@@ -133,6 +148,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...appPages,
     ...staticPages,
     ...blogPosts,
+    ...storyPages,
     ...preserved,
     ...historicalAliases,
   ];
