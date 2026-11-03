@@ -16,7 +16,10 @@ const PROD_HOST = 'www.baxtermason.com.au';
 
 // Short addresses that only redirect: scripts/materialise-canonical-pages.js removes their public/ file
 // from the build, otherwise Cloudflare serves that file (200) before the worker can redirect it.
-const redirectOnly = new Set(['/success-stories']);
+// Only /blog and /reviews stay out: they are app routes with no file to remove.
+const redirectOnly = new Set(
+  Object.keys(read('./data/canonical-routes.json')).filter((route) => !['/blog', '/reviews'].includes(route)),
+);
 
 /** Every static page in public/, by slug. */
 const pageSlugs = fs

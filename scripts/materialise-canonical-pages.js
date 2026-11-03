@@ -53,7 +53,7 @@ function writePageSlugs(canonicalTargets) {
  * file is removed from the build output so the request reaches the worker and is redirected.
  * (The repo still holds the source page; a second prebuild run restores it from the copy first.)
  */
-const REDIRECT_ONLY = ["/success-stories"];
+const REDIRECT_ONLY = Object.keys(canonicalRoutes).filter((route) => !["/blog", "/reviews"].includes(route));
 
 function main() {
   for (const internal of REDIRECT_ONLY) {
