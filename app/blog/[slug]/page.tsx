@@ -50,11 +50,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return { title: 'Post not found | Baxter & Mason' };
 
   const url = `${SITE}${canonicalPostPathForCurrent(slug)}`;
-  // The title and description Vexur holds for the post win; the fallbacks are for a post that has none.
+  // Title order: (a) the shortened title in data/seo-titles.json for this slug (26 Oct), else (b) the
+  // title Vexur holds for the post, with the brand suffix only while the whole stays within 65
+  // characters, else (c) the post's own title plus the brand. The customer's text is never rewritten.
   return {
-    title: post.metaTitle
-      ? blogSeoTitle(post.metaTitle)
-      : searchTitle(`/blog/${slug}`, `${post.title} | Baxter & Mason`),
+    title: searchTitle(
+      `/blog/${slug}`,
+      post.metaTitle ? blogSeoTitle(post.metaTitle) : `${post.title} | Baxter & Mason`,
+    ),
     description: post.description,
     alternates: { canonical: url },
     openGraph: {

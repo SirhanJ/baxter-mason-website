@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [{ url: coverFor(post), alt: post.imageAlt }],
         publishedTime: post.published || undefined,
       },
-      twitter: { card: 'summary_large_image' },
+      twitter: { card: 'summary_large_image', images: [coverFor(post)] },
     };
   }
 
@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: 'en_AU',
       images: currentPost.image ? [currentPost.image] : undefined,
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: { card: 'summary_large_image', images: currentPost.image ? [currentPost.image] : undefined },
   };
 }
 

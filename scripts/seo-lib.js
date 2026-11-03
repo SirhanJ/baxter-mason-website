@@ -310,6 +310,15 @@ function setHead(html, url) {
     "$1" + abs + "$2",
   );
 
+  // twitter:image mirrors og:image wherever the page has one (share previews on X read it).
+  const og = out.match(/<meta property="og:image" content="([^"]*)"[^>]*>/i);
+  if (og && !/<meta name="twitter:image"/i.test(out)) {
+    const tag = '<meta name="twitter:image" content="' + og[1] + '">';
+    out = /<meta name="twitter:card"[^>]*>/i.test(out)
+      ? out.replace(/(<meta name="twitter:card"[^>]*>)/i, '$1\n' + tag)
+      : out.replace(og[0], og[0] + '\n' + tag);
+  }
+
   if (out.indexOf(ROBOTS_MARK) === -1) {
     out = out.replace(
       /(<link rel="canonical"[^>]*>)/i,
