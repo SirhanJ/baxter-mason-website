@@ -31,9 +31,14 @@ const nextConfig = {
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {
-        // Website Lab's draft and production Workers both answer on workers.dev.
+        // The active Website Lab preview uses Cloudflare, not Vercel. Only the draft Worker's own address:
+        // the host Next sees on production requests also ends in workers.dev, so a wider match put
+        // noindex on every page the Worker renders on www.baxtermason.com.au.
         source: '/:path*',
-        has: [{ type: 'host', value: '(?<worker>.*\\.workers\\.dev)' }],
+        has: [{
+          type: 'host',
+          value: 'vexur-baxter-mason-property-buyers-agent-draft\\.ben-03a\\.workers\\.dev',
+        }],
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {

@@ -70,7 +70,10 @@ export const cleanUrlRewrites = [
 
 export const cleanUrlRedirects = [
   permanent('/index.html', '/'),
-  ...[...redirectOnly].map((internal) => permanent(`${internal}.html`, canonicalRoutes[internal])),
+  // 301 (not the 308 that `permanent` sends): the short address is retired for good.
+  ...[...redirectOnly].flatMap((internal) =>
+    [internal, `${internal}.html`].map((source) => ({ source, destination: canonicalRoutes[internal], statusCode: 301 })),
+  ),
   ...pageSlugs.map((slug) => {
     const internal = `/${slug}`;
     return permanent(`${internal}.html`, canonicalDestination(internal));
