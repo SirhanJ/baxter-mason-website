@@ -156,12 +156,17 @@ const SEO_SUFFIX = ' | Baxter & Mason';
 
 /**
  * The search-result title for a post: its Vexur meta_title, with " | Baxter & Mason" kept only if the whole
- * thing stays within 65 characters. The post's own words are never shortened or reworded.
+ * thing stays within 65 characters. A longer one ends at the last whole word that fits.
  */
 export function blogSeoTitle(metaTitle: string): string {
   const own = metaTitle.trim();
-  const base = own.endsWith(SEO_SUFFIX) ? own.slice(0, -SEO_SUFFIX.length).trimEnd() : own;
-  return `${base}${SEO_SUFFIX}`.length <= 65 ? `${base}${SEO_SUFFIX}` : base;
+  // Vexur cuts meta_title at 70 characters, so the suffix can arrive whole or as "| Baxter & Ma".
+  const cut = own.lastIndexOf(' |');
+  const base = cut >= 0 && SEO_SUFFIX.startsWith(own.slice(cut)) ? own.slice(0, cut).trimEnd() : own;
+  if (`${base}${SEO_SUFFIX}`.length <= 65) return `${base}${SEO_SUFFIX}`;
+  if (base.length <= 65) return base;
+  const fit = base.slice(0, 66);
+  return fit.slice(0, fit.lastIndexOf(' ')).replace(/[\s:;,(–—-]+$/, '');
 }
 
 /** The post's own picture as an absolute address: Vexur's og image (a local copy when it is a heavy one), else the site default. */
