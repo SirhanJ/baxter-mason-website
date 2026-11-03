@@ -9,7 +9,7 @@ import { SITE } from "./lib/seo";
  */
 import pageSlugs from "../data/page-slugs.json";
 import { fetchPostCards, fetchPostDates } from "./lib/blogSource";
-import { fetchStoriesNeedingPage, storyPath } from "./lib/caseStudySource";
+import { fetchStoriesToIndex, storyPath } from "./lib/caseStudySource";
 import { oldPostSlugForCurrent } from "./lib/blogCanonical";
 import legacyPosts from "../data/legacy-posts.json";
 import postRedirects from "../data/post-redirects.json";
@@ -91,8 +91,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Success stories with no address of their own on this site get one under the success stories page,
   // dated by when Vexur last changed them. Stories already at a /post/ or /story- address are listed
-  // below with that address, so they are not repeated here.
-  const storyPages = (await fetchStoriesNeedingPage()).map((story) => {
+  // below with that address, so they are not repeated here. A story that is also a blog post (same
+  // slug) is left out: its page points to the blog post, which is listed with the blog posts.
+  const storyPages = (await fetchStoriesToIndex()).map((story) => {
     const raw = story.updated_at || story.published_at;
     const time = raw ? new Date(raw) : null;
     return {

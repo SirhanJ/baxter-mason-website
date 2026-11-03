@@ -11,6 +11,7 @@ import {
   fetchStoriesNeedingPage,
   fetchStoryBody,
   fetchStoryMeta,
+  storyCanonical,
   storyPath,
 } from '../../lib/caseStudySource';
 
@@ -45,9 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const meta = await loadStory(slug);
   if (!meta) return { title: 'Success story not found | Baxter & Mason' };
 
-  const url = `${SITE}${storyPath(meta.slug)}`;
-  const saved = meta.canonical_url?.trim();
-  const canonical = saved && !saved.includes('#') ? saved : url;
+  const canonical = await storyCanonical(meta);
   const title = meta.meta_title || meta.title;
   const description = meta.meta_description || meta.excerpt;
   return {
@@ -74,8 +73,7 @@ export default async function SuccessStoryPage({ params }: Props) {
   const story = await fetchStoryBody(meta.slug);
   if (!story) notFound();
 
-  const saved = meta.canonical_url?.trim();
-  const url = saved && !saved.includes('#') ? saved : `${SITE}${storyPath(meta.slug)}`;
+  const url = await storyCanonical(meta);
   const description = meta.meta_description || meta.excerpt;
   const schema = graph([
     {

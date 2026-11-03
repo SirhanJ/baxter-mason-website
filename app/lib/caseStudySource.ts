@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { SITE } from './seo';
+import { fetchPostCards } from './blogSource';
 
 /**
  * Success stories live in Vexur (Case Studies). This is the story twin of blogSource.ts: it reads
@@ -151,6 +152,34 @@ export const fetchStoryBody = cache(async (slug: string): Promise<StoryBody | nu
   if (!html.includes('class="cs-content"')) throw new Error(`case-study-render returned no story text for ${slug}`);
   return { css, html };
 });
+
+/** Slugs of the published blog posts on this site (the blog archive), read once per request. */
+const blogSlugs = cache(async (): Promise<Set<string>> => new Set((await fetchPostCards()).map((card) => card.slug)));
+
+/**
+ * The blog post a story duplicates, as a path, or null. A story whose slug is also a published blog
+ * post's slug on this site is the same article twice; the blog post is the one that stays indexed.
+ */
+export async function blogTwinPath(slug: string): Promise<string | null> {
+  return (await blogSlugs()).has(slug) ? `/blog/${slug}` : null;
+}
+
+/**
+ * The canonical address of a story's own page: the blog post when it has a twin there, else the
+ * canonical saved in Vexur (when it is a real address, not a "#story-" fragment), else itself.
+ */
+export async function storyCanonical(meta: Pick<StoryMeta, 'slug' | 'canonical_url'>): Promise<string> {
+  const twin = await blogTwinPath(meta.slug);
+  if (twin) return `${SITE}${twin}`;
+  const saved = meta.canonical_url?.trim();
+  return saved && !saved.includes('#') ? saved : `${SITE}${storyPath(meta.slug)}`;
+}
+
+/** Stories that belong in the sitemap: those needing a page here, minus any that duplicate a blog post. */
+export async function fetchStoriesToIndex(): Promise<StoryMeta[]> {
+  const [stories, slugs] = await Promise.all([fetchStoriesNeedingPage(), blogSlugs()]);
+  return stories.filter((story) => !slugs.has(story.slug));
+}
 
 /**
  * Stories that need the page this route serves, with their real change date for the sitemap: every
