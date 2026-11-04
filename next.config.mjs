@@ -64,4 +64,18 @@ const nextConfig = {
   },
 };
 
+const existingWebsiteHeaders = nextConfig.headers;
+nextConfig.headers = async () => [
+  ...(existingWebsiteHeaders ? await existingWebsiteHeaders() : []),
+  { source: "/:path*", headers: [
+    { key: "X-Content-Type-Options", value: "nosniff" },
+    { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  ] },
+  { source: "/:path*",
+    has: [{ type: "host", value: "vexur-baxter-mason-property-buyers-agent-import\\.ben-03a\\.workers\\.dev" }],
+    missing: [{ type: "header", key: "x-forwarded-host", value: "(?:www\\.)?baxtermason\\.com\\.au" }],
+    headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }],
+  },
+];
+
 export default nextConfig;
