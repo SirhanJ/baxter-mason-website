@@ -224,7 +224,7 @@ export function SiteFooter() {
               </div>
             </div>
             <div className="ft-col">
-              <h4>Explore</h4>
+              <h2 className="footer-heading">Explore</h2>
               <ul>
                 <li>
                   <a href="/what-we-do-buyers-agent-sunshine-coast">What We Do</a>
@@ -253,7 +253,7 @@ export function SiteFooter() {
               </ul>
             </div>
             <div className="ft-col">
-              <h4>Contact</h4>
+              <h2 className="footer-heading">Contact</h2>
               <ul>
                 <li>
                   <a href="tel:+61490744453">+61 490 744 453</a>
@@ -271,7 +271,7 @@ export function SiteFooter() {
               </ul>
             </div>
             <div className="ft-col">
-              <h4>Details</h4>
+              <h2 className="footer-heading">Details</h2>
               <ul>
                 <li>QLD Licence 4684962</li>
                 <li>Sunshine Coast, Australia</li>
@@ -293,7 +293,7 @@ export function SiteFooter() {
           </div>
         </div>
       </footer>
-      <Script src="/js/main.js?v=24" strategy="afterInteractive" />
+      <Script src="/js/main.js?v=20261104" strategy="afterInteractive" />
     </>
   );
 }
@@ -321,7 +321,9 @@ export function BlogShell({
 }: BlogShellProps) {
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <SiteHeader />
+      <main id="main-content" tabIndex={-1}>
       <section
         className="page-hero img-hero"
         style={{ backgroundImage: "url('/images/story-holiday.jpg')" }}
@@ -352,6 +354,7 @@ export function BlogShell({
         </div>
       </section>
 
+      </main>
       <SiteFooter />
     </>
   );

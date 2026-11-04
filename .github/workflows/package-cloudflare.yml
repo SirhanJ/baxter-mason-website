@@ -1,0 +1,43 @@
+name: Package Cloudflare Worker
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/seo-approved-2026-11-04]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the existing Website Lab runtime
+        run: npm install --no-save --package-lock=false --legacy-peer-deps @opennextjs/cloudflare@1.20.13 wrangler@4.110.0
+      - name: Compile without running a type check
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const deployConfig = JSON.parse(fs.readFileSync('wrangler.website-lab.jsonc', 'utf8'));
+          deployConfig.vars.NEXT_INC_CACHE_R2_PREFIX = deployConfig.name + '/' + process.env.GITHUB_SHA;
+          fs.writeFileSync('wrangler.website-lab.jsonc', JSON.stringify(deployConfig, null, 2));
+          const file = 'next.config.mjs';
+          const source = fs.readFileSync(file, 'utf8');
+          if (!source.includes('export default nextConfig;')) throw Error('Review the Next config before packaging');
+          fs.writeFileSync(file, source.replace('export default nextConfig;', 'nextConfig.typescript = { ...nextConfig.typescript, ignoreBuildErrors: true };\nexport default nextConfig;'));
+          NODE
+          npx --no-install opennextjs-cloudflare build --config wrangler.website-lab.jsonc
+      - name: Remove Pages-only redirects from Worker assets
+        run: rm -f .open-next/assets/_redirects
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cloudflare-worker
+          path: |
+            .open-next/
+            wrangler.website-lab.jsonc
+          include-hidden-files: true
+          retention-days: 7

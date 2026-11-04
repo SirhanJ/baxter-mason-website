@@ -127,6 +127,7 @@ export default async function BlogPostPage({ params }: Props) {
           <span className="ar">←</span> Back to blog
         </a>
       </p>
+      {['first-home-owners-grant-qld-explained', 'requirements-when-buying-a-property-on-a-491-visa'].includes(slug) ? <aside className="article-review-notice" aria-label="Current eligibility notice"><strong>Check current eligibility before relying on this article.</strong><p>This article is awaiting a qualified review of its grant or visa-related property guidance. Rules and eligibility can change. Check the current {slug === 'first-home-owners-grant-qld-explained' ? <a href="https://www.qld.gov.au/housing/buying-owning-home/home-buyers-financial-help/first-home-owner-grant">Queensland first home owner grant guidance</a> : <a href="https://foreigninvestment.gov.au/guidance/conditions-and-reporting/residential-compliance">Australian Government residential property guidance</a>} and get advice for your circumstances before making a purchase decision.</p></aside> : null}
       <div dangerouslySetInnerHTML={{ __html: linkSuburbs(post.html) }} />
     </BlogShell>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const BUYER_PROFILE_ENDPOINT =
   "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_56fbac87cf0d4c9582e452c328823154";
@@ -61,11 +61,14 @@ function Field({
 }
 
 export function BuyerProfileForm() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!ready || submitting) return;
     const form = event.currentTarget;
     setError("");
 
@@ -97,6 +100,7 @@ export function BuyerProfileForm() {
     try {
       const response = await fetch(BUYER_PROFILE_ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(20000),
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fields,
@@ -107,7 +111,7 @@ export function BuyerProfileForm() {
         }),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success === false) {
+      if (!response.ok || result.success !== true) {
         throw new Error(result.message || result.error || "Submission failed");
       }
       window.location.assign("/thank-you?source=buyer-profile");
@@ -129,7 +133,9 @@ export function BuyerProfileForm() {
         <p className="buyer-required-note">Fields marked * are required.</p>
       </div>
 
-      <form className="buyer-profile-form" onSubmit={submit} noValidate>
+      <form className="buyer-profile-form" method="post" onSubmit={submit} noValidate>
+        <noscript><p>Please call <a href="tel:+61490744453">0490 744 453</a> to discuss your buyer profile.</p></noscript>
+        <fieldset className="form-controls" disabled={!ready || submitting}>
         <input
           className="buyer-honeypot"
           type="text"
@@ -260,6 +266,7 @@ export function BuyerProfileForm() {
         <p className="buyer-privacy">
           Your information is handled according to our <a href="/privacy-statement-buyers-agent-sunshine-coast">privacy policy</a>.
         </p>
+        </fieldset>
       </form>
     </section>
   );

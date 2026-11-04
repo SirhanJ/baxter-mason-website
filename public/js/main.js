@@ -43,7 +43,7 @@
     loaderDismissed = true;
     document.documentElement.classList.add("is-ready");
     if (loader) loader.classList.add("done");
-    setTimeout(startReveals, loader ? 140 : 0);
+    startReveals();
   }
 
   if (reduceMotion || !loader) {
@@ -52,7 +52,7 @@
     // Waiting on "load" meant waiting on every hero image, which on a phone
     // held the splash over the page for seconds. The content is ready at
     // DOMContentLoaded, so dismiss there and keep a short safety net.
-    var minShow = 450;
+    var minShow = 0;
     function scheduleDismiss() {
       var wait = Math.max(
         0,
@@ -92,7 +92,8 @@
     { threshold: 0.6 },
   );
   document.querySelectorAll(".ct").forEach(function (el) {
-    cio.observe(el);
+    if (reduceMotion) el.textContent = Number(el.dataset.to).toLocaleString();
+    else cio.observe(el);
   });
 
   var nav = document.getElementById("nav");
@@ -213,6 +214,7 @@
     if (!m || !b) return;
     if (open) parkMobileMenu(true);
     m.classList.toggle("open", open);
+    m.inert = window.innerWidth <= 980 && !open;
     b.classList.toggle("x", open);
     b.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.classList.toggle("nav-open", open);
@@ -221,6 +223,11 @@
       closeDropdowns();
       parkMobileMenu(false);
     }
+  }
+
+  if (m) {
+    m.inert = window.innerWidth <= 980;
+    window.addEventListener("resize", function () { m.inert = window.innerWidth <= 980 && !m.classList.contains("open"); });
   }
 
   function closeMobileMenu() {
@@ -232,6 +239,8 @@
       item.classList.remove("open");
       var toggle = item.querySelector(".drop-toggle");
       if (toggle) toggle.setAttribute("aria-expanded", "false");
+      var submenu = item.querySelector(".drop-menu");
+      if (submenu) submenu.inert = window.innerWidth <= 980;
     });
   }
 
@@ -261,6 +270,8 @@
     var toggle = item.querySelector(".drop-toggle");
     var menu = item.querySelector(".drop-menu");
     if (!toggle || !menu) return;
+    menu.inert = window.innerWidth <= 980;
+    window.addEventListener("resize", function () { menu.inert = window.innerWidth <= 980 && !item.classList.contains("open"); });
 
     toggle.addEventListener("click", function (ev) {
       ev.preventDefault();
@@ -270,6 +281,7 @@
       if (!isOpen) {
         item.classList.add("open");
         toggle.setAttribute("aria-expanded", "true");
+        menu.inert = false;
       }
     });
 
@@ -289,8 +301,12 @@
   });
   document.addEventListener("keydown", function (ev) {
     if (ev.key === "Escape") {
+      var focusedDropdown = document.activeElement && document.activeElement.closest(".nav-item.has-drop");
+      var menuWasOpen = m && m.classList.contains("open");
       closeDropdowns();
       closeMobileMenu();
+      if (menuWasOpen && b) b.focus();
+      else if (focusedDropdown) focusedDropdown.querySelector(".drop-toggle").focus();
     }
   });
   window.addEventListener("resize", function () {
@@ -318,6 +334,8 @@
 
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
+    var contactControls = contactForm.querySelector(".form-controls");
+    if (contactControls) contactControls.disabled = false;
     var VEXUR_FORM_SUBMIT_URL =
       "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_76d4bd96867422782685e7b828300f9648520d4417cb4e9c";
     contactForm.addEventListener("submit", function (ev) {
@@ -344,6 +362,7 @@
       var fullName = (first.value.trim() + " " + last.value.trim()).trim();
       fetch(VEXUR_FORM_SUBMIT_URL, {
         method: "POST",
+        signal: AbortSignal.timeout(20000),
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fields: {
@@ -366,7 +385,7 @@
               return {};
             })
             .then(function (data) {
-              if (!res.ok || data.success === false) {
+              if (!res.ok || data.success !== true) {
                 throw new Error(
                   data.error || data.message || "Submission failed",
                 );
@@ -416,6 +435,7 @@
       "sha384-cLQZ3Nziw0hz3qwUhtLERZgDPxlWGHqdt7mkRgeGdIPjtK1m0fjI4bBnz6KQ4Jnc";
     var modal = null;
     var lastFocus = null;
+    var inertBackground = [];
     var loaderRequested = false;
 
     function ensurePreconnect() {
@@ -528,6 +548,9 @@
       modal.id = "vxBookModal";
       modal.className = "vx-book-modal";
       modal.setAttribute("aria-hidden", "true");
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", "Book a discovery call");
       modal.innerHTML =
         '<div class="vx-book-modal__backdrop" data-vx-close tabindex="-1"></div>' +
         '<button type="button" class="vx-book-modal__close" data-vx-close aria-label="Close booking calendar">&times;</button>' +
@@ -568,6 +591,15 @@
       });
 
       document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Tab" && modal.classList.contains("is-open")) {
+          var controls = [];
+          function collect(root) { Array.from(root.children || []).forEach(function (child) { if (child.matches("a[href],button,input,select,textarea,iframe,[tabindex]") && child.tabIndex >= 0 && !child.disabled && child.getClientRects().length && !child.closest("[inert]")) controls.push(child); if (child.shadowRoot) collect(child.shadowRoot); collect(child); }); }
+          collect(modal);
+          var active = document.activeElement;
+          while (active && active.shadowRoot && active.shadowRoot.activeElement) active = active.shadowRoot.activeElement;
+          if (controls.length && ev.shiftKey && active === controls[0]) { ev.preventDefault(); controls[controls.length - 1].focus(); }
+          else if (controls.length && !ev.shiftKey && active === controls[controls.length - 1]) { ev.preventDefault(); controls[0].focus(); }
+        }
         if (ev.key === "Escape" && modal.classList.contains("is-open")) {
           closeModal();
         }
@@ -581,6 +613,8 @@
       warm();
       var el = ensureModal();
       lastFocus = document.activeElement;
+      inertBackground = Array.from(document.body.children).filter(function (node) { return node !== el && !node.inert; });
+      inertBackground.forEach(function (node) { node.inert = true; });
       el.removeAttribute("inert");
       el.classList.add("is-open");
       el.setAttribute("aria-hidden", "false");
@@ -601,6 +635,8 @@
       // it sits there invisible.
       modal.setAttribute("inert", "");
       document.body.classList.remove("vx-book-open");
+      inertBackground.forEach(function (node) { node.inert = false; });
+      inertBackground = [];
       if (lastFocus && typeof lastFocus.focus === "function") {
         try {
           lastFocus.focus();
@@ -660,31 +696,9 @@
       ensureLoader();
     }
 
-    /*
-     * Mount the calendar before anyone clicks, on idle.
-     *
-     * Warming the network alone does nothing: the loader refetches its render envelope on every
-     * mount regardless of HTTP caching, so prefetching the render URL still left the click paying
-     * for a full fetch and render. The only thing that helps is having the widget already mounted,
-     * which is why the modal is built and mounted here rather than on open.
-     *
-     * On idle rather than DOMContentLoaded so it never competes with first paint, with a timeout
-     * so it still happens on a busy page, and a setTimeout fallback where requestIdleCallback is
-     * missing (Safari). openModal() calls warm() too, so a click that beats idle still works.
-     */
-    function scheduleWarm() {
-      if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(warm, { timeout: 1200 });
-      } else {
-        window.setTimeout(warm, 600);
-      }
-    }
-
-    if (document.readyState === "complete") {
-      scheduleWarm();
-    } else {
-      window.addEventListener("load", scheduleWarm, { once: true });
-    }
+    // Warm the calendar only when a visitor points to or focuses a booking link.
+    document.addEventListener("pointerover", function (event) { if (isBookCallLink(event.target.closest && event.target.closest("a"))) warm(); }, { passive: true });
+    document.addEventListener("focusin", function (event) { if (isBookCallLink(event.target.closest && event.target.closest("a"))) warm(); });
   })();
   /* ---------- Vexur Google Reviews: grow the iframe to content ---------- */
   (function initVexurReviewsResize() {
@@ -878,3 +892,6 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
   else ready();
 })();
+
+/* Load the review video only after an explicit play action. */
+document.querySelectorAll("[data-youtube]").forEach(function (button) { button.addEventListener("click", function () { var frame = document.createElement("iframe"); frame.src = "https://www.youtube-nocookie.com/embed/" + button.dataset.youtube + "?autoplay=1"; frame.title = "Baxter and Mason client reviews"; frame.allow = "autoplay; encrypted-media; picture-in-picture"; frame.allowFullscreen = true; button.replaceWith(frame); frame.focus(); }); });

@@ -1,5 +1,7 @@
 import { cache } from 'react';
 import descriptions from '../../data/seo-descriptions.json';
+import reviewedSummaries from '../../data/reviewed-blog-summaries.json';
+import populationFallback from '../../data/blog-fallbacks/the-impact-of-the-population-explosion-on-property-in-qld.json';
 
 import { localBlogImage, rewriteBlogLinks } from './rewriteBlogLinks';
 import { ORG_ID, SITE } from './seo';
@@ -49,7 +51,7 @@ const plain = (s: string) => unesc(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, '
 class BlogPostMissing extends Error {}
 
 /**
- * blog-render, with three tries. A hiccup used to become a 404: fetchPost read every failure as "no
+ * blog-render, with two bounded tries. A hiccup used to become a 404: fetchPost read every failure as "no
  * such post", so one failed fetch while the site was built baked "Page not found" into that post's
  * page until the next build (the Unethical Selling Agents post, Oct 2026). Only a real 404 from
  * Vexur means missing; anything else is retried and then thrown, so a bad moment never gets cached
@@ -57,16 +59,16 @@ class BlogPostMissing extends Error {}
  */
 async function fetchText(url: string, revalidate = BLOG_REVALIDATE): Promise<string> {
   let lastError: unknown;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
-      const response = await fetch(url, { next: { revalidate } });
+      const response = await fetch(url, { next: { revalidate }, signal: AbortSignal.timeout(10000) });
       if (response.status === 404) throw new BlogPostMissing(`blog-render 404 for ${url}`);
       if (!response.ok) throw new Error(`blog-render ${response.status} for ${url}`);
       return await response.text();
     } catch (error) {
       if (error instanceof BlogPostMissing) throw error;
       lastError = error;
-      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 750));
+      if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, attempt * 750));
     }
   }
   throw lastError;
@@ -74,7 +76,7 @@ async function fetchText(url: string, revalidate = BLOG_REVALIDATE): Promise<str
 
 /** The rendered archive, with links already pointing at our own /blog routes. */
 export async function fetchArchive(): Promise<string> {
-  return addImageSizes(stripFontImports(rewriteBlogLinks(await fetchText(`${BASE}?embed=true&placement=archive`))));
+  return addImageSizes(stripFontImports(rewriteBlogLinks(await fetchText(`${BASE}?embed=true&placement=archive`)))).replace(/(<[^>]*class="[^"]*blog-card-image-placeholder[^>]*)(?:role="img")([^>]*)(?:aria-label="")/g, '$1aria-hidden="true"$2');
 }
 
 /**
@@ -184,23 +186,26 @@ function shareImageFor(meta: PostMeta | null): string {
  * Cloudflare Worker's budget (2026-09-07).
  */
 export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
+  const metadata = fetchPostMeta(slug).catch(() => null);
+  const relatedPosts = fetchPostList();
   let html: string;
   try {
     html = rewriteBlogLinks(await fetchText(`${BASE}/${encodeURIComponent(slug)}?embed=true`));
   } catch (error) {
     if (error instanceof BlogPostMissing) return null;
-    throw error;
+    if (slug !== populationFallback.metadata.slug) throw error;
+    html = rewriteBlogLinks(Buffer.from(populationFallback.htmlBase64, "base64").toString("utf8"));
   }
   if (!html.trim()) return null;
 
   // Vexur's own record of the post (share image, search title and description, dates, tags). A failed
   // lookup must not take the page down, so the post then falls back to what its HTML says.
-  const meta = await fetchPostMeta(slug).catch(() => null);
+  const meta = await metadata;
 
   html = addImageSizes(stripFontImports(html));
   if (meta) {
     try {
-      html = withRelatedPosts(html, meta, await fetchPostList());
+      html = withRelatedPosts(html, meta, await relatedPosts);
     } catch {
       // keep the related posts Vexur rendered
     }
@@ -216,9 +221,10 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
     html,
     title: heading ? plain(heading[1]) : slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
     description:
+      (reviewedSummaries as Record<string, string>)[slug] ||
       meta?.meta_description?.trim() ||
       (descriptions as Record<string, string>)[slug] ||
-      (firstPara ? plain(firstPara[1]).slice(0, 155) : ''),
+      (firstPara ? plain(firstPara[1]) : ''),
     image: shareImageFor(meta),
     metaTitle: meta?.meta_title?.trim() || '',
     datePublished: published,
@@ -273,6 +279,7 @@ export const fetchPostMeta = cache(async (slug: string): Promise<PostMeta | null
     body = await fetchText(`${BASE}/${encodeURIComponent(slug)}?metadata=true`);
   } catch (error) {
     if (error instanceof BlogPostMissing) return null;
+    if (slug === populationFallback.metadata.slug) return populationFallback.metadata as PostMeta;
     throw error;
   }
   try {

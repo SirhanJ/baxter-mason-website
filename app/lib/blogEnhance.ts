@@ -1,3 +1,4 @@
+import reviewedSummaries from "../../data/reviewed-blog-summaries.json";
 import { localBlogImage } from './rewriteBlogLinks';
 
 /**
@@ -151,7 +152,7 @@ function relatedCard(post: RelatedMeta, avatar: string | null): string {
         <h2 class="blog-card-title">
           ${esc(title)}
         </h2>
-        <p class="blog-card-excerpt">${esc(post.excerpt || '')}</p>${
+        <p class="blog-card-excerpt">${esc((reviewedSummaries as Record<string, string>)[post.slug] || post.excerpt || '')}</p>${
           avatar
             ? `
           <div class="blog-card-author">

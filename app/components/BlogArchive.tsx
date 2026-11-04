@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import reviewedSummaries from '../../data/reviewed-blog-summaries.json';
 
 const PER_PAGE = 9;
 
@@ -38,6 +39,13 @@ export function BlogArchive({ html }: Props) {
     root
       .querySelectorAll('[data-blog-load-sentinel]')
       .forEach((el) => el.remove());
+
+    root.querySelectorAll<HTMLAnchorElement>("a.blog-card").forEach(card => {
+      const slug = card.getAttribute("href")?.split("/").filter(Boolean).pop() || "";
+      const summary = (reviewedSummaries as Record<string, string>)[slug];
+      const excerpt = card.querySelector(".blog-card-excerpt");
+      if (summary && excerpt) excerpt.textContent = summary;
+    });
 
     const cards = Array.from(
       root.querySelectorAll<HTMLElement>('[data-blog-load-index]'),
