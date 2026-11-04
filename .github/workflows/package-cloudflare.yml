@@ -16,6 +16,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Check static and SSR serving behavior
+        run: node --test scripts/asset-serving.test.mjs scripts/blog-reliability.test.cjs
       - name: Install the existing Website Lab runtime
         run: npm install --no-save --package-lock=false --legacy-peer-deps @opennextjs/cloudflare@1.20.13 wrangler@4.110.0
       - name: Compile without running a type check
@@ -37,6 +39,7 @@ jobs:
         with:
           name: cloudflare-worker
           path: |
+            cloudflare/
             .open-next/
             wrangler.website-lab.jsonc
           include-hidden-files: true
