@@ -1,6 +1,6 @@
 {
   "name": "vexur-baxter-mason-property-buyers-agent-import",
-  "main": ".open-next/worker.js",
+  "main": "cloudflare/worker.mjs",
   "account_id": "803a6110a08870666ff96e550c856254",
   "compatibility_date": "2025-03-25",
   "compatibility_flags": [
@@ -12,7 +12,7 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
-    "run_worker_first": false
+    "run_worker_first": true
   },
   "services": [
     {
