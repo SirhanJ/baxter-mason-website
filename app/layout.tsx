@@ -37,7 +37,7 @@ export default function RootLayout({
           href="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-favicon-orange.png"
         />
         <link rel="preconnect" href="https://app.vexur.com.au" />
-        <link rel="stylesheet" href="/css/styles.css?v=65" />
+        <link rel="stylesheet" href="/css/styles.css?v=20261104" />
       </head>
       <body>{children}<Script src="https://app.vexur.com.au/sdk/chatbot-widget.js" data-widget-id="15d121be-084e-4a88-b0a3-5eacb35ae70c" strategy="afterInteractive" /></body>
     </html>

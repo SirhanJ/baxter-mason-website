@@ -8,6 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig = {
   images: { unoptimized: true },
+  // Bound blog-service pressure while prerendering the large legacy URL set.
+  experimental: { cpus: 2, staticGenerationMaxConcurrency: 2, staticGenerationMinPagesPerWorker: 100 },
   typescript: { ignoreBuildErrors: true },
   // Silence the warning about a lockfile living above the project.
   outputFileTracingRoot: path.join(__dirname),
