@@ -561,7 +561,7 @@
         '"' +
         ' data-loader="v2"' +
         ' data-theme="light"' +
-        ' data-primary-color="#e44013"' +
+        ' data-primary-color="#c93a10"' +
         ' data-show-branding="true"' +
         ' data-vx-no-fallback="true"' +
         ' data-vx-param-calendar-widget-build-id="' +

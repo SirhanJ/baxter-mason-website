@@ -18,7 +18,7 @@ function load(fetch) {
     './rewriteBlogLinks': { localBlogImage: identity, rewriteBlogLinks: identity },
     './seo': { SITE: 'https://www.baxtermason.com.au', ORG_ID: 'business' },
     './blogCanonical': { OLD_TO_CURRENT_POST_SLUG: {} },
-    './blogEnhance': { addImageSizes: identity, stripFontImports: identity, withRelatedPosts: identity },
+    './blogEnhance': { addImageSizes: identity, stripFontImports: identity, withRelatedPosts: identity, completeDescription: identity, completeArchiveSummaries: identity, normalizeArticleHeadings: identity },
   };
   vm.runInNewContext(code, { exports, require: name => { if (!(name in dependencies)) throw Error(name); return dependencies[name]; }, fetch, Buffer, URL, AbortSignal, setTimeout });
   return exports;

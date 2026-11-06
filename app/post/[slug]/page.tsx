@@ -1,3 +1,4 @@
+import { completeDescription, normalizeArticleHeadings } from "../../lib/blogEnhance";
 import { searchTitle } from "../../lib/searchTitle";
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -43,11 +44,8 @@ const addressFor = (slug: string) => `${SITE}${STORY_TWINS[`/post/${slug}`] || `
 const coverFor = (post: LegacyPost) => `/images/posts/${post.slug}.webp`;
 
 /** A handful of the CMS descriptions run past what a result snippet shows. */
-function snippet(text: string, limit = 155): string {
-  const clean = text.replace(/\s+/g, ' ').trim();
-  if (clean.length <= limit) return clean;
-  const cut = clean.slice(0, limit);
-  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:]$/, '')}…`;
+function snippet(text: string, title: string): string {
+  return completeDescription(text, title);
 }
 
 export const revalidate = 3600;
@@ -81,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const url = addressFor(slug);
 
   if (post) {
-    const description = snippet(post.description);
+    const description = snippet(post.description, post.title);
     return {
       title: searchTitle(`/post/${slug}`, `${post.title.trim()} | Baxter & Mason`),
       description,
@@ -156,6 +154,7 @@ export default async function LegacyPostPage({ params }: Props) {
 
     return (
       <BlogShell
+        heroHeadingAs="p"
         heroTitle={
           <>
             From the <span className="gi">blog</span>.
@@ -178,7 +177,9 @@ export default async function LegacyPostPage({ params }: Props) {
 
   const url = addressFor(post.slug);
   const cover = coverFor(post);
-  const body = linkSuburbs(post.body);
+  const normalizedBody = normalizeArticleHeadings('<div class="article-content">' + post.body + '</div>')
+    .replace(/^<div class="article-content">/, '').replace(/<\/div>$/, '');
+  const body = linkSuburbs(normalizedBody);
 
   const schema = graph([
     {

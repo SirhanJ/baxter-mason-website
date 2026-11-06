@@ -38,7 +38,7 @@ export function addImageSizes(html: string): string {
   return html.replace(/<img\b[^>]*>/gi, (tag: string, offset: number) => {
     if (/\swidth=/i.test(tag)) return tag;
     const before = html.slice(Math.max(0, offset - 200), offset);
-    const holder = before.match(/class="(article-featured-image|blog-card-image|article-author-inline|author-bio|blog-card-author)"[^>]*>\s*$/);
+    const holder = before.match(/class="[^"]*\b(article-featured-image|blog-card-image|article-author-inline|author-bio|blog-card-author)\b[^"]*"[^>]*>\s*$/);
     if (!holder) return tag;
     const [width, height] = IMAGE_SIZES[holder[1]];
     return `<img width="${width}" height="${height}"${tag.slice(4)}`;
@@ -125,7 +125,7 @@ export function pickRelated(current: RelatedMeta, all: RelatedMeta[], count = 3)
 }
 
 function cardImage(src: string | null | undefined, alt: string): string {
-  if (!src) return '<div class="blog-card-image-placeholder" role="img" aria-label=""></div>';
+  if (!src) return '<div class="blog-card-image-placeholder" aria-hidden="true"></div>';
   const stored = src.match(/^(https:\/\/[^/]+)\/storage\/v1\/object\/public\/(.+)$/);
   if (stored) {
     const render = (width: number) =>
@@ -152,7 +152,7 @@ function relatedCard(post: RelatedMeta, avatar: string | null): string {
         <h2 class="blog-card-title">
           ${esc(title)}
         </h2>
-        <p class="blog-card-excerpt">${esc((reviewedSummaries as Record<string, string>)[post.slug] || post.excerpt || '')}</p>${
+        <p class="blog-card-excerpt">${esc(completeDescription((reviewedSummaries as Record<string, string>)[post.slug] || post.excerpt || '', title))}</p>${
           avatar
             ? `
           <div class="blog-card-author">
@@ -186,4 +186,39 @@ export function withRelatedPosts(html: string, current: RelatedMeta, all: Relate
   const avatar = html.match(/<div class="author-bio">\s*<img src="([^"]+)"/)?.[1] || null;
   const cards = chosen.map((post) => relatedCard(post, avatar)).join('');
   return `${html.slice(0, start + GRID_OPEN.length)}${cards}\n      ${html.slice(gridClose)}`;
+}
+
+/** Preserve complete statements rather than publishing upstream mid-word truncation. */
+export function completeDescription(value: string, title: string): string {
+  const text = value.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#0?39;|&apos;|&rsquo;/g, "'").replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  const sentences = text.match(/.+?[.!?](?=\s|$)/g) || [];
+  let result = '';
+  for (const sentence of sentences) {
+    const next = (result + ' ' + sentence.trim()).trim();
+    if (result && next.length > 200) break;
+    if (next.length > 320) break;
+    result = next;
+  }
+  return result || ('Read ' + title.replace(/[.!?:;\s]+$/, '') + ' from Baxter & Mason.');
+}
+
+/** Article body levels start at h2; author metadata is not a document heading. */
+export function normalizeArticleHeadings(html: string): string {
+  html = html.replace(/(<div\b[^>]*class="[^"]*article-content[^"]*"[^>]*>)([\s\S]*?)(?=<div\b[^>]*class="[^"]*author-bio|<section\b[^>]*class="[^"]*related-posts|$)/i,
+    (_all, start, body) => {
+      const levels = [...new Set(Array.from(body.matchAll(/<h([1-6])\b/gi), (match: RegExpMatchArray) => Number(match[1])))].sort((a, b) => a - b);
+      return start + body.replace(/<(\/?)(h)([1-6])\b/gi, (_tag: string, close: string, h: string, level: string) => '<' + close + h + Math.min(6, 2 + levels.indexOf(Number(level))));
+    });
+  html = html.replace(/<h4([^>]*)>(Written by [\s\S]*?)<\/h4>/gi, '<p class="article-author-name"$1>$2</p>');
+  return html.replace(/<h3([^>]*)>More to Read<\/h3>/gi, '<h2$1>More to Read</h2>');
+}
+
+/** Apply the same completed summary to the archive and related-card placements. */
+export function completeArchiveSummaries(html: string): string {
+  return html.replace(/<a\b[^>]*class="[^"]*blog-card[^"]*"[^>]*>[\s\S]*?<\/a>/gi, card => {
+    const slug = card.match(/href="\/(?:blog|post)\/([^"?#]+)/)?.[1] || '';
+    const title = (card.match(/class="blog-card-title"[^>]*>([\s\S]*?)<\/h[1-6]>/)?.[1] || 'Property insights').replace(/<[^>]+>/g, '').trim();
+    return card.replace(/(<p\b[^>]*class="blog-card-excerpt"[^>]*>)([\s\S]*?)(<\/p>)/i,
+      (_all, open, excerpt, close) => open + esc(completeDescription((reviewedSummaries as Record<string, string>)[slug] || excerpt, title)) + close);
+  });
 }

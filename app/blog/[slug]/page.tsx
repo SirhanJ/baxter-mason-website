@@ -111,7 +111,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <BlogShell
-      heroHeadingAs="h2"
+      heroHeadingAs="p"
       heroTitle={
         <>
           From the <span className="gi">blog</span>.

@@ -6,7 +6,7 @@ import populationFallback from '../../data/blog-fallbacks/the-impact-of-the-popu
 import { localBlogImage, rewriteBlogLinks } from './rewriteBlogLinks';
 import { ORG_ID, SITE } from './seo';
 import { OLD_TO_CURRENT_POST_SLUG } from './blogCanonical';
-import { addImageSizes, stripFontImports, withRelatedPosts } from './blogEnhance';
+import { addImageSizes, stripFontImports, withRelatedPosts, completeDescription, completeArchiveSummaries, normalizeArticleHeadings } from './blogEnhance';
 
 const BASE = 'https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/blog-render/baxter-mason';
 
@@ -76,7 +76,7 @@ async function fetchText(url: string, revalidate = BLOG_REVALIDATE): Promise<str
 
 /** The rendered archive, with links already pointing at our own /blog routes. */
 export async function fetchArchive(): Promise<string> {
-  return addImageSizes(stripFontImports(rewriteBlogLinks(await fetchText(`${BASE}?embed=true&placement=archive`)))).replace(/(<[^>]*class="[^"]*blog-card-image-placeholder[^>]*)(?:role="img")([^>]*)(?:aria-label="")/g, '$1aria-hidden="true"$2');
+  return completeArchiveSummaries(addImageSizes(stripFontImports(rewriteBlogLinks(await fetchText(`${BASE}?embed=true&placement=archive`))))).replace(/(<[^>]*class="[^"]*blog-card-image-placeholder[^>]*)(?:role="img")([^>]*)(?:aria-label="")/g, '$1aria-hidden="true"$2');
 }
 
 /**
@@ -202,7 +202,7 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
   // lookup must not take the page down, so the post then falls back to what its HTML says.
   const meta = await metadata;
 
-  html = addImageSizes(stripFontImports(html));
+  html = normalizeArticleHeadings(addImageSizes(stripFontImports(html)));
   if (meta) {
     try {
       html = withRelatedPosts(html, meta, await relatedPosts);
@@ -220,11 +220,11 @@ export const fetchPost = cache(async (slug: string): Promise<Post | null> => {
     slug,
     html,
     title: heading ? plain(heading[1]) : slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-    description:
+    description: completeDescription(
       (reviewedSummaries as Record<string, string>)[slug] ||
       meta?.meta_description?.trim() ||
       (descriptions as Record<string, string>)[slug] ||
-      (firstPara ? plain(firstPara[1]) : ''),
+      (firstPara ? plain(firstPara[1]) : ''), heading ? plain(heading[1]) : slug.replace(/-/g, ' ')),
     image: shareImageFor(meta),
     metaTitle: meta?.meta_title?.trim() || '',
     datePublished: published,

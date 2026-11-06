@@ -1,0 +1,7 @@
+Website repair follow-up, 4 November 2026
+
+Builds retain the previously validated no-TypeScript-check policy. Validate changes with targeted tests, lint and rendered behavior.
+
+Headers add host-only one-day HSTS, nosniff, referrer protection and an enforced object/base CSP baseline. A broader report-only policy is exposed for browser observation; it is not enforced and no central reporting receiver is configured. Existing external forms, calendars, fonts, analytics and previews retain their behavior. Review observed violations before tightening script/style rules or extending HSTS.
+
+Publish only through Admin Labs > Website Labs after source validation. Preserve Pages Functions/custom Worker entries and preview-versus-production forwarding rules. No new legal/privacy/business facts are introduced.

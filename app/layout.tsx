@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: "Baxter & Mason",
   description: "Sunshine Coast buyers agent",
   alternates: { canonical: "/" },
-  openGraph: { siteName: "Baxter & Mason", locale: "en_AU", type: "website" },
-  twitter: { card: "summary_large_image" },
+  openGraph: { siteName: "Baxter & Mason", locale: "en_AU", type: "website", images: [`${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`] },
+  twitter: { card: "summary_large_image", images: [`${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`] },
 };
 
 export default function RootLayout({
@@ -21,23 +21,16 @@ export default function RootLayout({
   return (
     <html lang="en-AU">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+
+
+        <link rel="stylesheet" href="/fonts/site-fonts-v2.css" />
         <link
           rel="icon"
           type="image/png"
           href="/images/logos%20and%20sally%20stuff/Baxter-and-Mason-favicon-orange.png"
         />
         <link rel="preconnect" href="https://app.vexur.com.au" />
-        <link rel="stylesheet" href="/css/styles.css?v=20261104" />
+        <link rel="stylesheet" href="/css/styles.css?v=20261106" />
       </head>
       <body>{children}<Script src="https://app.vexur.com.au/sdk/chatbot-widget.js" data-widget-id="15d121be-084e-4a88-b0a3-5eacb35ae70c" strategy="afterInteractive" />  <script async src="https://t.vexur.com.au/v1.js" data-site="baxter-mason-property-buyers-agent" />
       </body>

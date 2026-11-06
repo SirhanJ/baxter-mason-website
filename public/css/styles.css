@@ -12030,7 +12030,15 @@ body.vx-book-open {
 .article-review-notice { border-left: 4px solid var(--orange-deep); padding: 18px 22px; margin: 24px 0; background: #f5f3f0; color: #1a1a1a; }
 
 html.is-ready #nav { animation: none; opacity: 1; }
-section.page-hero h2.display { color: var(--hero-tx); font-size: clamp(36px, 4.8vw, 58px); max-width: none; margin: 0; line-height: 1.06; }
-@media (max-width: 860px) { section.page-hero h2.display { font-size: clamp(32px, 8vw, 44px); } }
+section.page-hero :is(h2,p).display { color: var(--hero-tx); font-size: clamp(36px, 4.8vw, 58px); max-width: none; margin: 0; line-height: 1.06; }
+@media (max-width: 860px) { section.page-hero :is(h2,p).display { font-size: clamp(32px, 8vw, 44px); } }
 section.page-hero.img-hero h2.display { color: #fff; -webkit-text-fill-color: #fff; text-shadow: 0 2px 24px rgba(20,19,18,.55); }
 section.page-hero.img-hero h2.display .gi { color: #ff7a4d; -webkit-text-fill-color: #ff7a4d; }
+
+/* Readable small accents, booking alternatives and stable article media. */
+.svc-card .svc-card-no, .svc-card .svc-card-cta, body section.blk.contact-page .contact-card-hint { color: var(--orange-deep, #c93a10); }
+#book-call p a { text-decoration: underline; text-underline-offset: 3px; }
+.vx-blog-embed .article-featured-image { aspect-ratio: 16 / 9; }
+.vx-blog-embed .article-featured-image img { width: 100%; height: 100%; object-fit: cover; }
+.vx-blog-embed .article-author-name { font-weight: 600; margin: 0 0 0.25rem; }
+.vx-blog-embed .related-posts > h2 { font-size: 1.5rem; }

@@ -293,7 +293,7 @@ export function SiteFooter() {
           </div>
         </div>
       </footer>
-      <Script src="/js/main.js?v=20261104" strategy="afterInteractive" />
+      <Script src="/js/main.js?v=20261106" strategy="afterInteractive" />
     </>
   );
 }
@@ -302,7 +302,7 @@ type BlogShellProps = {
   children: React.ReactNode;
   heroTitle?: React.ReactNode;
   heroSub?: string;
-  heroHeadingAs?: "h1" | "h2";
+  heroHeadingAs?: "h1" | "h2" | "p";
   heroEyebrow?: string;
   showInsightsHead?: boolean;
 };

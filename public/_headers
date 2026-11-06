@@ -2,7 +2,6 @@
 # next.config.mjs only reach pages rendered by Next, so these rules carry the same intent
 # for the static files.
 /*
-  Strict-Transport-Security: max-age=31536000; includeSubDomains
 /images/*
   Cache-Control: public, max-age=31536000, immutable
 /css/*
@@ -13,3 +12,8 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=86400
+  Content-Security-Policy: object-src 'none'; base-uri 'self'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://embed.vexur.com.au https://app.vexur.com.au https://t.vexur.com.au https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src https:; media-src 'self' blob: https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

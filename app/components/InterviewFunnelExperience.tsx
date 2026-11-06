@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 const ENDPOINT =
   "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_2aa0483e69264a02a84aefdeafcb7e08";
@@ -10,9 +10,11 @@ const VIDEO_URL = "https://player.vimeo.com/video/1090722248?h=6293b704d4&title=
 function AccessForm({ close }: { close: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const unconfirmed = useRef(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (unconfirmed.current) return;
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     setSubmitting(true);
@@ -22,9 +24,11 @@ function AccessForm({ close }: { close: () => void }) {
     fields.aNDZhRbsS5X79lSyZGvw_1 = data.has("aNDZhRbsS5X79lSyZGvw_1") ? "Yes" : "No";
     fields.aNDZhRbsS5X79lSyZGvw_2 = data.has("aNDZhRbsS5X79lSyZGvw_2") ? "Yes" : "No";
 
+    let confirmedRejection = false;
     try {
       const response = await fetch(ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(30000),
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fields,
@@ -32,12 +36,14 @@ function AccessForm({ close }: { close: () => void }) {
         }),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success === false) {
+      confirmedRejection = response.status >= 400 && response.status < 500 && result.success === false;
+      if (!response.ok || result.success !== true || typeof result.submissionId !== "string" || !result.submissionId) {
         throw new Error(result.message || result.error || "Submission failed");
       }
       window.location.assign("/video-page-2417-2491");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "We could not submit your details. Please try again.");
+      unconfirmed.current = !confirmedRejection;
+      setError(unconfirmed.current ? "We could not confirm whether your request was received. Please call 0490 744 453 to check before submitting again." : (cause instanceof Error ? cause.message : "Request rejected. Please check your details."));
       setSubmitting(false);
     }
   }
@@ -50,7 +56,7 @@ function AccessForm({ close }: { close: () => void }) {
         <img className="if-modal-photo" src="/images/interview-funnel/sally-orange.jpeg" alt="Sally Blyth" />
         <h2 id="if-form-title">The 3 deadly mistakes buyers make when purchasing property</h2>
         <p className="if-modal-intro">Enter your details below for instant access.</p>
-        <form className="if-access-form" onSubmit={submit}>
+        <form className="if-access-form" method="post" onSubmit={submit}>
           <div className="if-fields-two">
             <label>First name<input name="first_name" autoComplete="given-name" /></label>
             <label>Last name<input name="last_name" autoComplete="family-name" /></label>
@@ -67,7 +73,7 @@ function AccessForm({ close }: { close: () => void }) {
             <span>By checking this box, I agree to receive occasional automated marketing messages from Baxter &amp; Mason Property Buyers Agency.</span>
           </label>
           {error ? <p className="if-form-error" role="alert">{error}</p> : null}
-          <button className="if-submit" type="submit" disabled={submitting}>
+          <button className="if-submit" type="submit" disabled={submitting || unconfirmed.current}>
             {submitting ? "Submitting…" : "YES! Give me full access NOW!"}
           </button>
           <p className="if-legal"><a href="/privacy-statement-buyers-agent-sunshine-coast">Privacy Statement</a> · <a href="/terms--conditions">Terms &amp; Conditions</a></p>

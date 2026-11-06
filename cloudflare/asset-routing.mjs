@@ -1,3 +1,4 @@
+import securityHeaders from '../config/security-headers.cjs';
 const PREVIEW_HOST = 'vexur-baxter-mason-property-buyers-agent-import.ben-03a.workers.dev';
 const PRODUCTION_HOSTS = new Set(['baxtermason.com.au', 'www.baxtermason.com.au']);
 
@@ -8,8 +9,7 @@ export function applySiteHeaders(request, response) {
   if (new URL(request.url).hostname === PREVIEW_HOST && !PRODUCTION_HOSTS.has(forwardedHost)) {
     headers.set('X-Robots-Tag', 'noindex, follow');
   }
-  headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  for (const { key, value } of securityHeaders) headers.set(key, value);
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
