@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 const BUYER_PROFILE_ENDPOINT =
   "https://pgsnbsjtpxfmzedjldyu.supabase.co/functions/v1/headless-form-submit/hli_56fbac87cf0d4c9582e452c328823154";
@@ -65,10 +65,13 @@ export function BuyerProfileForm() {
   useEffect(() => setReady(true), []);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const busy = useRef(false);
+  const unconfirmed = useRef(false);
+  const request = useRef<{ fields: string; key: string } | null>(null);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!ready || submitting) return;
+    if (!ready || busy.current || unconfirmed.current) return;
     const form = event.currentTarget;
     setError("");
 
@@ -91,18 +94,29 @@ export function BuyerProfileForm() {
       else fields[key] = [fields[key] as string, value];
     }
 
+    // The published receiver declares these as multi-select fields even when
+    // a visitor checks just one option. Always send arrays, including one item.
+    for (const key of ["UMyCRKNT7GhqrpDTVD0v", "njQVMRpSEWRpmTkep8uq", "SEwPiCGkPnsR4MsOp7Ro", "ssXuy6XxP4ligv165l62"]) {
+      fields[key] = data.getAll(key).filter((value): value is string => typeof value === "string");
+    }
+
     // Canonical aliases ensure Vexur creates the primary contact while retaining
     // every original GHL field id for the imported workflows and submission view.
     fields.name = String(fields.gpQbvDhNE6DSPBSrDqQq || "");
     fields.phone = String(fields.iDLUdq4OLwmt19G565r8 || "");
 
+    const serialized = JSON.stringify(fields);
+    if (request.current?.fields !== serialized) request.current = { fields: serialized, key: crypto.randomUUID() };
+    busy.current = true;
     setSubmitting(true);
+    let confirmedRejection = false;
     try {
       const response = await fetch(BUYER_PROFILE_ENDPOINT, {
-        method: "POST",
+        method: "POST", redirect: "error",
         signal: AbortSignal.timeout(20000),
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          requestKey: request.current!.key,
           fields,
           attribution: {
             pageUrl: window.location.href,
@@ -111,12 +125,19 @@ export function BuyerProfileForm() {
         }),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success !== true) {
-        throw new Error(result.message || result.error || "Submission failed");
+      confirmedRejection = [400, 401, 403, 404, 405, 413, 415, 422, 429].includes(response.status) && result.success === false;
+      if (!response.ok || result.success !== true || typeof result.submissionId !== "string" || !result.submissionId.trim()) {
+        const rejection = response.status === 429 ? "Please wait before trying again, or call 0490 744 453." : "Please check your details and try again.";
+        throw new Error(typeof result.message === "string" && result.message.trim() ? result.message : rejection);
       }
       window.location.assign("/thank-you?source=buyer-profile");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "We could not submit the form. Please try again.");
+      unconfirmed.current = !confirmedRejection;
+      setError(unconfirmed.current
+        ? "We could not confirm whether your buyer profile was received. Please call 0490 744 453 to check before submitting again."
+        : (cause instanceof Error ? cause.message : "Please check your details and try again."));
+    } finally {
+      busy.current = false;
       setSubmitting(false);
     }
   }
@@ -135,7 +156,7 @@ export function BuyerProfileForm() {
 
       <form className="buyer-profile-form" method="post" onSubmit={submit} noValidate>
         <noscript><p>Please call <a href="tel:+61490744453">0490 744 453</a> to discuss your buyer profile.</p></noscript>
-        <fieldset className="form-controls" disabled={!ready || submitting}>
+        <fieldset className="form-controls" disabled={!ready || submitting || unconfirmed.current}>
         <input
           className="buyer-honeypot"
           type="text"
@@ -260,7 +281,7 @@ export function BuyerProfileForm() {
             {error}
           </p>
         ) : null}
-        <button className="btn lg buyer-submit" type="submit" disabled={submitting}>
+        <button className="btn lg buyer-submit" type="submit" disabled={!ready || submitting || unconfirmed.current}>
           {submitting ? "Submitting…" : "Submit buyer profile"} <span className="ar">→</span>
         </button>
         <p className="buyer-privacy">
