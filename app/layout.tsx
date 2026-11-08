@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: "Baxter & Mason",
   description: "Sunshine Coast buyers agent",
   alternates: { canonical: "/" },
-  openGraph: { siteName: "Baxter & Mason", locale: "en_AU", type: "website", images: [`${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`] },
-  twitter: { card: "summary_large_image", images: [`${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`] },
+  openGraph: { siteName: "Baxter & Mason", locale: "en_AU", type: "website", images: [{ url: "https://www.baxtermason.com.au/brand/social-logo-20261108.png", width: 1200, height: 630, type: "image/png", alt: "Baxter & Mason logo" }] },
+  twitter: { card: "summary_large_image", images: [{ url: "https://www.baxtermason.com.au/brand/social-logo-20261108.png", width: 1200, height: 630, type: "image/png", alt: "Baxter & Mason logo" }] },
 };
 
 export default function RootLayout({

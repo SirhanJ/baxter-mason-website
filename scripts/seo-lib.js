@@ -297,6 +297,7 @@ function addSuburbProof(html, suburbName) {
 /* ----------------------------------------------------------------- head */
 
 function setHead(html, url) {
+  html = require("./social-preview.cjs").applyBusinessShareImage(html, url);
   const abs = SITE + url;
   // Absolute URLs must not carry a double slash (".com.au//images/..."), in og:image or JSON-LD.
   let out = html.replace(/(https?:[/][/][^/"' ]+)[/][/](?=images[/])/g, "$1/");

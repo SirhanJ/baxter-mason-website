@@ -24,7 +24,7 @@ export const BLOG_AUTHOR = {
 } as const;
 
 /** The share image used when a post has none of its own: the same picture the blog index and home page use. */
-export const DEFAULT_SHARE_IMAGE = `${SITE}/images/66f243dc0b3af8e3d2500f2d.jpeg`;
+export const DEFAULT_SHARE_IMAGE = `${SITE}/brand/social-logo-20261108.png`;
 
 /** An hour of ISR: new posts appear without a deploy, crawlers get static HTML. */
 export const BLOG_REVALIDATE = 3600;

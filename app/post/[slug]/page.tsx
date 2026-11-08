@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { BlogShell } from '../../components/BlogShell';
 import { BlogLinkFixup } from '../../components/BlogLinkFixup';
 import { JsonLd } from '../../components/JsonLd';
-import { SITE, ORG_ID, breadcrumb, graph } from '../../lib/seo';
+import { SITE, ORG_ID, breadcrumb, graph, shareImageDescriptor } from '../../lib/seo';
 import legacyPosts from '../../../data/legacy-posts.json';
 import postRedirects from '../../../data/post-redirects.json';
 import { BLOG_AUTHOR, blogPostingNode, fetchPost } from '../../lib/blogSource';
@@ -116,9 +116,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url,
       siteName: 'Baxter & Mason',
       locale: 'en_AU',
-      images: currentPost.image ? [currentPost.image] : undefined,
+      images: currentPost.image ? [shareImageDescriptor(currentPost.image)] : undefined,
     },
-    twitter: { card: 'summary_large_image', images: currentPost.image ? [currentPost.image] : undefined },
+    twitter: { card: 'summary_large_image', images: currentPost.image ? [shareImageDescriptor(currentPost.image)] : undefined },
   };
 }
 

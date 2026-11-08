@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: URL },
   // The page is for people who follow the Instagram and TikTok bios, not for search results.
   robots: { index: false, follow: true },
-  openGraph: { images: ["https://www.baxtermason.com.au/images/66f243dc0b3af8e3d2500f2d.jpeg"],
+  openGraph: { images: [{ url: "https://www.baxtermason.com.au/brand/social-logo-20261108.png", width: 1200, height: 630, type: "image/png", alt: "Baxter & Mason logo" }],
     type: 'website',
     title: TITLE,
     description: DESCRIPTION,

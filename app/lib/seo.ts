@@ -1,6 +1,13 @@
 import organisation from '../../data/organisation.json';
 
 export const SITE = 'https://www.baxtermason.com.au';
+
+/** Known logo fallback dimensions; retain each article's own image unchanged. */
+export function shareImageDescriptor(image: string, alt?: string) {
+  return image === SITE + '/brand/social-logo-20261108.png'
+    ? { url: image, width: 1200, height: 630, type: 'image/png', alt: 'Baxter & Mason logo' }
+    : { url: image, ...(alt ? { alt } : {}) };
+}
 export const ORG_ID = `${SITE}/#organization`;
 export const SITE_ID = `${SITE}/#website`;
 
